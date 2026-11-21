@@ -93,36 +93,44 @@
 <div class="cap">Diagram 3 · Process diagram: validating a gate-open request (FR-20, FR-21)</div>
 <pre class="mermaid">
 flowchart TD
-  A([Guest taps 'Open gate'<br/>W-01 / S-11 · new request ID]) --> B{Rate limit OK?<br/>NFR-06}
-  B -- no --> RL([Deny RATE_LIMITED<br/>page shows reason])
+  A([Guest taps 'Open gate'<br/>W-01 / S-11 · new request ID]) --> B{Client IP under the<br/>invalid-link limit? NFR-06}
+  B -- no --> RL[Deny RATE_LIMITED<br/>log summarised FR-26]
   B -- yes --> T[[BEGIN atomic transaction]]
   T --> R{Receipt for<br/>invitation + request ID<br/>already exists?}
-  R -- yes --> RP([Return the original result<br/>nothing counted again])
-  R -- no --> C[Run checks 1–8 in order<br/>table below]
+  R -- "yes, same gate" --> RP([Return the stored result<br/>incl. remaining count · nothing counted])
+  R -- "yes, other gate" --> DUP[Deny DUPLICATE_REQUEST<br/>nothing counted]
+  R -- no --> Q{Invitation under its<br/>per-minute quota? NFR-06}
+  Q -- no --> RL2[Deny RATE_LIMITED<br/>log summarised FR-26]
+  Q -- yes --> C[Run checks 1–9 in order<br/>table below]
   C -- a check fails --> DN[Write DENIED event + receipt<br/>with the first failing reason]
-  C -- all pass --> GR[Write together:<br/>used + 1 · gate openUntil = now + 5 s<br/>GRANTED event + receipt]
+  C -- all pass --> GR[Write together:<br/>used + 1 · gate openUntil = now + 5 s<br/>GRANTED event + receipt incl. remaining]
   DN --> CM[[COMMIT]]
   GR --> CM
   CM -- granted --> N[After commit:<br/>notify resident FR-29]
   N --> OK([Page: gate opening +<br/>remaining openings])
   CM -- denied --> NO([Page: reason + guidance FR-21])
-  CM -- conflict / error --> X([Deny, fail closed NFR-11<br/>retry with same request ID is safe])
+  CM -- "conflict / error / unknown" --> X([Fail closed NFR-11: page shows<br/>'couldn't confirm' AC-07.2<br/>retry with same request ID is safe])
+  RL --> NO
+  RL2 --> NO
+  DUP --> NO
 </pre>
 <table style="margin-top:2mm">
-<thead><tr><th style="width:6%">#</th><th>Check (inside the transaction)</th><th style="width:30%">Denial reason if it fails</th></tr></thead>
+<thead><tr><th style="width:6%">#</th><th>Check (inside the transaction; reads permission, invitation, owner membership and gate)</th><th style="width:30%">Denial reason if it fails</th></tr></thead>
 <tr><td>1</td><td>The token digest matches a non-revoked invitation</td><td><code>INVALID_LINK</code> (generic page W-02)</td></tr>
 <tr><td>2</td><td>The permission is not cancelled</td><td><code>CANCELLED</code></td></tr>
 <tr><td>3</td><td>The permission is not suspended</td><td><code>SUSPENDED</code></td></tr>
-<tr><td>4</td><td>Now is not before the start</td><td><code>NOT_STARTED</code></td></tr>
-<tr><td>5</td><td>Now is not after the end</td><td><code>EXPIRED</code></td></tr>
-<tr><td>6</td><td>Recurring only: today is a selected weekday and now is inside the daily window</td><td><code>OUTSIDE_HOURS</code></td></tr>
-<tr><td>7</td><td>The gate is included in the permission, and it is active</td><td><code>GATE_NOT_ALLOWED</code> · <code>GATE_INACTIVE</code></td></tr>
-<tr><td>8</td><td>Used openings are below the limit</td><td><code>EXHAUSTED</code></td></tr>
+<tr><td>4</td><td>The owning resident is still an approved member of the community (defence in depth for FR-05)</td><td><code>SUSPENDED</code></td></tr>
+<tr><td>5</td><td>Now is not before the start</td><td><code>NOT_STARTED</code></td></tr>
+<tr><td>6</td><td>Now is not after the end</td><td><code>EXPIRED</code></td></tr>
+<tr><td>7</td><td>Recurring only: today is a selected weekday and now is inside the daily window</td><td><code>OUTSIDE_HOURS</code></td></tr>
+<tr><td>8</td><td>The gate is included in the permission, and it is active</td><td><code>GATE_NOT_ALLOWED</code> · <code>GATE_INACTIVE</code></td></tr>
+<tr><td>9</td><td>Used openings are below the limit</td><td><code>EXHAUSTED</code></td></tr>
 </table>
 <div class="exp"><b>What it shows:</b> the server-side handling of every opening request. The table lists the checks in order, each with its denial reason. <b>Why it matters:</b>
 <ul>
-<li>All reads and writes happen <b>inside one atomic transaction</b>: the receipt, invitation, permission and gate checks, and then the counter, gate open-until time, event and receipt writes. A concurrent cancel, suspend or edit therefore can't slip in between a check and the grant, and concurrent requests can never exceed the limit (AC-08.4).</li>
-<li>The receipt, keyed by invitation and request ID, makes retries return the original result (AC-07.2).</li>
+<li>All reads and writes happen <b>inside one atomic transaction</b>: the receipt, invitation, permission and gate checks, and then the counter, gate open-until time, event and receipt writes. A concurrent cancel, suspend, edit, link regeneration, resident removal or gate deactivation therefore can't slip in between a check and the grant, and concurrent requests can never exceed the limit (AC-08.4).</li>
+<li>Receipts are looked up <i>before</i> the per-invitation quota, so a retry of a request that was already committed always gets its stored result (AC-07.2) and is never refused as rate-limited. A request ID reused for a different gate is rejected without counting.</li>
+<li>If the outcome of the commit is unknown to the client (for example the connection drops), the page treats it as unconfirmed and offers a retry with the same request ID. The server logs the failure whenever storage is available.</li>
 <li>Invalid links reveal nothing.</li>
 <li>Any conflict or error results in a denial. The system fails closed (NFR-11).</li>
 <li>Push notifications are sent only after the commit.</li>

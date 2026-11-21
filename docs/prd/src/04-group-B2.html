@@ -36,7 +36,7 @@
 <tr><td>FR-18</td><td>A resident can show a QR code that encodes the same invitation link, on screen and inside the share message.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-10</td></tr>
 <tr><td>FR-19</td><td>Anyone opening a valid invitation link in a mobile browser, without registering, sees: the community name, the gate name(s), the validity summary, whether it is valid <i>right now</i> (and the next window if not), remaining openings, and an "Open gate" action for each gate. The page does not show the resident's phone or address.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
 <tr><td>FR-20</td><td>A guest can request an opening of one gate on the page. The server validates the request using the rules in Diagram 3. A grant commits <b>in one atomic transaction</b>: the request receipt, the counter increase, the simulated gate's open-until time (FR-24) and the event record (FR-26). Notifications are sent only after the commit. The page then shows the result and the updated remaining openings.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09, F-03</td></tr>
-<tr><td>FR-21</td><td>On denial, the guest page shows a short reason in plain language with guidance ("Your access starts on Tue 08:00", "No openings left: contact your host"). Reason codes: <code>INVALID_LINK</code>, <code>NOT_STARTED</code>, <code>OUTSIDE_HOURS</code>, <code>EXPIRED</code>, <code>EXHAUSTED</code>, <code>SUSPENDED</code>, <code>CANCELLED</code>, <code>GATE_INACTIVE</code>, <code>GATE_NOT_ALLOWED</code>, <code>RATE_LIMITED</code>. An invalid link reveals nothing about any permission.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
+<tr><td>FR-21</td><td>On denial, the guest page shows a short reason in plain language with guidance ("Your access starts on Tue 08:00", "No openings left: contact your host"). Reason codes: <code>INVALID_LINK</code>, <code>NOT_STARTED</code>, <code>OUTSIDE_HOURS</code>, <code>EXPIRED</code>, <code>EXHAUSTED</code>, <code>SUSPENDED</code>, <code>CANCELLED</code>, <code>GATE_INACTIVE</code>, <code>GATE_NOT_ALLOWED</code>, <code>RATE_LIMITED</code>, <code>DUPLICATE_REQUEST</code>. An invalid link reveals nothing about any permission.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
 <tr><td>FR-22</td><td>On supported devices where the app is installed, opening an invitation link opens the matching in-app invitation screen (Android App Links / iOS Universal Links). In every other case the link opens the browser page with identical behaviour.</td><td>Registered guest</td><td><span class="tag should">Should</span></td><td>F-09</td></tr>
 <tr><td>FR-23</td><td>A signed-in user can save a received invitation to "My invitations" in the app and open it from there later.</td><td>Registered guest</td><td><span class="tag could">Could</span></td><td>F-09</td></tr>
 </table>
@@ -46,7 +46,7 @@
 <thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
 <tr><td>FR-24</td><td>Each gate has a simulated state, <code>OPEN</code> or <code>CLOSED</code>, derived from its stored open-until time: the gate is <code>OPEN</code> while the current time is before it. A grant sets open-until to the grant time plus 5 seconds, so a new grant while the gate is open restarts the 5 seconds.</td><td>System</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
 <tr><td>FR-25</td><td>An administrator can open the <b>Gate simulator</b> screen (S-10). It shows each gate's live state and the last event (time, guest name, result), updated without a manual refresh.</td><td>Admin</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
-<tr><td>FR-26</td><td>The system records every gate-open request, granted and denied, with: time, permission, gate, channel (web / app), result and reason code. Residents and administrators cannot edit or delete these records.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
+<tr><td>FR-26</td><td>The system records every gate-open request, granted and denied, with: time, permission, gate, channel (web / app), result and reason code. To keep the log usable, consecutive <code>RATE_LIMITED</code> denials are recorded as one summary event per invitation (or per client IP for invalid links) per minute, including the number of attempts. Residents and administrators cannot edit or delete these records.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
 <tr><td>FR-27</td><td>A resident can see the activity log of their own permissions, newest first, filterable by permission and by result.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
 <tr><td>FR-28</td><td>An administrator can see the community-wide activity log, filterable by gate, date range and result.</td><td>Admin</td><td><span class="tag should">Should</span></td><td>F-13</td></tr>
 <tr><td>FR-29</td><td>A resident receives a push notification when a guest is granted an opening on one of their permissions. Notifications can be turned on or off per permission (default on).</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-14</td></tr>
@@ -82,7 +82,10 @@ stateDiagram-v2
   SCHEDULED --> ACTIVE: start time reached
   ACTIVE --> SUSPENDED: resident suspends (FR-10) / resident removed (FR-05)
   SCHEDULED --> SUSPENDED: resident suspends
-  SUSPENDED --> ACTIVE: resident resumes (FR-10)
+  SUSPENDED --> ACTIVE: resume, inside validity (FR-10)
+  SUSPENDED --> SCHEDULED: resume, before start
+  SUSPENDED --> EXPIRED: resume, after end
+  SUSPENDED --> EXHAUSTED: resume, used = limit
   ACTIVE --> EXHAUSTED: used = limit (FR-08)
   EXHAUSTED --> ACTIVE: limit raised by edit (FR-12)
   ACTIVE --> EXPIRED: end time passed
@@ -94,6 +97,6 @@ stateDiagram-v2
   EXPIRED --> CANCELLED
   CANCELLED --> [*]
 </pre>
-<div class="exp"><b>What it shows:</b> the states a permission can be in. Only <code>ACTIVE</code>, <code>SUSPENDED</code> and <code>CANCELLED</code> are stored. <code>SCHEDULED</code>, <code>EXPIRED</code> and <code>EXHAUSTED</code> are derived from time and the counter (FR-13). <b>Why it matters:</b> only an <code>ACTIVE</code> permission, inside its current time window, can produce a grant. <code>CANCELLED</code> is terminal. Resuming never resets the counter (FR-08, FR-10).</div>
+<div class="exp"><b>What it shows:</b> the states a permission can be in. Only <code>ACTIVE</code>, <code>SUSPENDED</code> and <code>CANCELLED</code> are stored. <code>SCHEDULED</code>, <code>EXPIRED</code> and <code>EXHAUSTED</code> are derived from time and the counter (FR-13). <b>Why it matters:</b> only an <code>ACTIVE</code> permission, inside its current time window, can produce a grant. <code>CANCELLED</code> is terminal. Resuming re-derives the status, so it can lead to any of four states, and never resets the counter (FR-08, FR-10).</div>
 </div>
 </section>

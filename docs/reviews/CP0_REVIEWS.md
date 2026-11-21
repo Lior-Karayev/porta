@@ -41,6 +41,17 @@ Draft reviewed: PRD v0.9 (commit d7e7f7f). All findings resolved in v1.0 unless 
 | SEC-05 | minor | No password policy | ≥ 8 chars; reset by email Should (FR-01) |
 | SEC-06 | minor | No audit trail of admin actions | NFR-20 + E-12 AdminAction |
 
+## Codex verification round (v1.0 → v1.0.1)
+Codex re-checked CX-01…CX-12: 8 resolved; 4 needed more work, plus 2 new major issues. All fixed:
+| Item | Fix |
+|---|---|
+| CX-03 | Q-14/Q-15 (guest-page tech + link domain) now due at **start of M1**, before the slice is deployed |
+| CX-04 | Check table adds "owning resident still an approved member" (check 4); Supabase fallback must lock permission + invitation + gate rows (or serializable isolation) |
+| CX-05 | E-08 stores `remainingAfter`; request ID reused for another gate → `DUPLICATE_REQUEST`, nothing counted; unknown commit outcome → "couldn't confirm" + safe same-ID retry |
+| CX-07 | Diagram 2: resume leads to ACTIVE / SCHEDULED / EXPIRED / EXHAUSTED (re-derived) |
+| NEW-1 (major) | Diagram 3 reordered: receipt replay happens **before** the per-invitation quota; only the per-IP invalid-link limit precedes the transaction |
+| NEW-2 (major) | FR-26: rate-limited attempts are logged as one summary event per invitation (or IP) per minute with `attemptCount` |
+
 ## Not adopted / deferred
 - CX-01 suggested deferring *all* other Shoulds incl. editing/regeneration. Adopted as an explicit add-order (§7.2) rather than removal, so the MVP definition (all Musts) is unchanged and Shoulds are cut from the tail if time runs out.
 - CX-08 suggested requiring user disambiguation for repeated DST wall times; v1.0 uses "first occurrence" for simplicity (one hour per year in late October). Revisit in M2 if tests show confusion.
