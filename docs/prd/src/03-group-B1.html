@@ -1,0 +1,76 @@
+<!-- ===== Section 7 ===== -->
+<section class="sec">
+<div class="group-label">GROUP B · WHAT WE ARE BUILDING</div>
+<h2><span class="num">7</span>Product Scope and Prioritization</h2>
+<p>The full product consists of the <b>21 candidate capabilities</b> below, proposed by the team. Every one of them is part of the product vision and none has been dropped. They are <b>candidate requirements</b>, not 21 implementation commitments: the MoSCoW priority and target release say what will be built for the MVP (31 Jan 2027) and what is scheduled later.</p>
+<p class="small"><b>Complexity</b> is a relative estimate (L = low, M = medium, H = high) of design, build and test effort for a student team new to Flutter. <b>Release</b>: MVP = by 31 Jan 2027. M5–M7 are post-MVP milestones (Section 15), not yet scheduled.</p>
+
+<h3>7.1 All capabilities of the full product, prioritized</h3>
+<table>
+<thead><tr><th style="width:6%">ID</th><th style="width:22%">Capability</th><th style="width:7%">Cplx</th><th style="width:22%">Depends on</th><th style="width:10%">MoSCoW</th><th style="width:10%">Release</th><th>Rationale</th></tr></thead>
+<tr><td colspan="7"><b>Access permissions</b></td></tr>
+<tr><td>F-01</td><td>One-time access permissions</td><td>M</td><td>F-07, F-08</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Core value; simplest permission type.</td></tr>
+<tr><td>F-02</td><td>Recurring permissions by days and hours</td><td>M–H</td><td>F-01 (shared model), time-zone handling</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Core differentiator (service providers). Schedule evaluation must be server-side and time-zone correct.</td></tr>
+<tr><td>F-03</td><td>Total opening limit per permission (counter never resets)</td><td>M</td><td>F-01/F-02, atomic server update</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Confirmed product decision. Needs a race-safe counter.</td></tr>
+<tr><td>F-04</td><td>Cancellation and temporary suspension</td><td>L</td><td>F-01/F-02</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Instant revocation is a core security promise.</td></tr>
+<tr><td>F-05</td><td>Reusable permission templates</td><td>L–M</td><td>F-01, F-02</td><td><span class="tag could">Could</span></td><td>MVP stretch → M5</td><td>Convenience; the core works without it.</td></tr>
+<tr><td>F-06</td><td>Permissions for multiple gates</td><td>M</td><td>Gate model (FR-04)</td><td><span class="tag should">Should</span></td><td>MVP</td><td>The data model supports many gates from day one. Multi-select UI is low marginal cost.</td></tr>
+<tr><td>F-07</td><td>Role-based access control (Resident, Guest, Administrator)</td><td>M</td><td>Authentication</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Foundation for every other capability and for security.</td></tr>
+<tr><td colspan="7"><b>Guest management</b></td></tr>
+<tr><td>F-08</td><td>Unique invitation links</td><td>M</td><td>F-01/F-02, secure token generation</td><td><span class="tag must">Must</span></td><td>MVP</td><td>The delivery mechanism of every permission.</td></tr>
+<tr><td>F-09</td><td>Guest access via web browser, no install</td><td>M–H</td><td>F-08, web hosting</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Confirmed product decision. This is the guest's whole experience.</td></tr>
+<tr><td>F-10</td><td>QR codes for guests</td><td>L</td><td>F-08</td><td><span class="tag should">Should</span></td><td>MVP</td><td>The QR encodes the same link. Cheap, and helps in-person handover.</td></tr>
+<tr><td>F-11</td><td>Guest and service-provider contact directory</td><td>L–M</td><td>F-01</td><td><span class="tag could">Could</span></td><td>MVP stretch → M5</td><td>Speeds up repeat creation, but not essential.</td></tr>
+<tr><td>F-12</td><td>Group invitations for multiple guests</td><td>M–H</td><td>F-08, F-03 (counter semantics per group)</td><td><span class="tag wont">Won't</span></td><td>M5</td><td>Needs a decision on per-guest vs shared counters (Q-05).</td></tr>
+<tr><td colspan="7"><b>Monitoring and management</b></td></tr>
+<tr><td>F-13</td><td>Access activity logs</td><td>M</td><td>Gate-open flow</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Resident view is Must. The administrator community view is Should (FR-28).</td></tr>
+<tr><td>F-14</td><td>Resident notifications</td><td>M</td><td>F-13, push service (iOS needs an Apple developer account, see R-04)</td><td><span class="tag should">Should</span></td><td>MVP</td><td>High value. Falls back to the in-app log if push is unavailable.</td></tr>
+<tr><td>F-15</td><td>Personal dashboard for residents</td><td>L–M</td><td>F-13</td><td><span class="tag should">Should</span></td><td>MVP</td><td>Basic summary on the home screen. Richer insights later.</td></tr>
+<tr><td>F-16</td><td>Reports and analytics for administrators</td><td>M</td><td>F-13 (sufficient history)</td><td><span class="tag wont">Won't</span></td><td>M6</td><td>Needs real usage data to be meaningful.</td></tr>
+<tr><td>F-17</td><td>Detection and monitoring of unusual permission activity</td><td>H</td><td>F-13, F-16, rule definitions</td><td><span class="tag wont">Won't</span></td><td>M6</td><td>Needs a definition of "unusual" (Q-06) and baseline data.</td></tr>
+<tr><td>F-18</td><td>Administrator approval for sensitive permissions</td><td>M</td><td>F-07, definition of "sensitive" (Q-06)</td><td><span class="tag wont">Won't</span></td><td>M6</td><td>Policy is undefined. Adds a workflow state to the lifecycle.</td></tr>
+<tr><td colspan="7"><b>AI features</b></td></tr>
+<tr><td>F-19</td><td>Natural-language permission creation</td><td>H</td><td>F-01, F-02, external LLM API (cost, R-06)</td><td><span class="tag could">Could</span></td><td>MVP stretch → M7</td><td>See 7.5: only after all Must and Should items pass, and only if the team approves the API cost.</td></tr>
+<tr><td>F-20</td><td>Smart reminders and suggestions</td><td>M–H</td><td>F-13, F-14, usage history</td><td><span class="tag wont">Won't</span></td><td>M7</td><td>Needs history to suggest anything useful.</td></tr>
+<tr><td>F-21</td><td>Guided permission-creation assistant</td><td>M</td><td>F-01, F-02</td><td><span class="tag should">Should</span></td><td>MVP (rule-based) · M7 (AI)</td><td>The MVP builds a deterministic step-by-step wizard. AI enhancement comes later.</td></tr>
+</table>
+<p class="small">Totals: Must 8 (F-01–F-04, F-07–F-09, F-13) · Should 5 (F-06, F-10, F-14, F-15, F-21) · Could 3 (F-05, F-11, F-19) · Won't in this release 5 (F-12, F-16, F-17, F-18, F-20). All 21 are kept in the product vision.</p>
+
+<h3>7.2 MVP: the first release we will implement in the course (by 31 Jan 2027)</h3>
+<p><b>The MVP is complete when every Must capability passes its acceptance criteria.</b> Should capabilities are planned inside the MVP schedule and are the first to be cut if the schedule slips. Could capabilities are attempted only after all Must and Should items pass.</p>
+<ul>
+<li><b>Must:</b> sign-up and sign-in. Community membership approved by an administrator. Roles (F-07). Administrator gate management (simulated gates). One-time and recurring permissions (F-01, F-02) with a cumulative opening limit (F-03). Suspend, resume and cancel (F-04). A unique invitation link (F-08). A browser guest page with gate opening (F-09). The simulated gate and gate simulator. Resident activity log (F-13).</li>
+<li><b>Should:</b> multiple gates per permission (F-06). QR code (F-10). Push notifications (F-14). Home-screen dashboard (F-15). Rule-based guided creation wizard (F-21). Administrator community log. Link regeneration. Permission editing. Deep links to the app.</li>
+<li><b>Could (stretch):</b> templates (F-05). Contact directory (F-11). Natural-language creation (F-19). "My invitations" for registered guests. Expiry and last-opening reminders.</li>
+</ul>
+
+<h3>7.3 Developed later, after the MVP</h3>
+<ul>
+<li><b>M5 · Guest management:</b> group invitations (F-12). Templates (F-05) and contact directory (F-11), if they were not delivered as stretch goals.</li>
+<li><b>M6 · Community governance:</b> administrator reports and analytics (F-16). Unusual-activity detection (F-17). Administrator approval for sensitive permissions (F-18).</li>
+<li><b>M7 · AI:</b> natural-language creation (F-19), if it was not delivered as a stretch goal. Smart reminders and suggestions (F-20). An AI-enhanced guided assistant (F-21).</li>
+</ul>
+
+<h3>7.4 Explicitly out of scope for this project</h3>
+<ul>
+<li>Integration with real gate hardware or controllers. All gates are simulated.</li>
+<li>Residents' own entry and exit through Porta, and vehicle or license-plate recognition.</li>
+<li>Video intercom, voice calls, and guard-station applications.</li>
+<li>Payments, billing, and multi-community SaaS administration. One user belongs to one community in the MVP.</li>
+<li>A separate desktop web admin portal. Administrator functions are in the mobile app in the MVP.</li>
+<li>Opening a gate offline (deliberately prohibited, see NFR-14). Proximity or geofence verification (possible future work).</li>
+<li>Legal compliance certification. Privacy principles are applied (Section 13), but no formal compliance audit is planned.</li>
+</ul>
+
+<h3>7.5 AI feasibility decision for the MVP</h3>
+<div class="note">
+<p><b>Proposed decision, pending team approval (Q-04):</b> the MVP does <b>not depend</b> on any AI capability.</p>
+<ol>
+<li><b>F-21 Guided assistant</b> enters the MVP as a <b>deterministic, rule-based</b> step-by-step wizard (<span class="tag should">Should</span>). It delivers the guided experience with no external dependency, cost or unpredictability.</li>
+<li><b>F-19 Natural-language creation</b> is a <span class="tag could">Could</span> stretch goal. It is started only after every Must and Should item passes, and only if the team approves the LLM API cost (Budget Policy). Its design is safe by construction: the AI only <i>drafts</i> fields, the resident must confirm, and the system falls back to the manual form (FR-35, US-17).</li>
+<li><b>F-20 Smart reminders and suggestions</b> is scheduled for M7. It needs usage history that the MVP will not have.</li>
+</ol>
+<p><b>Why:</b> about 10 weeks remain until 31 Jan 2027 and the team is new to Flutter. An external LLM adds paid usage, latency, non-deterministic output and a new failure mode (R-06). Putting the core access logic at risk for an optional feature would go against the project's first priority.</p>
+<p><b>Course alignment:</b> <span class="open">the team should confirm whether the course requires an AI feature inside the MVP (Q-04)</span>. If it does, F-19 moves from Could to Should, and F-15 and F-10 move down to Could to free up capacity.</p>
+</div>
+</section>

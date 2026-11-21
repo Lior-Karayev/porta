@@ -1,0 +1,147 @@
+<!-- ===== Cover ===== -->
+<div class="cover">
+  <div class="top">Kinneret College · 2026–27 (5787), Semester A · Developing Smart Mobile Apps with AI · Lecturer: Khaled Zoabi</div>
+  <div class="mid">
+    <div class="logo">Porta</div>
+    <h1>Product Requirements Document (PRD)</h1>
+    <div class="sub">Scheduled, controlled guest access to (simulated) community gates</div>
+    <table class="kv" style="width:72%">
+      <tr><td>Document version</td><td>1.0 (submission-ready)</td></tr>
+      <tr><td>Last updated</td><td>21 November 2026</td></tr>
+      <tr><td>Team</td><td>Daniel · Lior · Avishag</td></tr>
+      <tr><td>Development platform</td><td>Flutter / Dart · Android and iOS · browser-based guest page</td></tr>
+      <tr><td>MVP target</td><td>31 January 2027</td></tr>
+      <tr><td>Project stage</td><td>CP0: requirements documentation only. Development has not started.</td></tr>
+    </table>
+  </div>
+  <div class="small">This document defines the complete product and its first release (MVP). Every technology named here is a <b>working assumption</b> (Section 14), not a final decision. Unresolved items are <span class="open">highlighted</span> and collected in Section 15.</div>
+</div>
+
+<!-- ===== Document control + TOC ===== -->
+<section class="sec">
+<h3 style="margin-top:0">Revision history</h3>
+<table>
+<thead><tr><th style="width:12%">Version</th><th style="width:18%">Date</th><th>Change</th></tr></thead>
+<tr><td>0.1</td><td>21 Nov 2026</td><td>Document skeleton and assignment-requirements checklist.</td></tr>
+<tr><td>0.9</td><td>21 Nov 2026</td><td>Full draft: all 15 sections, diagrams and wireframes.</td></tr>
+<tr><td>1.0</td><td>21 Nov 2026</td><td>Fixes from the independent reviews (technical feasibility, UX, security). Submission-ready.</td></tr>
+</table>
+
+<h3>Conventions</h3>
+<table>
+<thead><tr><th style="width:24%">Identifier</th><th>Meaning</th></tr></thead>
+<tr><td><span class="id">F-01…F-21</span></td><td>The 21 capabilities of the full product (Section 7)</td></tr>
+<tr><td><span class="id">FR-xx</span></td><td>Functional requirement (Section 8)</td></tr>
+<tr><td><span class="id">US-xx</span> · <span class="id">AC-xx.y</span></td><td>User story and one of its acceptance criteria (Section 9)</td></tr>
+<tr><td><span class="id">S-xx</span> · <span class="id">W-xx</span></td><td>Mobile-app screen · browser guest-page screen (Section 10)</td></tr>
+<tr><td><span class="id">E-xx</span></td><td>Data entity (Section 11)</td></tr>
+<tr><td><span class="id">NFR-xx</span></td><td>Non-functional requirement (Section 13)</td></tr>
+<tr><td><span class="id">A-xx</span> · <span class="id">R-xx</span> · <span class="id">Q-xx</span></td><td>Assumption · risk (Section 14) · open question (Section 15)</td></tr>
+<tr><td>Priority (MoSCoW)</td><td><span class="tag must">Must</span> required · <span class="tag should">Should</span> desirable · <span class="tag could">Could</span> if time allows · <span class="tag wont">Won't</span> not in this release</td></tr>
+</table>
+
+<h3>Contents</h3>
+<div class="toc">
+<div class="g">A · The product and the problem</div>
+<div>1. Project details and team members</div><div>2. Product summary and vision</div><div>3. Problem and need</div><div>4. Target audience and user types</div><div>5. Existing solutions and differentiation</div><div>6. Goals and success metrics</div>
+<div class="g">B · What we are building</div>
+<div>7. Product scope and prioritization</div><div>8. Functional requirements</div><div>9. User stories and use scenarios</div>
+<div class="g">C · How it looks and works</div>
+<div>10. Screens and user experience</div><div>11. Data and external interfaces</div><div>12. Platforms and device capabilities</div><div>13. Non-functional requirements</div>
+<div class="g">D · Planning ahead</div>
+<div>14. Assumptions, constraints, dependencies and risks</div><div>15. Milestones and open questions</div>
+<div class="g">Appendices</div>
+<div>A. Traceability matrix</div><div>B. Sources</div>
+</div>
+
+<h3>List of diagrams</h3>
+<table>
+<thead><tr><th style="width:12%">Diagram</th><th>Title</th><th style="width:14%">Section</th></tr></thead>
+<tr><td>1</td><td>Use case diagram: user types and their available actions</td><td>4</td></tr>
+<tr><td>2</td><td>Permission lifecycle (states and transitions)</td><td>8</td></tr>
+<tr><td>3</td><td>Process diagram: validating a gate-open request</td><td>9</td></tr>
+<tr><td>4</td><td>User flow: resident and guest</td><td>10</td></tr>
+<tr><td>5a, 5b</td><td>Wireframes: resident app screens</td><td>10</td></tr>
+<tr><td>6a, 6b</td><td>Wireframes: guest browser page and administrator screens</td><td>10</td></tr>
+<tr><td>7</td><td>ERD: entities and relationships</td><td>11</td></tr>
+<tr><td>8</td><td>Milestone timeline</td><td>15</td></tr>
+</table>
+</section>
+
+<!-- ===== Section 1 ===== -->
+<section class="sec">
+<div class="group-label">GROUP A · THE PRODUCT AND THE PROBLEM</div>
+<h2><span class="num">1</span>Project Details and Team Members</h2>
+<table class="kv">
+<tr><td>App name</td><td>Porta</td></tr>
+<tr><td>One-line description</td><td>Residents of gated communities grant guests and service providers gate access that is limited in time and in number of openings, using a link that opens in any web browser.</td></tr>
+<tr><td>Course</td><td>Developing Smart Mobile Apps with AI · Kinneret College · 2026–27, Semester A</td></tr>
+<tr><td>Version and date</td><td>1.0 · 21 November 2026</td></tr>
+<tr><td>Repository</td><td>github.com/Lior-Karayev/porta (private)</td></tr>
+</table>
+
+<h3>Team members and initial responsibilities</h3>
+<table>
+<thead><tr><th style="width:32%">Team member</th><th>Initial area of responsibility</th></tr></thead>
+<tr><td>Daniel <span class="placeholder">[surname]</span></td><td><span class="open">TBD</span></td></tr>
+<tr><td>Lior <span class="placeholder">[surname]</span></td><td><span class="open">TBD</span></td></tr>
+<tr><td>Avishag <span class="placeholder">[surname]</span></td><td><span class="open">TBD</span></td></tr>
+</table>
+<div class="note"><b>Suggested areas of responsibility, pending team decision (Q-01):</b> (a) product, requirements, QA and acceptance testing; (b) Flutter app: resident and administrator screens; (c) backend, security and the browser guest page. The final assignment of names to areas is still open.</div>
+
+<h3>AI agents in the workflow</h3>
+<p>The team works with several AI agents under team supervision:</p>
+<ul>
+<li><b>Omnigent</b> orchestrates the work and manages Git.</li>
+<li><b>Claude</b> leads requirements writing and the security review.</li>
+<li><b>Codex</b> reviews technical feasibility and the data model.</li>
+<li><b>Antigravity</b> reviews the user experience.</li>
+</ul>
+<p>Every substantial agent output is reviewed by a different agent. The team makes all final decisions.</p>
+</section>
+
+<!-- ===== Section 2 ===== -->
+<section class="sec">
+<h2><span class="num">2</span>Product Summary and Vision</h2>
+<h3>What the app does</h3>
+<p>Porta lets residents of a gated community (a neighbourhood, moshav, kibbutz or gated residential complex) give a guest a defined access permission. The permission says which gates, which dates and hours, and how many gate openings in total.</p>
+<p>A permission is either <b>one-time</b> (e.g. dinner guests on Friday evening) or <b>recurring</b> (e.g. a cleaner every Tuesday 08:00–12:00). The resident sends the guest a unique link. The guest opens it in a web browser, with no app install and no registration, and taps "Open gate". The system checks that the permission is valid and then opens the gate.</p>
+<p>For the course, all gates are <b>simulated</b>: an opening is shown on a gate-simulator screen. There is no connection to real gate hardware.</p>
+<h3>Purpose and value to users</h3>
+<ul>
+<li><b>Residents</b> get control and peace of mind. They grant access without handing out a permanent code or remote, suspend or cancel it with one tap, and see who entered and when.</li>
+<li><b>Guests and service providers</b> get in without phoning the resident or waiting at the gate, and without installing an app.</li>
+<li><b>Community administrators</b> get an audit trail of every gate access and no forgotten "permanent" permissions.</li>
+</ul>
+<h3>Vision: the full product</h3>
+<p>Porta aims to become the community's access-management layer:</p>
+<ul>
+<li>Residents manage contacts, templates and group invitations.</li>
+<li>Administrators get reports, alerts on unusual activity, and an approval workflow for sensitive permissions.</li>
+<li>Creating a permission becomes as easy as writing a sentence ("let the gardener in every Sunday morning until the end of the year"), through AI-assisted natural-language creation and a guided assistant.</li>
+</ul>
+<p>Real gate controllers may be connected in the future. That integration is explicitly out of scope for this course (Section 7.4).</p>
+</section>
+
+<!-- ===== Section 3 ===== -->
+<section class="sec">
+<h2><span class="num">3</span>Problem and Need</h2>
+<h3>Who has the problem, and what exactly is it</h3>
+<table>
+<thead><tr><th style="width:24%">Who</th><th>Difficulty</th></tr></thead>
+<tr><td>Residents hosting visitors</td><td>When a visitor arrives, the resident has to be available at that exact moment to answer the phone, walk to the gate or ask the guard. The alternative is to hand over a permanent code, remote or dial-in number, and then they cannot control when or how often it is used.</td></tr>
+<tr><td>Residents with regular service providers</td><td>A weekly service provider usually gets permanent access with no day or hour limits. When the engagement ends, revoking that access is easily forgotten.</td></tr>
+<tr><td>Guests and service providers</td><td>They wait at the gate, call repeatedly, or are stuck when the resident is unreachable.</td></tr>
+<tr><td>Community administrator / committee</td><td>They have no overview of who was given access, until when, and who actually entered. Forgotten access accumulates.</td></tr>
+</table>
+<h3>How it is handled today, and what doesn't work</h3>
+<ul>
+<li><b>Dial-to-open (GSM) phone-number lists:</b> the guest's number is added to a list, typically with no expiry. Revoking it depends on someone remembering to remove it.</li>
+<li><b>Shared permanent codes or remotes:</b> codes leak and get passed on with no control. Revoking one means changing the code for every resident.</li>
+<li><b>Remote opening by the resident or a guard:</b> requires the resident to be available at the moment of arrival. This fails in meetings, while driving, or on Shabbat.</li>
+<li><b>A manual list kept by a guard:</b> does not handle recurring day and hour access, has no reliable record, and depends on staffing.</li>
+</ul>
+<h3>Why the proposed solution is needed, and evidence the problem is real</h3>
+<p>The need is for access that is <b>limited by time window, by days and hours, and by number of uses together; revocable instantly; and logged</b>, without the host being present for every entry. Each current method covers only part of this.</p>
+<div class="warn"><b>Transparency about evidence:</b> <b>no user research has been carried out yet.</b> The problem statement comes from the team members' own experience and general familiarity with the access methods above, not from collected data. A short validation (Q-02) is planned before the MVP is complete: interviews or a questionnaire with at least 5 residents of gated communities. Its findings will be added to this document.</div>
+</section>

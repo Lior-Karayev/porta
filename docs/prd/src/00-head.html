@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Porta PRD</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 18mm 15mm;
+  @bottom-center { content: "Porta · PRD v1.0 · Page " counter(page) " of " counter(pages); font-family: "Noto Sans", "DejaVu Sans", sans-serif; font-size: 8pt; color: #666; }
+}
+@page :first { @bottom-center { content: none; } }
+:root { --ink:#1b1b1f; --muted:#5a5a66; --line:#c9c9d2; --soft:#f3f3f6; --accent:#1f4e79; --must:#1f6f43; --should:#2f5d9a; --could:#8a6d1a; --wont:#8a2f2f; }
+* { box-sizing: border-box; }
+html, body { background:#fff; }
+body { font-family: "Noto Sans", "DejaVu Sans", Arial, sans-serif; color: var(--ink); font-size: 9.6pt; line-height: 1.55; margin:0; }
+h1 { font-size: 26pt; margin: 0 0 4mm; color: var(--accent); }
+h2 { font-size: 15pt; color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 1.5mm; margin: 0 0 3mm; break-after: avoid; }
+h2 .num { display:inline-block; min-width: 9mm; }
+h3 { font-size: 11.5pt; margin: 5mm 0 2mm; color: #222; break-after: avoid; }
+h4 { font-size: 10pt; margin: 3mm 0 1.5mm; break-after: avoid; }
+p { margin: 0 0 2.2mm; }
+section.sec { break-before: page; }
+.group-label { font-size: 8.5pt; color: var(--muted); letter-spacing: .5px; margin-bottom: 1mm; }
+table { width: 100%; border-collapse: collapse; margin: 1.5mm 0 3.5mm; font-size: 8.6pt; break-inside: auto; }
+th, td { border: 1px solid var(--line); padding: 1.3mm 1.8mm; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 700; }
+tr { break-inside: avoid; }
+thead { display: table-header-group; }
+.ltr { direction: ltr; unicode-bidi: isolate; display:inline-block; }
+code, .id { font-family: "DejaVu Sans Mono", monospace; font-size: 8pt; direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+.tag { display:inline-block; padding: 0 1.6mm; border-radius: 2mm; font-size: 7.8pt; font-weight:700; color:#fff; white-space: nowrap; }
+.must { background: var(--must); } .should { background: var(--should); } .could { background: var(--could); } .wont { background: var(--wont); }
+.note { border-left: 3px solid var(--accent); background: #eef3f9; padding: 2mm 3mm; margin: 2mm 0 3mm; font-size: 8.8pt; break-inside: avoid; }
+.warn { border-left: 3px solid #b26b00; background: #fff5e6; padding: 2mm 3mm; margin: 2mm 0 3mm; font-size: 8.8pt; break-inside: avoid; }
+.open { background: #fff1b8; padding: 0 1mm; border-radius: 1mm; }
+.placeholder { background: #ffe0e0; padding: 0 1mm; border-radius: 1mm; }
+ul, ol { margin: 0 0 2.5mm; padding-left: 5.5mm; } li { margin-bottom: .8mm; }
+.fig { border: 1px solid var(--line); border-radius: 2mm; padding: 3mm; margin: 3mm 0 4mm; break-inside: avoid; }
+.fig .cap { font-weight: 700; margin-bottom: 1mm; }
+.fig .exp { font-size: 8.6pt; color: var(--muted); margin-top: 2mm; }
+.mermaid { text-align: center; }
+.mermaid svg { max-width: 100% !important; max-height: 165mm !important; width: auto; height: auto; }
+.mermaid.short svg { max-height: 110mm !important; }
+.cover { height: 255mm; display:flex; flex-direction: column; justify-content: space-between; }
+.cover .top { font-size: 10pt; color: var(--muted); }
+.cover .mid { margin-top: 30mm; }
+.cover .sub { font-size: 14pt; color: #333; margin-bottom: 8mm; }
+.cover .logo { font-size: 48pt; font-weight: 800; color: var(--accent); letter-spacing: 2px; }
+.toc { columns: 2; column-gap: 8mm; font-size: 9.2pt; }
+.toc div { break-inside: avoid; margin-bottom: 1mm; }
+.toc .g { font-weight: 700; color: var(--accent); margin-top: 2mm; }
+.kv td:first-child { width: 32%; font-weight: 700; background: #fafafc; }
+.small { font-size: 8.2pt; color: var(--muted); }
+.cols2 { display:grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+/* Wireframes: grayscale, no design */
+.wf-row { display:flex; gap: 5mm; justify-content: center; flex-wrap: wrap; margin: 2mm 0; }
+.wf { width: 52mm; break-inside: avoid; }
+.wf .phone { border: 1.6px solid #333; border-radius: 5mm; padding: 2.5mm 2mm; height: 100mm; background:#fff; display:flex; flex-direction:column; gap: 1.4mm; font-size: 7pt; overflow:hidden; }
+.wf .bar { border-bottom: 1px solid #999; padding-bottom: 1mm; font-weight:700; display:flex; justify-content: space-between; }
+.wf .box { border: 1px solid #777; padding: 1mm 1.4mm; border-radius: 1mm; }
+.wf .dash { border: 1px dashed #777; padding: 1mm 1.4mm; border-radius: 1mm; color:#444; }
+.wf .btn { border: 1.4px solid #222; background: #e6e6e6; text-align:center; padding: 1.2mm; border-radius: 1.2mm; font-weight:700; }
+.wf .btn.ghost { background:#fff; }
+.wf .field { border: 1px solid #777; padding: .8mm 1.2mm; color:#666; border-radius: .8mm; }
+.wf .lbl { color:#333; font-size: 6.5pt; margin-bottom: -.8mm; }
+.wf .row { display:flex; gap: 1.2mm; } .wf .row > * { flex: 1; }
+.wf .grow { flex: 1; }
+.wf .tabs { display:flex; border-top: 1px solid #999; padding-top: 1mm; justify-content: space-around; color:#333; }
+.wf .qr { width: 18mm; height: 18mm; margin: 0 auto; background: repeating-linear-gradient(45deg,#888 0 2px,#fff 2px 4px); border: 1px solid #333; }
+.wf .gate { height: 16mm; border: 1.4px solid #333; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.wf .cap { text-align:center; font-weight:700; margin-top: 1.5mm; font-size: 8.5pt; }
+.wf .capsub { text-align:center; font-size: 7.4pt; color: var(--muted); }
+.wf.browser .phone { border-radius: 2mm; }
+.wf .url { border:1px solid #999; border-radius: 1mm; padding: .5mm 1mm; font-size: 6.2pt; direction:ltr; text-align:left; color:#555; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'neutral', securityLevel: 'loose',
+    fontFamily: '"Noto Sans", "DejaVu Sans", Arial, sans-serif',
+    flowchart: { htmlLabels: true, curve: 'basis', nodeSpacing: 28, rankSpacing: 34 },
+    er: { useMaxWidth: true } });
+</script>
+</head>
+<body>

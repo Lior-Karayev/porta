@@ -1,0 +1,99 @@
+<!-- ===== Section 8 ===== -->
+<section class="sec">
+<h2><span class="num">8</span>Functional Requirements</h2>
+<p>Each requirement has an ID, a description, the relevant user type, a priority and its source capability (F-xx). Requirements FR-36–FR-40 belong to post-MVP capabilities. They are listed so that every one of the 21 capabilities is traced, and they carry the priority <span class="tag wont">Won't</span> for this release.</p>
+
+<h3>8.1 Accounts, roles and community</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
+<tr><td>FR-01</td><td>A person can create an account with full name, email and password, and sign in and out. A signed-in session persists across app restarts until the user signs out or the session expires (NFR-08).</td><td>Resident, Admin</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
+<tr><td>FR-02</td><td>A newly registered user joins a community by entering its community code. The membership stays <i>Pending</i> until an administrator approves it. Pending users can only see a waiting screen.</td><td>Resident, Admin</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
+<tr><td>FR-03</td><td>The system enforces the role table in Section 4 on every server-side operation, not only in the user interface. A disallowed operation is rejected and makes no change.</td><td>All</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
+<tr><td>FR-04</td><td>An administrator can create a gate (name, 2–40 characters, unique in the community), rename it, and deactivate or reactivate it. Every gate-open request for a deactivated gate is denied with reason <code>GATE_INACTIVE</code>.</td><td>Admin</td><td><span class="tag must">Must</span></td><td>F-06, F-07</td></tr>
+<tr><td>FR-05</td><td>An administrator can approve or reject pending residents, and remove an approved resident. Removing a resident suspends all of that resident's permissions immediately (status <code>SUSPENDED</code>, flagged "resident removed").</td><td>Admin</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
+</table>
+
+<h3>8.2 Permissions</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
+<tr><td>FR-06</td><td>A resident can create a <b>one-time</b> permission with: guest name (required, 1–60 characters), guest phone (optional), at least one active gate, a start and end date-time (end after start, at most 7 days apart, end in the future), and a total opening limit (integer 1–20, default 2).</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-01, F-03</td></tr>
+<tr><td>FR-07</td><td>A resident can create a <b>recurring</b> permission with: guest name, optional phone, at least one active gate, a date range (at most 365 days), one or more weekdays, one daily time window (start before end, same calendar day), and a total opening limit (integer 1–500, default 20). Times are evaluated in the community's time zone.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-02, F-03</td></tr>
+<tr><td>FR-08</td><td>The opening limit is <b>cumulative over the permission's whole lifetime</b> and never resets (not daily, not weekly, not on edit, not on suspend or resume). Each <i>granted</i> opening increases the used count by exactly 1. Denied attempts do not count.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-03</td></tr>
+<tr><td>FR-09</td><td>When creating or editing a permission, a resident can select <b>one or more</b> active gates. The permission is valid only at the selected gates. Gate deactivation is handled by FR-04 (deny with <code>GATE_INACTIVE</code>). The permission keeps the deactivated gate in its gate list and shows it as unavailable, and the resident can remove it by editing the permission.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-06</td></tr>
+<tr><td>FR-10</td><td>A resident can <b>suspend</b> an active permission and <b>resume</b> a suspended one. While suspended, every gate-open request is denied with reason <code>SUSPENDED</code>. Resuming does not extend the validity window or reset the counter.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-04</td></tr>
+<tr><td>FR-11</td><td>A resident can <b>cancel</b> a permission after a confirmation step. Cancellation is permanent: the permission cannot be resumed or edited, and its invitation link shows the "cancelled" state. Cancelling an already cancelled permission changes nothing.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-04</td></tr>
+<tr><td>FR-12</td><td>A resident can edit the validity window, schedule, gates and limit of a permission that is not cancelled. The new limit cannot be lower than the used count. Changes apply from the next gate-open request. The invitation link stays the same.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-01, F-02</td></tr>
+<tr><td>FR-13</td><td>The system derives each permission's displayed status. Stored states are <code>ACTIVE</code>, <code>SUSPENDED</code> and <code>CANCELLED</code>. The derived states are <code>SCHEDULED</code> (before start), <code>EXPIRED</code> (after end) and <code>EXHAUSTED</code> (used = limit). Evaluation order is: cancelled → suspended → expired → exhausted → scheduled → active (Diagram 2).</td><td>System</td><td><span class="tag must">Must</span></td><td>F-01–F-04</td></tr>
+<tr><td>FR-14</td><td>A resident can see a list of their own permissions, showing guest name, type, status, gates, next valid window and remaining openings, filterable by status (Active/Scheduled, Suspended, Ended).</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-15</td></tr>
+</table>
+
+<h3>8.3 Invitations and guest access</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
+<tr><td>FR-15</td><td>Creating a permission generates exactly one active, unique, unguessable invitation link for it (token properties: NFR-05).</td><td>System</td><td><span class="tag must">Must</span></td><td>F-08</td></tr>
+<tr><td>FR-16</td><td>A resident can share the invitation link through the device's share options or copy it to the clipboard. The shared message contains the link and the guest-facing validity summary, with no resident address.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-08</td></tr>
+<tr><td>FR-17</td><td>A resident can <b>regenerate</b> a permission's link. The previous link stops working immediately and is treated as an invalid link (<code>INVALID_LINK</code>). The counter and settings are kept.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-08</td></tr>
+<tr><td>FR-18</td><td>A resident can show a QR code that encodes the same invitation link, on screen and inside the share message.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-10</td></tr>
+<tr><td>FR-19</td><td>Anyone opening a valid invitation link in a mobile browser, without registering, sees: the community name, the gate name(s), the validity summary, whether it is valid <i>right now</i> (and the next window if not), remaining openings, and an "Open gate" action for each gate. The page does not show the resident's phone or address.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
+<tr><td>FR-20</td><td>A guest can request an opening of one gate on the page. The server validates the request using the rules in Diagram 3. A grant atomically increases the counter, opens the simulated gate (FR-24) and records an event (FR-26). The page then shows the result and the updated remaining openings.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09, F-03</td></tr>
+<tr><td>FR-21</td><td>On denial, the guest page shows a short reason in plain language with guidance ("Your access starts on Tue 08:00", "No openings left: contact your host"). Reason codes: <code>INVALID_LINK</code>, <code>NOT_STARTED</code>, <code>OUTSIDE_HOURS</code>, <code>EXPIRED</code>, <code>EXHAUSTED</code>, <code>SUSPENDED</code>, <code>CANCELLED</code>, <code>GATE_INACTIVE</code>, <code>GATE_NOT_ALLOWED</code>, <code>RATE_LIMITED</code>. An invalid link reveals nothing about any permission.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
+<tr><td>FR-22</td><td>On supported devices where the app is installed, opening an invitation link opens the matching in-app invitation screen (Android App Links / iOS Universal Links). In every other case the link opens the browser page with identical behaviour.</td><td>Registered guest</td><td><span class="tag should">Should</span></td><td>F-09</td></tr>
+<tr><td>FR-23</td><td>A signed-in user can save a received invitation to "My invitations" in the app and open it from there later.</td><td>Registered guest</td><td><span class="tag could">Could</span></td><td>F-09</td></tr>
+</table>
+
+<h3>8.4 Simulated gates, logs and notifications</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
+<tr><td>FR-24</td><td>Each gate has a simulated state, <code>CLOSED</code> or <code>OPEN</code>. A granted opening sets it to <code>OPEN</code> for 5 seconds, then back to <code>CLOSED</code>. A new grant while it is open restarts the 5 seconds.</td><td>System</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
+<tr><td>FR-25</td><td>An administrator can open the <b>Gate simulator</b> screen (S-10). It shows each gate's live state and the last event (time, guest name, result), updated without a manual refresh.</td><td>Admin</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
+<tr><td>FR-26</td><td>The system records every gate-open request, granted and denied, with: time, permission, gate, channel (web / app), result and reason code. Residents and administrators cannot edit or delete these records.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
+<tr><td>FR-27</td><td>A resident can see the activity log of their own permissions, newest first, filterable by permission and by result.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
+<tr><td>FR-28</td><td>An administrator can see the community-wide activity log, filterable by gate, date range and result.</td><td>Admin</td><td><span class="tag should">Should</span></td><td>F-13</td></tr>
+<tr><td>FR-29</td><td>A resident receives a push notification when a guest is granted an opening on one of their permissions. Notifications can be turned on or off per permission (default on).</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-14</td></tr>
+<tr><td>FR-30</td><td>A resident receives a reminder when a permission has 1 opening left or expires within 24 hours.</td><td>Resident</td><td><span class="tag could">Could</span></td><td>F-14</td></tr>
+<tr><td>FR-31</td><td>The resident home screen shows a summary: number of active permissions, entries today, and permissions ending within 7 days. Each item opens the matching filtered list.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-15</td></tr>
+</table>
+
+<h3>8.5 Creation helpers and AI</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
+<tr><td>FR-32</td><td>A resident can create a permission through a <b>guided wizard</b> that asks one question per step (who → one-time or recurring → when → which gates → how many openings → review). The result is identical to the form (FR-06/FR-07) and passes the same validation.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-21</td></tr>
+<tr><td>FR-33</td><td>A resident can save a permission's settings, without its dates, as a named template and start a new permission from it.</td><td>Resident</td><td><span class="tag could">Could</span></td><td>F-05</td></tr>
+<tr><td>FR-34</td><td>A resident can keep a personal directory of guests and service providers (name, optional phone, type) and pick an entry when creating a permission.</td><td>Resident</td><td><span class="tag could">Could</span></td><td>F-11</td></tr>
+<tr><td>FR-35</td><td>A resident can describe a permission in free text (Hebrew or English). The system proposes a filled-in draft (type, dates, days, hours, gates, limit) and highlights any field it could not determine. <b>No permission is created until the resident reviews and confirms the draft.</b> If the AI service fails, the text is kept and the manual form opens.</td><td>Resident</td><td><span class="tag could">Could</span></td><td>F-19</td></tr>
+</table>
+
+<h3>8.6 Post-MVP requirements (listed for completeness)</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
+<tr><td>FR-36</td><td>A resident can invite a group of guests in one action. Whether the opening limit applies per guest or is shared by the group is still open (Q-05).</td><td>Resident</td><td><span class="tag wont">Won't</span></td><td>F-12</td></tr>
+<tr><td>FR-37</td><td>An administrator can view reports (entries per gate, day and hour; active permissions per resident) and export them.</td><td>Admin</td><td><span class="tag wont">Won't</span></td><td>F-16</td></tr>
+<tr><td>FR-38</td><td>The system flags unusual activity according to rules still to be defined (Q-06), for example repeated denials on one link or a burst of openings, and alerts the administrator and the resident.</td><td>System, Admin</td><td><span class="tag wont">Won't</span></td><td>F-17</td></tr>
+<tr><td>FR-39</td><td>Permissions that match an administrator-defined "sensitive" policy (Q-06) enter a <code>PENDING_APPROVAL</code> state, and their link works only after an administrator approves them.</td><td>Resident, Admin</td><td><span class="tag wont">Won't</span></td><td>F-18</td></tr>
+<tr><td>FR-40</td><td>The system suggests actions based on history, for example "Renew the cleaner's permission that ends next week?" or "Create Friday's guests from last week's template?". The resident accepts or dismisses each suggestion.</td><td>Resident</td><td><span class="tag wont">Won't</span></td><td>F-20</td></tr>
+</table>
+
+<div class="fig">
+<div class="cap">Diagram 2 · Permission lifecycle (states and transitions)</div>
+<pre class="mermaid">
+stateDiagram-v2
+  [*] --> SCHEDULED: created (start in future)
+  [*] --> ACTIVE: created (start now or earlier)
+  SCHEDULED --> ACTIVE: start time reached
+  ACTIVE --> SUSPENDED: resident suspends (FR-10) / resident removed (FR-05)
+  SCHEDULED --> SUSPENDED: resident suspends
+  SUSPENDED --> ACTIVE: resident resumes (FR-10)
+  ACTIVE --> EXHAUSTED: used = limit (FR-08)
+  EXHAUSTED --> ACTIVE: limit raised by edit (FR-12)
+  ACTIVE --> EXPIRED: end time passed
+  EXPIRED --> ACTIVE: end extended by edit (FR-12)
+  ACTIVE --> CANCELLED: resident cancels (FR-11)
+  SCHEDULED --> CANCELLED
+  SUSPENDED --> CANCELLED
+  EXHAUSTED --> CANCELLED
+  EXPIRED --> CANCELLED
+  CANCELLED --> [*]
+</pre>
+<div class="exp"><b>What it shows:</b> the states a permission can be in. Only <code>ACTIVE</code>, <code>SUSPENDED</code> and <code>CANCELLED</code> are stored. <code>SCHEDULED</code>, <code>EXPIRED</code> and <code>EXHAUSTED</code> are derived from time and the counter (FR-13). <b>Why it matters:</b> only an <code>ACTIVE</code> permission, inside its current time window, can produce a grant. <code>CANCELLED</code> is terminal. Resuming never resets the counter (FR-08, FR-10).</div>
+</div>
+</section>

@@ -1,0 +1,94 @@
+<!-- ===== Section 4 ===== -->
+<section class="sec">
+<h2><span class="num">4</span>Target Audience and User Types</h2>
+<p><b>Primary audience:</b> residents of gated communities in Israel (neighbourhoods, moshavim, kibbutzim, gated residential complexes) whose gate is controlled electronically and who regularly host visitors or service providers. They have a smartphone and messaging apps, and their technical skill ranges from basic to advanced. <b>Secondary audience:</b> the guests (any age, any phone, possibly a first-time visitor) and the community's administrator or committee member.</p>
+<p>The product has <b>three roles</b> (feature F-07), plus one special case. A <b>registered guest</b> is a guest who also has an app account. The role table below shows registered guests separately, but they are not a fourth role. For any invitation they receive they have exactly the same rights as an anonymous guest, and the app only changes where they open it.</p>
+<table>
+<thead><tr><th style="width:15%">User type</th><th style="width:27%">Characteristics and needs</th><th style="width:30%">Allowed to</th><th>Not allowed to</th></tr></thead>
+<tr><td><b>Resident</b><br><span class="small">registered app user, approved by an administrator</span></td><td>Lives in the community. Hosts guests occasionally, and some have regular service providers. Needs to create access quickly, revoke it instantly and know who entered.</td><td>Create, edit, suspend, resume and cancel <i>their own</i> permissions. Share invitation links and QR codes. View logs for their own permissions. Receive notifications. Manage their own contacts and templates (later releases).</td><td>See or change other residents' permissions or logs. Manage gates or residents. Open a gate for themselves through Porta (their own access is out of scope, see 7.4). Create permissions while their membership is pending.</td></tr>
+<tr><td><b>Guest</b><br><span class="small">anonymous; holds an invitation link</span></td><td>A visitor or service provider (e.g. cleaner, gardener, technician, delivery person). May be a one-time visitor. Any phone or browser. Needs to get in with minimal steps and no install.</td><td>Open the invitation page, see the gates it covers, the validity window and remaining openings, and request a gate opening within the permission's rules.</td><td>See the resident's personal details (phone, address). Change the permission. Use it outside its window or beyond its limit. Forward it in a way that grants more openings than the limit.</td></tr>
+<tr><td><b>Registered guest</b><br><span class="small">special case of Guest, not a separate role</span></td><td>A guest who also has a Porta account, for example a resident of another community.</td><td>Everything a Guest can do, but inside the app through a deep link. Can keep received invitations in "My invitations" (Could).</td><td>Same restrictions as a Guest. Having an account gives no extra rights over an invitation.</td></tr>
+<tr><td><b>Community administrator</b><br><span class="small">registered app user</span></td><td>A committee member or manager of one community. Needs to control who is a resident, which gates exist, and to see activity.</td><td>Create, rename and deactivate gates. Approve, reject and remove residents. View the community-wide activity log. Open the gate simulator. Later releases: reports, anomaly alerts, approving sensitive permissions.</td><td>Create permissions on behalf of residents (MVP). Change residents' permission details. Administer another community.</td></tr>
+</table>
+<div class="note"><b>Single community per user (MVP):</b> each resident and administrator belongs to exactly one community. Multi-community membership is out of scope for the MVP and recorded as Q-07.</div>
+
+<div class="fig">
+<div class="cap">Diagram 1 · Use case diagram: user types and their available actions</div>
+<pre class="mermaid">
+flowchart LR
+  R(["Resident"]):::actor
+  G(["Guest (web)"]):::actor
+  RG(["Registered guest (app)"]):::actor
+  A(["Community administrator"]):::actor
+  subgraph Porta["Porta system"]
+    direction TB
+    U1["Create permission<br/>one-time / recurring · FR-06, FR-07"]
+    U2["Share invitation link / QR · FR-16, FR-18"]
+    U3["Suspend / resume / cancel · FR-10, FR-11"]
+    U4["View own activity log · FR-27"]
+    U5["Receive notifications · FR-29"]
+    U6["Open invitation page · FR-19"]
+    U7["Request gate opening · FR-20"]
+    U8["Manage gates · FR-04"]
+    U9["Approve residents · FR-05"]
+    U10["View community log · FR-28"]
+    U11["Gate simulator · FR-25"]
+  end
+  R --- U1 & U2 & U3 & U4 & U5
+  G --- U6 & U7
+  RG --- U6 & U7
+  A --- U8 & U9 & U10 & U11
+  classDef actor fill:#fff,stroke:#333,stroke-width:1.5px;
+</pre>
+<div class="exp"><b>What it shows:</b> the three roles (with registered guests shown separately) and the MVP actions each can perform, labelled with the matching functional requirements. <b>Why it matters:</b> it is the visual form of the role and permission table above. Each action is guarded by role-based access control (FR-03), and Guests are the only anonymous actors.</div>
+</div>
+</section>
+
+<!-- ===== Section 5 ===== -->
+<section class="sec">
+<h2><span class="num">5</span>Existing Solutions and Differentiation</h2>
+<p>Below are the <b>categories</b> of solutions in use today, with examples. Statements about specific commercial products are based on general public knowledge and <span class="open">have not been verified hands-on by the team (Q-03)</span>. Their feature sets change over time.</p>
+<table>
+<thead><tr><th style="width:22%">Solution / category</th><th style="width:36%">What it does</th><th>What's missing for our audience</th></tr></thead>
+<tr><td>Dial-to-open GSM gate controllers</td><td>The gate opens when an authorised phone number calls it. Numbers are managed in a list.</td><td>No day or hour windows and no usage limit per guest. The guest's number must be added and later removed by hand, and there is little or no usable log for residents.</td></tr>
+<tr><td>Gate and intercom apps from access-control vendors (e.g. apps bundled with commercial gate controllers)</td><td>Registered users open gates from a phone app. Some offer guest or temporary access.</td><td>Usually require the guest to install the app and/or register. Guest options and limits vary, and access tends to be managed by the administrator rather than self-served by the resident.</td></tr>
+<tr><td>Smart-lock apps with guest keys (e.g. home smart locks)</td><td>Time-limited digital keys for a single door.</td><td>Designed for one home door, not a shared community gate. The guest typically needs the vendor's app, and there is no community administrator layer.</td></tr>
+<tr><td>Manual: guard list, phone call, messaging apps</td><td>The resident tells the guard or opens remotely. Codes are shared over chat.</td><td>Depends on people being available. No enforcement of time or usage, no reliable log, and codes leak.</td></tr>
+</table>
+<h3>Capability comparison</h3>
+<table>
+<thead><tr><th>Capability</th><th>GSM dial list</th><th>Vendor gate apps*</th><th>Smart-lock apps*</th><th>Manual / chat</th><th><b>Porta</b></th></tr></thead>
+<tr><td>Guest needs no app or registration</td><td>✓ (phone call)</td><td>varies</td><td>usually ✗</td><td>✓</td><td><b>✓</b></td></tr>
+<tr><td>Recurring days and hours window</td><td>✗</td><td>varies</td><td>✓</td><td>✗</td><td><b>✓</b></td></tr>
+<tr><td>Total opening limit per permission</td><td>✗</td><td>varies</td><td>varies</td><td>✗</td><td><b>✓</b></td></tr>
+<tr><td>Instant suspend / cancel by the resident</td><td>✗ (admin)</td><td>varies</td><td>✓</td><td>✗</td><td><b>✓</b></td></tr>
+<tr><td>Per-resident activity log</td><td>✗</td><td>varies</td><td>✓</td><td>✗</td><td><b>✓</b></td></tr>
+<tr><td>Community administrator layer</td><td>partial</td><td>✓</td><td>✗</td><td>✗</td><td><b>✓</b></td></tr>
+<tr><td>AI-assisted permission creation</td><td>✗</td><td>not known</td><td>not known</td><td>✗</td><td><b>✓ (vision)</b></td></tr>
+</table>
+<p class="small">* "varies" / "not known" mean the team has not verified it for specific products (Q-03).</p>
+<h3>Porta's differentiation</h3>
+<ol>
+<li><b>All three limits together:</b> date range, recurring days and hours, and a cumulative opening counter, enforced on the server.</li>
+<li><b>Zero-install guest experience:</b> a single link that works in any modern mobile browser. Registered users can open the same link in the app.</li>
+<li><b>Resident self-service</b> with instant revocation and per-permission visibility. The administrator doesn't become a bottleneck.</li>
+<li><b>AI-assisted creation in the vision:</b> natural-language input and a guided assistant lower the effort of setting up complex recurring access.</li>
+</ol>
+</section>
+
+<!-- ===== Section 6 ===== -->
+<section class="sec">
+<h2><span class="num">6</span>Goals and Success Metrics</h2>
+<p>Porta is a course project, and the MVP will be evaluated in a demo and controlled usability tests, not in a live deployment. The metrics are therefore measurable within the course timeframe. Where a number is a team target and not a benchmark, it is marked as a target.</p>
+<table>
+<thead><tr><th style="width:24%">Goal</th><th style="width:36%">Metric: what we measure</th><th style="width:20%">Target (number)</th><th>By when</th></tr></thead>
+<tr><td>G1 · Deliver the core MVP</td><td>Share of <span class="tag must">Must</span> functional requirements (Section 8) whose acceptance criteria pass in a scripted acceptance run</td><td>100%</td><td>31 Jan 2027</td></tr>
+<tr><td>G2 · Access rules are enforced correctly</td><td>Share of gate-validation test scenarios (Diagram 3: every branch, plus concurrency and double-tap cases; at least 25 scenarios) with the correct grant/deny result and reason</td><td>100%, with 0 incorrect grants</td><td>31 Jan 2027</td></tr>
+<tr><td>G3 · Fast permission creation</td><td>Median time for a test participant to create a recurring permission and share its link, from the home screen (S-02)</td><td>≤ 90 s (n ≥ 5 participants)</td><td>Usability test, last two weeks of Jan 2027</td></tr>
+<tr><td>G4 · Effortless guest entry</td><td>(a) Taps from opening the link to a granted gate opening. (b) Share of first-time participants who open the gate without help.</td><td>(a) ≤ 2 taps · (b) ≥ 90% (n ≥ 5)</td><td>Usability test, last two weeks of Jan 2027</td></tr>
+<tr><td>G5 · Responsive gate opening</td><td>Time from tapping "Open gate" to the simulator showing OPEN, on a 4G-class connection (95th percentile of 50 trials)</td><td>≤ 2 s</td><td>31 Jan 2027</td></tr>
+<tr><td>G6 · Secure by design</td><td>Open findings of severity <i>critical</i> or <i>high</i> from the internal security review (checklist based on OWASP MASVS / ASVS, Appendix B)</td><td>0</td><td>Before MVP release, 31 Jan 2027</td></tr>
+<tr><td>G7 · Overall usability</td><td>System Usability Scale (SUS) score from usability-test participants</td><td>≥ 70 (team target)</td><td>Last two weeks of Jan 2027</td></tr>
+</table>
+<p class="small">Post-MVP goals (for example adoption by a real community, or weekly active residents) depend on a real deployment, which is not planned within the course. They are deliberately left out.</p>
+</section>

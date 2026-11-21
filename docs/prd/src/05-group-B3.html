@@ -1,0 +1,130 @@
+<!-- ===== Section 9 ===== -->
+<section class="sec">
+<h2><span class="num">9</span>User Stories and Use Scenarios</h2>
+<p>Each story names the requirements it implements. Acceptance criteria use the form <b>Given</b> (state before) · <b>When</b> (what happens) · <b>Then</b> (verifiable result). The type column marks each criterion as <b>H</b> (happy path: everything works as expected), <b>E</b> (error state: what the user sees and can do when something fails) or <b>X</b> (edge case: empty input, missing data, duplicate action, concurrency).</p>
+
+<h3>9.1 Resident stories</h3>
+<table>
+<thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
+<tr><td colspan="3"><b>US-01</b> · As a <b>resident</b>, I want to create a one-time permission for my guests, so that they can enter on the evening of the visit without me opening the gate. <span class="small">Implements FR-06, FR-08, FR-15</span></td></tr>
+<tr><td>AC-01.1</td><td>H</td><td>Given an approved resident and an active gate "Main", when they create a one-time permission for "Noa" on Fri 19:00–23:59 at "Main" with limit 2, then it is saved with status <code>SCHEDULED</code> (or <code>ACTIVE</code> if the start has already passed), its link is generated, and it appears in the list (S-02) with "2 of 2 openings left".</td></tr>
+<tr><td>AC-01.2</td><td>E</td><td>Given the creation form, when the end time is before or equal to the start, or more than 7 days after it, then the form shows an inline error on the end field, the Save button stays disabled, and nothing is saved.</td></tr>
+<tr><td>AC-01.3</td><td>X</td><td>Given the creation form, when the guest name is empty or only spaces, or no gate is selected, then an inline "required" message is shown and nothing is saved.</td></tr>
+<tr><td>AC-01.4</td><td>E</td><td>Given no internet connection, when the resident taps Save, then the app shows "No connection. Your permission was not saved.", keeps everything entered, and offers Retry. No link exists until the save succeeds.</td></tr>
+<tr><td>AC-01.5</td><td>X</td><td>Given a slow connection, when the resident taps Save twice quickly, then exactly one permission is created (the button is disabled while the save is in progress, and the server rejects a duplicate request ID).</td></tr>
+
+<tr><td colspan="3"><b>US-02</b> · As a <b>resident</b>, I want to give my cleaner recurring access on Tuesdays 08:00–12:00, so that I don't have to be home to let them in. <span class="small">Implements FR-07, FR-08, FR-13</span></td></tr>
+<tr><td>AC-02.1</td><td>H</td><td>Given a recurring permission for Tuesdays 08:00–12:00 from 1 Dec 2026 to 31 Mar 2027 with limit 40, when the guest requests an opening on Tue 1 Dec 2026 at 09:15 (community time zone), then it is granted and the used count becomes 1.</td></tr>
+<tr><td>AC-02.2</td><td>E</td><td>Given the same permission, when the guest requests an opening on a Wednesday, or on a Tuesday at 12:01, then it is denied with <code>OUTSIDE_HOURS</code>, the page shows "Your access is on Tuesdays 08:00–12:00. Next: Tue 8 Dec 08:00", and the used count does not change.</td></tr>
+<tr><td>AC-02.3</td><td>X</td><td>Given the creation form, when the resident sets a window that crosses midnight (e.g. 22:00–02:00) or selects no weekday, then the form explains that the window must start and end on the same day (MVP limitation, Q-08) or that a weekday is required, and nothing is saved.</td></tr>
+<tr><td>AC-02.4</td><td>X</td><td>Given a window 08:00–12:00, when a request is made at exactly 08:00:00 or exactly 12:00:00, then 08:00:00 is granted and 12:00:00 is denied (the window is start-inclusive and end-exclusive).</td></tr>
+
+<tr><td colspan="3"><b>US-03</b> · As a <b>resident</b>, I want to suspend a permission and resume it later, so that I can block access temporarily without recreating anything. <span class="small">Implements FR-10, FR-13</span></td></tr>
+<tr><td>AC-03.1</td><td>H</td><td>Given an <code>ACTIVE</code> permission with 3 of 5 openings used, when the resident suspends it, then any request is denied with <code>SUSPENDED</code>. After the resident resumes it, a request inside the window is granted and the count becomes 4 of 5. The count was not reset.</td></tr>
+<tr><td>AC-03.2</td><td>E</td><td>Given the resident suspends a permission while the device is offline, when the action fails, then the status shown does not change, "Not suspended: no connection" is displayed, and Retry is offered.</td></tr>
+
+<tr><td colspan="3"><b>US-04</b> · As a <b>resident</b>, I want to cancel a permission permanently, so that a guest I no longer trust can't get in. <span class="small">Implements FR-11, FR-21</span></td></tr>
+<tr><td>AC-04.1</td><td>H</td><td>Given an active permission, when the resident confirms Cancel, then the status becomes <code>CANCELLED</code> within 2 s. Its link page shows "This invitation was cancelled by your host", and any open request is denied with <code>CANCELLED</code>.</td></tr>
+<tr><td>AC-04.2</td><td>X</td><td>Given a cancelled permission, when the resident looks at it, then the Suspend, Resume, Edit and Regenerate actions are not available. A repeated cancel request (e.g. from a second device) changes nothing and returns success.</td></tr>
+<tr><td>AC-04.3</td><td>X</td><td>Given the resident taps Cancel, when the confirmation dialog appears and they tap "Keep", then nothing changes.</td></tr>
+
+<tr><td colspan="3"><b>US-05</b> · As a <b>resident</b>, I want to share the invitation link or show a QR code, so that my guest receives access the way that is easiest for them. <span class="small">Implements FR-15, FR-16, FR-17, FR-18</span></td></tr>
+<tr><td>AC-05.1</td><td>H</td><td>Given a saved permission, when the resident taps Share, then the device share sheet opens with a message containing the guest-facing summary and the link. Choosing "Copy link" puts the exact link on the clipboard and shows a "Copied" confirmation.</td></tr>
+<tr><td>AC-05.2</td><td>H</td><td>Given a saved permission, when the resident taps "Show QR", then a QR code is displayed, and scanning it with a phone camera opens the same invitation page (W-01).</td></tr>
+<tr><td>AC-05.3</td><td>X</td><td>Given a link that was shared with the wrong person, when the resident taps "Regenerate link" and confirms, then the old link immediately shows the invalid-link page (W-02, <code>INVALID_LINK</code>), the new link works, and the used count is kept.</td></tr>
+
+<tr><td colspan="3"><b>US-06</b> · As a <b>resident</b>, I want to see who entered with my permissions and be notified when they do, so that I know my guests arrived. <span class="small">Implements FR-26, FR-27, FR-29, FR-31</span></td></tr>
+<tr><td>AC-06.1</td><td>H</td><td>Given a granted opening for guest "Noa" at gate "Main", when the resident opens Activity (S-06), then the event appears at the top with time, guest, gate and result "Granted". If notifications are allowed, a push notification "Noa entered via Main" arrives within 10 s (95% of the time; the delivery service gives no guarantee).</td></tr>
+<tr><td>AC-06.2</td><td>E</td><td>Given the resident refused the notification permission, when a guest enters, then no push notification is sent, the event still appears in Activity, and the home screen shows a dismissible tip about enabling notifications.</td></tr>
+<tr><td>AC-06.3</td><td>X</td><td>Given a resident with no events yet, when they open Activity, then an empty state explains "No entries yet. Activity appears here after your guests use their invitations."</td></tr>
+</table>
+
+<h3>9.2 Guest stories</h3>
+<table>
+<thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
+<tr><td colspan="3"><b>US-07</b> · As a <b>guest</b>, I want to open the gate from the link I received, without installing anything, so that I can get in quickly. <span class="small">Implements FR-19, FR-20, FR-24, FR-26</span></td></tr>
+<tr><td>AC-07.1</td><td>H</td><td>Given a valid, active permission with 2 openings left, when the guest opens the link in a mobile browser and taps "Open gate · Main", then within 2 s (NFR-01) the page shows "Gate opening", the simulator (S-10) shows Main as <code>OPEN</code> for 5 s, the page shows "1 opening left", and a Granted event is logged.</td></tr>
+<tr><td>AC-07.2</td><td>E</td><td>Given the guest's connection drops after tapping, when no server response arrives within 10 s, then the page shows "We couldn't confirm the gate opened. Check the gate and tap to try again." The counter changes only if the server granted the request. Retrying with the same request ID never counts twice.</td></tr>
+<tr><td>AC-07.3</td><td>X</td><td>Given a page showing "Open gate", when the guest taps the button several times within 3 s, then exactly one request is processed and at most one opening is counted.</td></tr>
+<tr><td>AC-07.4</td><td>X</td><td>Given a permission for gates Main and North, when the page loads, then one button is shown per allowed and active gate. A gate that is not allowed for this permission is never shown. A request crafted for it is denied with <code>GATE_NOT_ALLOWED</code>.</td></tr>
+
+<tr><td colspan="3"><b>US-08</b> · As a <b>guest</b>, I want a clear explanation when I can't get in, so that I know what to do next. <span class="small">Implements FR-13, FR-21, FR-08</span></td></tr>
+<tr><td>AC-08.1</td><td>E</td><td>Given a permission whose start is in the future, when the guest opens the link, then the page shows "Your access starts on [date, time]" and the Open button is disabled.</td></tr>
+<tr><td>AC-08.2</td><td>E</td><td>Given a permission with used = limit, when the guest opens the link, then the page shows "No openings left. Contact your host." and requests are denied with <code>EXHAUSTED</code>.</td></tr>
+<tr><td>AC-08.3</td><td>E</td><td>Given a mistyped, made-up or regenerated link, when it is opened, then a generic page "This invitation link isn't valid" is shown. It contains no gate, community or person details, and the attempt is counted toward rate limiting (NFR-06).</td></tr>
+<tr><td>AC-08.4</td><td>X</td><td>Given a permission with exactly 1 opening left, when two devices request an opening at the same moment, then exactly one is granted, the other is denied with <code>EXHAUSTED</code>, and the final used count equals the limit.</td></tr>
+
+<tr><td colspan="3"><b>US-09</b> · As a <b>registered guest</b> with the app installed, I want the invitation link to open in the app, so that I have a native experience. <span class="small">Implements FR-22, FR-23</span></td></tr>
+<tr><td>AC-09.1</td><td>H</td><td>Given the app is installed on a supported device, when the invitation link is tapped, then the app opens the invitation screen (S-11) for that invitation, with the same information and actions as W-01.</td></tr>
+<tr><td>AC-09.2</td><td>X</td><td>Given the app is not installed or link verification is unavailable, when the link is tapped, then the browser page W-01 opens and works fully.</td></tr>
+</table>
+
+<h3>9.3 Administrator stories</h3>
+<table>
+<thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
+<tr><td colspan="3"><b>US-10</b> · As an <b>administrator</b>, I want to approve residents who join with our community code, so that only real residents can grant access. <span class="small">Implements FR-02, FR-03, FR-05</span></td></tr>
+<tr><td>AC-10.1</td><td>H</td><td>Given a user who joined with a valid code, when the administrator approves them, then the user's next app launch shows the resident home screen (S-02).</td></tr>
+<tr><td>AC-10.2</td><td>E</td><td>Given a pending user, when they try to create a permission (including by calling the server directly), then the request is rejected with "not authorized" and nothing is created.</td></tr>
+<tr><td>AC-10.3</td><td>X</td><td>Given a user who enters an unknown community code, when they submit, then "Community code not found" is shown and they remain unassigned.</td></tr>
+<tr><td>AC-10.4</td><td>H</td><td>Given an approved resident with 2 active permissions, when the administrator removes the resident, then both permissions are denied with <code>SUSPENDED</code> on the next request.</td></tr>
+
+<tr><td colspan="3"><b>US-11</b> · As an <b>administrator</b>, I want to manage the community's gates and watch them in a simulator, so that the demo reflects real gate behaviour. <span class="small">Implements FR-04, FR-24, FR-25, FR-28</span></td></tr>
+<tr><td>AC-11.1</td><td>H</td><td>Given the administrator creates gate "North", when a resident next creates a permission, then "North" is available to select.</td></tr>
+<tr><td>AC-11.2</td><td>X</td><td>Given the administrator enters a gate name that already exists, or one shorter than 2 characters, when they save, then an inline error is shown and nothing is created.</td></tr>
+<tr><td>AC-11.3</td><td>E</td><td>Given gate "North" is deactivated, when a guest with a North-only permission opens the link, then the North button is shown as unavailable and any request is denied with <code>GATE_INACTIVE</code>.</td></tr>
+<tr><td>AC-11.4</td><td>H</td><td>Given the simulator (S-10) is open, when a grant occurs, then that gate's tile changes to OPEN within 2 s and back to CLOSED after 5 s, without a manual refresh.</td></tr>
+</table>
+
+<h3>9.4 Creation-helper stories</h3>
+<table>
+<thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
+<tr><td colspan="3"><b>US-12</b> · As a <b>resident</b> unfamiliar with apps, I want a step-by-step guide to create a permission, so that I don't miss a setting. <span class="small">Implements FR-32</span></td></tr>
+<tr><td>AC-12.1</td><td>H</td><td>Given the wizard, when the resident completes all steps, then the review step shows a plain-language summary, and confirming creates a permission identical to one created with the form.</td></tr>
+<tr><td>AC-12.2</td><td>X</td><td>Given the wizard, when the resident goes Back, then previously entered answers are kept. Leaving the wizard asks for confirmation before discarding.</td></tr>
+
+<tr><td colspan="3"><b>US-13</b> (Could) · As a <b>resident</b>, I want to type "Gardener every Sunday 7–10 until end of March", so that the permission is drafted for me. <span class="small">Implements FR-35</span></td></tr>
+<tr><td>AC-13.1</td><td>H</td><td>Given the text above, when the resident submits it, then a draft opens with type Recurring, Sundays, 07:00–10:00, from today until 31 Mar, with the gate and limit highlighted as "please choose". Nothing is created until the resident confirms.</td></tr>
+<tr><td>AC-13.2</td><td>E</td><td>Given the AI service is unavailable or takes more than 8 s, when the resident submits, then "Couldn't understand automatically. Please fill in the form." is shown, the manual form opens, and the original text stays visible.</td></tr>
+<tr><td>AC-13.3</td><td>X</td><td>Given ambiguous or out-of-range text (e.g. "forever", "1000 times"), when it is processed, then the draft never contains values outside FR-06/FR-07 limits. Those fields are flagged for the resident to fix.</td></tr>
+</table>
+
+<div class="fig">
+<div class="cap">Diagram 3 · Process diagram: validating a gate-open request (FR-20, FR-21)</div>
+<pre class="mermaid">
+flowchart TD
+  A([Guest taps 'Open gate' on W-01 / S-11]) --> B{Rate limit OK?<br/>NFR-06}
+  B -- no --> D10[Deny RATE_LIMITED]
+  B -- yes --> C{Token matches an<br/>active invitation?}
+  C -- no --> D1[Deny INVALID_LINK<br/>generic page W-02]
+  C -- yes --> E{Permission<br/>CANCELLED?}
+  E -- yes --> D2[Deny CANCELLED]
+  E -- no --> F{SUSPENDED?}
+  F -- yes --> D3[Deny SUSPENDED]
+  F -- no --> G{Now before start?}
+  G -- yes --> D4[Deny NOT_STARTED]
+  G -- no --> H{Now after end?}
+  H -- yes --> D5[Deny EXPIRED]
+  H -- no --> I{Recurring and now<br/>outside day/hour window?}
+  I -- yes --> D6[Deny OUTSIDE_HOURS]
+  I -- no --> J{Gate in permission?}
+  J -- no --> D7[Deny GATE_NOT_ALLOWED]
+  J -- yes --> K{Gate active?}
+  K -- no --> D8[Deny GATE_INACTIVE]
+  K -- yes --> L{{Atomic transaction:<br/>used &lt; limit ? used + 1}}
+  L -- limit reached --> D9[Deny EXHAUSTED]
+  L -- committed --> M[Grant: gate OPEN 5 s<br/>FR-24]
+  M --> N[Log GRANTED event FR-26<br/>notify resident FR-29]
+  N --> O([Page shows success +<br/>remaining openings])
+  D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 & D10 --> P[Log DENIED event<br/>with reason FR-26]
+  P --> Q([Page shows reason +<br/>guidance FR-21])
+</pre>
+<div class="exp"><b>What it shows:</b> the order of server-side checks for every opening request, with one denial reason per branch. <b>Why it matters:</b> the order is deliberate.
+<ul>
+<li>Rate limiting and token checks come first, so invalid links reveal nothing.</li>
+<li>Cheap status checks precede time checks.</li>
+<li>The counter is checked and incremented <i>in a single atomic transaction</i>, so concurrent requests can never exceed the limit (AC-08.4).</li>
+<li>Any error inside the transaction results in a denial. The system fails closed (NFR-11).</li>
+</ul>
+All time checks use the community's time zone (FR-07). The request ID makes retries idempotent (AC-07.2, AC-07.3).</div>
+</div>
+</section>
