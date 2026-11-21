@@ -107,7 +107,7 @@ ul, ol { margin: 0 0 2.5mm; padding-left: 5.5mm; } li { margin-bottom: .8mm; }
 <thead><tr><th style="width:12%">Version</th><th style="width:18%">Date</th><th>Change</th></tr></thead>
 <tr><td>0.1</td><td>21 Nov 2026</td><td>Document skeleton and assignment-requirements checklist.</td></tr>
 <tr><td>0.9</td><td>21 Nov 2026</td><td>Full draft: all 15 sections, diagrams and wireframes.</td></tr>
-<tr><td>1.0</td><td>21 Nov 2026</td><td>Fixes from the independent reviews (technical feasibility, UX, security). Submission-ready.</td></tr>
+<tr><td>1.0</td><td>21 Nov 2026</td><td>Fixes from the independent reviews: technical feasibility (Codex, 12 findings), UX (Antigravity, 9 findings) and security (Claude, 6 findings). Key changes: a single atomic transaction for gate opening, a receipt that makes retries replay the original result, time-zone and DST rules, a vertical slice in M1, the backend alternative, and complete UX states. Submission-ready.</td></tr>
 </table>
 
 <h3>Conventions</h3>
@@ -240,7 +240,7 @@ ul, ol { margin: 0 0 2.5mm; padding-left: 5.5mm; } li { margin-bottom: .8mm; }
 <tr><td><b>Registered guest</b><br><span class="small">special case of Guest, not a separate role</span></td><td>A guest who also has a Porta account, for example a resident of another community.</td><td>Everything a Guest can do, but inside the app through a deep link. Can keep received invitations in "My invitations" (Could).</td><td>Same restrictions as a Guest. Having an account gives no extra rights over an invitation.</td></tr>
 <tr><td><b>Community administrator</b><br><span class="small">registered app user</span></td><td>A committee member or manager of one community. Needs to control who is a resident, which gates exist, and to see activity.</td><td>Create, rename and deactivate gates. Approve, reject and remove residents. View the community-wide activity log. Open the gate simulator. Later releases: reports, anomaly alerts, approving sensitive permissions.</td><td>Create permissions on behalf of residents (MVP). Change residents' permission details. Administer another community.</td></tr>
 </table>
-<div class="note"><b>Single community per user (MVP):</b> each resident and administrator belongs to exactly one community. Multi-community membership is out of scope for the MVP and recorded as Q-07.</div>
+<div class="note"><b>Single community per user (MVP):</b> each resident and administrator belongs to exactly one community. Multi-community membership is out of scope for the MVP and recorded as Q-07.<br><b>How communities and administrators are created (MVP):</b> the project team provisions each community and its first administrator through a setup script (assumption A-11). Self-service community creation and transferring the administrator role are out of scope (Section 7.4). No user can make themselves an administrator.</div>
 
 <div class="fig">
 <div class="cap">Diagram 1 · Use case diagram: user types and their available actions</div>
@@ -316,7 +316,7 @@ flowchart LR
 <tr><td>G2 · Access rules are enforced correctly</td><td>Share of gate-validation test scenarios (Diagram 3: every branch, plus concurrency and double-tap cases; at least 25 scenarios) with the correct grant/deny result and reason</td><td>100%, with 0 incorrect grants</td><td>31 Jan 2027</td></tr>
 <tr><td>G3 · Fast permission creation</td><td>Median time for a test participant to create a recurring permission and share its link, from the home screen (S-02)</td><td>≤ 90 s (n ≥ 5 participants)</td><td>Usability test, last two weeks of Jan 2027</td></tr>
 <tr><td>G4 · Effortless guest entry</td><td>(a) Taps from opening the link to a granted gate opening. (b) Share of first-time participants who open the gate without help.</td><td>(a) ≤ 2 taps · (b) ≥ 90% (n ≥ 5)</td><td>Usability test, last two weeks of Jan 2027</td></tr>
-<tr><td>G5 · Responsive gate opening</td><td>Time from tapping "Open gate" to the simulator showing OPEN, on a 4G-class connection (95th percentile of 50 trials)</td><td>≤ 2 s</td><td>31 Jan 2027</td></tr>
+<tr><td>G5 · Responsive gate opening</td><td>Time from tapping "Open gate" to (a) the result shown on the guest page and (b) the simulator showing OPEN, each at the 95th percentile of 50 trials under the NFR-01 test conditions</td><td>(a) ≤ 2 s · (b) ≤ 2 s</td><td>31 Jan 2027</td></tr>
 <tr><td>G6 · Secure by design</td><td>Open findings of severity <i>critical</i> or <i>high</i> from the internal security review (checklist based on OWASP MASVS / ASVS, Appendix B)</td><td>0</td><td>Before MVP release, 31 Jan 2027</td></tr>
 <tr><td>G7 · Overall usability</td><td>System Usability Scale (SUS) score from usability-test participants</td><td>≥ 70 (team target)</td><td>Last two weeks of Jan 2027</td></tr>
 </table>
@@ -365,6 +365,7 @@ flowchart LR
 <ul>
 <li><b>Must:</b> sign-up and sign-in. Community membership approved by an administrator. Roles (F-07). Administrator gate management (simulated gates). One-time and recurring permissions (F-01, F-02) with a cumulative opening limit (F-03). Suspend, resume and cancel (F-04). A unique invitation link (F-08). A browser guest page with gate opening (F-09). The simulated gate and gate simulator. Resident activity log (F-13).</li>
 <li><b>Should:</b> multiple gates per permission (F-06). QR code (F-10). Push notifications (F-14). Home-screen dashboard (F-15). Rule-based guided creation wizard (F-21). Administrator community log. Link regeneration. Permission editing. Deep links to the app.</li>
+<li><b>Order in which Should items are added</b> (cheapest and most valuable first; the tail is cut if time runs out): QR code (F-10) → multiple gates (F-06) → administrator community log → dashboard (F-15) → guided wizard (F-21) → link regeneration → permission editing → push notifications (F-14) → deep links.</li>
 <li><b>Could (stretch):</b> templates (F-05). Contact directory (F-11). Natural-language creation (F-19). "My invitations" for registered guests. Expiry and last-opening reminders.</li>
 </ul>
 
@@ -381,6 +382,7 @@ flowchart LR
 <li>Residents' own entry and exit through Porta, and vehicle or license-plate recognition.</li>
 <li>Video intercom, voice calls, and guard-station applications.</li>
 <li>Payments, billing, and multi-community SaaS administration. One user belongs to one community in the MVP.</li>
+<li>Self-service community creation and transferring the administrator role. Communities and their first administrator are provisioned by the team (A-11).</li>
 <li>A separate desktop web admin portal. Administrator functions are in the mobile app in the MVP.</li>
 <li>Opening a gate offline (deliberately prohibited, see NFR-14). Proximity or geofence verification (possible future work).</li>
 <li>Legal compliance certification. Privacy principles are applied (Section 13), but no formal compliance audit is planned.</li>
@@ -391,7 +393,7 @@ flowchart LR
 <p><b>Proposed decision, pending team approval (Q-04):</b> the MVP does <b>not depend</b> on any AI capability.</p>
 <ol>
 <li><b>F-21 Guided assistant</b> enters the MVP as a <b>deterministic, rule-based</b> step-by-step wizard (<span class="tag should">Should</span>). It delivers the guided experience with no external dependency, cost or unpredictability.</li>
-<li><b>F-19 Natural-language creation</b> is a <span class="tag could">Could</span> stretch goal. It is started only after every Must and Should item passes, and only if the team approves the LLM API cost (Budget Policy). Its design is safe by construction: the AI only <i>drafts</i> fields, the resident must confirm, and the system falls back to the manual form (FR-35, US-17).</li>
+<li><b>F-19 Natural-language creation</b> is a <span class="tag could">Could</span> stretch goal. It is started only after every Must and Should item passes, and only if the team approves the LLM API cost (Budget Policy). Its design is safe by construction: the AI only <i>drafts</i> fields, the resident must confirm, and the system falls back to the manual form (FR-35, US-13).</li>
 <li><b>F-20 Smart reminders and suggestions</b> is scheduled for M7. It needs usage history that the MVP will not have.</li>
 </ol>
 <p><b>Why:</b> about 10 weeks remain until 31 Jan 2027 and the team is new to Flutter. An external LLM adds paid usage, latency, non-deterministic output and a new failure mode (R-06). Putting the core access logic at risk for an optional feature would go against the project's first priority.</p>
@@ -406,7 +408,7 @@ flowchart LR
 <h3>8.1 Accounts, roles and community</h3>
 <table>
 <thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
-<tr><td>FR-01</td><td>A person can create an account with full name, email and password, and sign in and out. A signed-in session persists across app restarts until the user signs out or the session expires (NFR-08).</td><td>Resident, Admin</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
+<tr><td>FR-01</td><td>A person can create an account with full name, email and a password of at least 8 characters, and sign in and out. Password reset by email is a Should. A signed-in session persists across app restarts until the user signs out or the session expires (NFR-08).</td><td>Resident, Admin</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
 <tr><td>FR-02</td><td>A newly registered user joins a community by entering its community code. The membership stays <i>Pending</i> until an administrator approves it. Pending users can only see a waiting screen.</td><td>Resident, Admin</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
 <tr><td>FR-03</td><td>The system enforces the role table in Section 4 on every server-side operation, not only in the user interface. A disallowed operation is rejected and makes no change.</td><td>All</td><td><span class="tag must">Must</span></td><td>F-07</td></tr>
 <tr><td>FR-04</td><td>An administrator can create a gate (name, 2–40 characters, unique in the community), rename it, and deactivate or reactivate it. Every gate-open request for a deactivated gate is denied with reason <code>GATE_INACTIVE</code>.</td><td>Admin</td><td><span class="tag must">Must</span></td><td>F-06, F-07</td></tr>
@@ -416,26 +418,26 @@ flowchart LR
 <h3>8.2 Permissions</h3>
 <table>
 <thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
-<tr><td>FR-06</td><td>A resident can create a <b>one-time</b> permission with: guest name (required, 1–60 characters), guest phone (optional), at least one active gate, a start and end date-time (end after start, at most 7 days apart, end in the future), and a total opening limit (integer 1–20, default 2).</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-01, F-03</td></tr>
-<tr><td>FR-07</td><td>A resident can create a <b>recurring</b> permission with: guest name, optional phone, at least one active gate, a date range (at most 365 days), one or more weekdays, one daily time window (start before end, same calendar day), and a total opening limit (integer 1–500, default 20). Times are evaluated in the community's time zone.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-02, F-03</td></tr>
+<tr><td>FR-06</td><td>A resident can create a <b>one-time</b> permission with: guest name (required, 1–60 characters), at least one active gate (pre-selected when the community has only one), a start and end date-time (end after start, at most 7 days apart, end in the future), and a total opening limit (integer 1–20, default 2, enough for entry and exit). Start and end are absolute points in time, entered and shown in the community time zone. A local time that doesn't exist because of a daylight-saving change is rejected with a message. A repeated (ambiguous) local time is interpreted as its first occurrence.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-01, F-03</td></tr>
+<tr><td>FR-07</td><td>A resident can create a <b>recurring</b> permission with: guest name, at least one active gate, a date range of local calendar dates (first and last date both inclusive, at most 365 days), one or more weekdays, one daily time window (start before end, same calendar day, start-inclusive and end-exclusive), and a total opening limit (integer 1–500, default 20). The server evaluates each request time in the community's time zone, including across daylight-saving changes.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-02, F-03</td></tr>
 <tr><td>FR-08</td><td>The opening limit is <b>cumulative over the permission's whole lifetime</b> and never resets (not daily, not weekly, not on edit, not on suspend or resume). Each <i>granted</i> opening increases the used count by exactly 1. Denied attempts do not count.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-03</td></tr>
 <tr><td>FR-09</td><td>When creating or editing a permission, a resident can select <b>one or more</b> active gates. The permission is valid only at the selected gates. Gate deactivation is handled by FR-04 (deny with <code>GATE_INACTIVE</code>). The permission keeps the deactivated gate in its gate list and shows it as unavailable, and the resident can remove it by editing the permission.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-06</td></tr>
-<tr><td>FR-10</td><td>A resident can <b>suspend</b> an active permission and <b>resume</b> a suspended one. While suspended, every gate-open request is denied with reason <code>SUSPENDED</code>. Resuming does not extend the validity window or reset the counter.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-04</td></tr>
+<tr><td>FR-10</td><td>A resident can <b>suspend</b> an active or scheduled permission and <b>resume</b> a suspended one. While suspended, every gate-open request is denied with reason <code>SUSPENDED</code>. Resuming does not extend the validity window or reset the counter, and the displayed status is derived again (FR-13), so it may come back as scheduled, active, expired or exhausted. A permission suspended because its resident was removed (FR-05) cannot be resumed.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-04</td></tr>
 <tr><td>FR-11</td><td>A resident can <b>cancel</b> a permission after a confirmation step. Cancellation is permanent: the permission cannot be resumed or edited, and its invitation link shows the "cancelled" state. Cancelling an already cancelled permission changes nothing.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-04</td></tr>
 <tr><td>FR-12</td><td>A resident can edit the validity window, schedule, gates and limit of a permission that is not cancelled. The new limit cannot be lower than the used count. Changes apply from the next gate-open request. The invitation link stays the same.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-01, F-02</td></tr>
-<tr><td>FR-13</td><td>The system derives each permission's displayed status. Stored states are <code>ACTIVE</code>, <code>SUSPENDED</code> and <code>CANCELLED</code>. The derived states are <code>SCHEDULED</code> (before start), <code>EXPIRED</code> (after end) and <code>EXHAUSTED</code> (used = limit). Evaluation order is: cancelled → suspended → expired → exhausted → scheduled → active (Diagram 2).</td><td>System</td><td><span class="tag must">Must</span></td><td>F-01–F-04</td></tr>
-<tr><td>FR-14</td><td>A resident can see a list of their own permissions, showing guest name, type, status, gates, next valid window and remaining openings, filterable by status (Active/Scheduled, Suspended, Ended).</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-15</td></tr>
+<tr><td>FR-13</td><td>The system derives each permission's displayed status. Stored states are <code>ACTIVE</code>, <code>SUSPENDED</code> and <code>CANCELLED</code>. The derived states are <code>SCHEDULED</code> (before start), <code>EXPIRED</code> (after end) and <code>EXHAUSTED</code> (used = limit). Display precedence is: cancelled → suspended → expired → exhausted → scheduled → active (Diagram 2). When several conditions apply to a gate-open request, the guest sees the reason from the first failing check, in the order of Diagram 3.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-01–F-04</td></tr>
+<tr><td>FR-14</td><td>A resident can see a list of their own permissions, showing guest name, type, status, gates, next valid window and remaining openings, filterable by status: Active (active and scheduled), Suspended, and Ended (expired, exhausted, cancelled). When the resident has no permissions, an empty state explains how to create the first one.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-01, F-02</td></tr>
 </table>
 
 <h3>8.3 Invitations and guest access</h3>
 <table>
 <thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
-<tr><td>FR-15</td><td>Creating a permission generates exactly one active, unique, unguessable invitation link for it (token properties: NFR-05).</td><td>System</td><td><span class="tag must">Must</span></td><td>F-08</td></tr>
-<tr><td>FR-16</td><td>A resident can share the invitation link through the device's share options or copy it to the clipboard. The shared message contains the link and the guest-facing validity summary, with no resident address.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-08</td></tr>
+<tr><td>FR-15</td><td>Creating a permission generates exactly one active, unique, unguessable invitation link for it (token properties: NFR-05). The owning resident can view and re-share the current link from any of their devices. Nobody else can read it, including administrators.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-08</td></tr>
+<tr><td>FR-16</td><td>A resident can share the invitation link through the device's share options or copy it to the clipboard. The shared message contains the link and the guest-facing validity summary, with no resident address. Creating a permission is idempotent: a repeated save carrying the same client request ID returns the first result and creates nothing new.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-08</td></tr>
 <tr><td>FR-17</td><td>A resident can <b>regenerate</b> a permission's link. The previous link stops working immediately and is treated as an invalid link (<code>INVALID_LINK</code>). The counter and settings are kept.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-08</td></tr>
 <tr><td>FR-18</td><td>A resident can show a QR code that encodes the same invitation link, on screen and inside the share message.</td><td>Resident</td><td><span class="tag should">Should</span></td><td>F-10</td></tr>
 <tr><td>FR-19</td><td>Anyone opening a valid invitation link in a mobile browser, without registering, sees: the community name, the gate name(s), the validity summary, whether it is valid <i>right now</i> (and the next window if not), remaining openings, and an "Open gate" action for each gate. The page does not show the resident's phone or address.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
-<tr><td>FR-20</td><td>A guest can request an opening of one gate on the page. The server validates the request using the rules in Diagram 3. A grant atomically increases the counter, opens the simulated gate (FR-24) and records an event (FR-26). The page then shows the result and the updated remaining openings.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09, F-03</td></tr>
+<tr><td>FR-20</td><td>A guest can request an opening of one gate on the page. The server validates the request using the rules in Diagram 3. A grant commits <b>in one atomic transaction</b>: the request receipt, the counter increase, the simulated gate's open-until time (FR-24) and the event record (FR-26). Notifications are sent only after the commit. The page then shows the result and the updated remaining openings.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09, F-03</td></tr>
 <tr><td>FR-21</td><td>On denial, the guest page shows a short reason in plain language with guidance ("Your access starts on Tue 08:00", "No openings left: contact your host"). Reason codes: <code>INVALID_LINK</code>, <code>NOT_STARTED</code>, <code>OUTSIDE_HOURS</code>, <code>EXPIRED</code>, <code>EXHAUSTED</code>, <code>SUSPENDED</code>, <code>CANCELLED</code>, <code>GATE_INACTIVE</code>, <code>GATE_NOT_ALLOWED</code>, <code>RATE_LIMITED</code>. An invalid link reveals nothing about any permission.</td><td>Guest</td><td><span class="tag must">Must</span></td><td>F-09</td></tr>
 <tr><td>FR-22</td><td>On supported devices where the app is installed, opening an invitation link opens the matching in-app invitation screen (Android App Links / iOS Universal Links). In every other case the link opens the browser page with identical behaviour.</td><td>Registered guest</td><td><span class="tag should">Should</span></td><td>F-09</td></tr>
 <tr><td>FR-23</td><td>A signed-in user can save a received invitation to "My invitations" in the app and open it from there later.</td><td>Registered guest</td><td><span class="tag could">Could</span></td><td>F-09</td></tr>
@@ -444,7 +446,7 @@ flowchart LR
 <h3>8.4 Simulated gates, logs and notifications</h3>
 <table>
 <thead><tr><th style="width:8%">ID</th><th>Requirement</th><th style="width:15%">User type</th><th style="width:10%">Priority</th><th style="width:8%">Source</th></tr></thead>
-<tr><td>FR-24</td><td>Each gate has a simulated state, <code>CLOSED</code> or <code>OPEN</code>. A granted opening sets it to <code>OPEN</code> for 5 seconds, then back to <code>CLOSED</code>. A new grant while it is open restarts the 5 seconds.</td><td>System</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
+<tr><td>FR-24</td><td>Each gate has a simulated state, <code>OPEN</code> or <code>CLOSED</code>, derived from its stored open-until time: the gate is <code>OPEN</code> while the current time is before it. A grant sets open-until to the grant time plus 5 seconds, so a new grant while the gate is open restarts the 5 seconds.</td><td>System</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
 <tr><td>FR-25</td><td>An administrator can open the <b>Gate simulator</b> screen (S-10). It shows each gate's live state and the last event (time, guest name, result), updated without a manual refresh.</td><td>Admin</td><td><span class="tag must">Must</span></td><td>Simulation</td></tr>
 <tr><td>FR-26</td><td>The system records every gate-open request, granted and denied, with: time, permission, gate, channel (web / app), result and reason code. Residents and administrators cannot edit or delete these records.</td><td>System</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
 <tr><td>FR-27</td><td>A resident can see the activity log of their own permissions, newest first, filterable by permission and by result.</td><td>Resident</td><td><span class="tag must">Must</span></td><td>F-13</td></tr>
@@ -506,7 +508,7 @@ stateDiagram-v2
 <table>
 <thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
 <tr><td colspan="3"><b>US-01</b> · As a <b>resident</b>, I want to create a one-time permission for my guests, so that they can enter on the evening of the visit without me opening the gate. <span class="small">Implements FR-06, FR-08, FR-15</span></td></tr>
-<tr><td>AC-01.1</td><td>H</td><td>Given an approved resident and an active gate "Main", when they create a one-time permission for "Noa" on Fri 19:00–23:59 at "Main" with limit 2, then it is saved with status <code>SCHEDULED</code> (or <code>ACTIVE</code> if the start has already passed), its link is generated, and it appears in the list (S-02) with "2 of 2 openings left".</td></tr>
+<tr><td>AC-01.1</td><td>H</td><td>Given an approved resident and an active gate "Main", when they create a one-time permission for "Noa" on Fri 19:00–23:59 at "Main" with limit 2, then it is saved and <i>displayed</i> as <code>SCHEDULED</code> (or <code>ACTIVE</code> if the start has already passed), its link is generated, and it appears in the list (S-02) with "2 of 2 openings left".</td></tr>
 <tr><td>AC-01.2</td><td>E</td><td>Given the creation form, when the end time is before or equal to the start, or more than 7 days after it, then the form shows an inline error on the end field, the Save button stays disabled, and nothing is saved.</td></tr>
 <tr><td>AC-01.3</td><td>X</td><td>Given the creation form, when the guest name is empty or only spaces, or no gate is selected, then an inline "required" message is shown and nothing is saved.</td></tr>
 <tr><td>AC-01.4</td><td>E</td><td>Given no internet connection, when the resident taps Save, then the app shows "No connection. Your permission was not saved.", keeps everything entered, and offers Retry. No link exists until the save succeeds.</td></tr>
@@ -529,11 +531,12 @@ stateDiagram-v2
 
 <tr><td colspan="3"><b>US-05</b> · As a <b>resident</b>, I want to share the invitation link or show a QR code, so that my guest receives access the way that is easiest for them. <span class="small">Implements FR-15, FR-16, FR-17, FR-18</span></td></tr>
 <tr><td>AC-05.1</td><td>H</td><td>Given a saved permission, when the resident taps Share, then the device share sheet opens with a message containing the guest-facing summary and the link. Choosing "Copy link" puts the exact link on the clipboard and shows a "Copied" confirmation.</td></tr>
-<tr><td>AC-05.2</td><td>H</td><td>Given a saved permission, when the resident taps "Show QR", then a QR code is displayed, and scanning it with a phone camera opens the same invitation page (W-01).</td></tr>
-<tr><td>AC-05.3</td><td>X</td><td>Given a link that was shared with the wrong person, when the resident taps "Regenerate link" and confirms, then the old link immediately shows the invalid-link page (W-02, <code>INVALID_LINK</code>), the new link works, and the used count is kept.</td></tr>
+<tr><td>AC-05.2</td><td>H</td><td><span class="tag should">Should</span> Given a saved permission, when the resident taps "Show QR", then a QR code is displayed, and scanning it with a phone camera opens the same invitation page (W-01).</td></tr>
+<tr><td>AC-05.3</td><td>X</td><td><span class="tag should">Should</span> Given a link that was shared with the wrong person, when the resident taps "Regenerate link" and confirms, then the old link immediately shows the invalid-link page (W-02, <code>INVALID_LINK</code>), the new link works, the share sheet S-05 opens so the new link can be sent, and the used count is kept.</td></tr>
 
 <tr><td colspan="3"><b>US-06</b> · As a <b>resident</b>, I want to see who entered with my permissions and be notified when they do, so that I know my guests arrived. <span class="small">Implements FR-26, FR-27, FR-29, FR-31</span></td></tr>
-<tr><td>AC-06.1</td><td>H</td><td>Given a granted opening for guest "Noa" at gate "Main", when the resident opens Activity (S-06), then the event appears at the top with time, guest, gate and result "Granted". If notifications are allowed, a push notification "Noa entered via Main" arrives within 10 s (95% of the time; the delivery service gives no guarantee).</td></tr>
+<tr><td>AC-06.1</td><td>H</td><td>Given a granted opening for guest "Noa" at gate "Main", when the resident opens Activity (S-06), then the event appears at the top with time, guest, gate and result "Granted".</td></tr>
+<tr><td>AC-06.2a</td><td>H</td><td><span class="tag should">Should</span> Given notifications are allowed on a test Android device, when a guest is granted an opening, then a push notification "Noa entered via Main" arrives within 10 s in at least 19 of 20 trials. The delivery service itself gives no guarantee.</td></tr>
 <tr><td>AC-06.2</td><td>E</td><td>Given the resident refused the notification permission, when a guest enters, then no push notification is sent, the event still appears in Activity, and the home screen shows a dismissible tip about enabling notifications.</td></tr>
 <tr><td>AC-06.3</td><td>X</td><td>Given a resident with no events yet, when they open Activity, then an empty state explains "No entries yet. Activity appears here after your guests use their invitations."</td></tr>
 </table>
@@ -543,12 +546,12 @@ stateDiagram-v2
 <thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
 <tr><td colspan="3"><b>US-07</b> · As a <b>guest</b>, I want to open the gate from the link I received, without installing anything, so that I can get in quickly. <span class="small">Implements FR-19, FR-20, FR-24, FR-26</span></td></tr>
 <tr><td>AC-07.1</td><td>H</td><td>Given a valid, active permission with 2 openings left, when the guest opens the link in a mobile browser and taps "Open gate · Main", then within 2 s (NFR-01) the page shows "Gate opening", the simulator (S-10) shows Main as <code>OPEN</code> for 5 s, the page shows "1 opening left", and a Granted event is logged.</td></tr>
-<tr><td>AC-07.2</td><td>E</td><td>Given the guest's connection drops after tapping, when no server response arrives within 10 s, then the page shows "We couldn't confirm the gate opened. Check the gate and tap to try again." The counter changes only if the server granted the request. Retrying with the same request ID never counts twice.</td></tr>
-<tr><td>AC-07.3</td><td>X</td><td>Given a page showing "Open gate", when the guest taps the button several times within 3 s, then exactly one request is processed and at most one opening is counted.</td></tr>
-<tr><td>AC-07.4</td><td>X</td><td>Given a permission for gates Main and North, when the page loads, then one button is shown per allowed and active gate. A gate that is not allowed for this permission is never shown. A request crafted for it is denied with <code>GATE_NOT_ALLOWED</code>.</td></tr>
+<tr><td>AC-07.2</td><td>E</td><td>Given the guest's connection drops after tapping, when no server response arrives within 10 s, then the page shows "We couldn't confirm the gate opened. Check the gate and tap to try again." The counter changes only if the server granted the request. Retrying with the same request ID returns the original result, including the remaining count, and never counts twice, even if the first response was lost after the server committed.</td></tr>
+<tr><td>AC-07.3</td><td>X</td><td>Given a page showing "Open gate", when the guest taps the button several times within 3 s, then exactly one request is processed and at most one opening is counted. The button shows "Opening…" and stays disabled while the request is in flight. After a grant it stays disabled until the 5-second opening ends, with a visible countdown.</td></tr>
+<tr><td>AC-07.4</td><td>X</td><td>Given a permission for gates Main and North, when the page loads, then one button is shown per gate included in the permission. An included gate that is inactive is shown disabled as "Temporarily unavailable" (AC-11.3). Gates not included in the permission are never shown, and a request crafted for one is denied with <code>GATE_NOT_ALLOWED</code>.</td></tr>
 
 <tr><td colspan="3"><b>US-08</b> · As a <b>guest</b>, I want a clear explanation when I can't get in, so that I know what to do next. <span class="small">Implements FR-13, FR-21, FR-08</span></td></tr>
-<tr><td>AC-08.1</td><td>E</td><td>Given a permission whose start is in the future, when the guest opens the link, then the page shows "Your access starts on [date, time]" and the Open button is disabled.</td></tr>
+<tr><td>AC-08.1</td><td>E</td><td>Given a permission whose start is in the future, when the guest opens the link, then the page shows "Your access starts on [date, time]", the Open button is disabled, and a "Check again" action reloads the status. The page also refreshes itself when the window opens, if it is still open in the browser.</td></tr>
 <tr><td>AC-08.2</td><td>E</td><td>Given a permission with used = limit, when the guest opens the link, then the page shows "No openings left. Contact your host." and requests are denied with <code>EXHAUSTED</code>.</td></tr>
 <tr><td>AC-08.3</td><td>E</td><td>Given a mistyped, made-up or regenerated link, when it is opened, then a generic page "This invitation link isn't valid" is shown. It contains no gate, community or person details, and the attempt is counted toward rate limiting (NFR-06).</td></tr>
 <tr><td>AC-08.4</td><td>X</td><td>Given a permission with exactly 1 opening left, when two devices request an opening at the same moment, then exactly one is granted, the other is denied with <code>EXHAUSTED</code>, and the final used count equals the limit.</td></tr>
@@ -565,7 +568,7 @@ stateDiagram-v2
 <tr><td>AC-10.1</td><td>H</td><td>Given a user who joined with a valid code, when the administrator approves them, then the user's next app launch shows the resident home screen (S-02).</td></tr>
 <tr><td>AC-10.2</td><td>E</td><td>Given a pending user, when they try to create a permission (including by calling the server directly), then the request is rejected with "not authorized" and nothing is created.</td></tr>
 <tr><td>AC-10.3</td><td>X</td><td>Given a user who enters an unknown community code, when they submit, then "Community code not found" is shown and they remain unassigned.</td></tr>
-<tr><td>AC-10.4</td><td>H</td><td>Given an approved resident with 2 active permissions, when the administrator removes the resident, then both permissions are denied with <code>SUSPENDED</code> on the next request.</td></tr>
+<tr><td>AC-10.4</td><td>H</td><td>Given an approved resident with 2 active permissions, when the administrator removes the resident, then both permissions are denied with <code>SUSPENDED</code> on the next request, and they cannot be resumed.</td></tr>
 
 <tr><td colspan="3"><b>US-11</b> · As an <b>administrator</b>, I want to manage the community's gates and watch them in a simulator, so that the demo reflects real gate behaviour. <span class="small">Implements FR-04, FR-24, FR-25, FR-28</span></td></tr>
 <tr><td>AC-11.1</td><td>H</td><td>Given the administrator creates gate "North", when a resident next creates a permission, then "North" is available to select.</td></tr>
@@ -591,40 +594,41 @@ stateDiagram-v2
 <div class="cap">Diagram 3 · Process diagram: validating a gate-open request (FR-20, FR-21)</div>
 <pre class="mermaid">
 flowchart TD
-  A([Guest taps 'Open gate' on W-01 / S-11]) --> B{Rate limit OK?<br/>NFR-06}
-  B -- no --> D10[Deny RATE_LIMITED]
-  B -- yes --> C{Token matches an<br/>active invitation?}
-  C -- no --> D1[Deny INVALID_LINK<br/>generic page W-02]
-  C -- yes --> E{Permission<br/>CANCELLED?}
-  E -- yes --> D2[Deny CANCELLED]
-  E -- no --> F{SUSPENDED?}
-  F -- yes --> D3[Deny SUSPENDED]
-  F -- no --> G{Now before start?}
-  G -- yes --> D4[Deny NOT_STARTED]
-  G -- no --> H{Now after end?}
-  H -- yes --> D5[Deny EXPIRED]
-  H -- no --> I{Recurring and now<br/>outside day/hour window?}
-  I -- yes --> D6[Deny OUTSIDE_HOURS]
-  I -- no --> J{Gate in permission?}
-  J -- no --> D7[Deny GATE_NOT_ALLOWED]
-  J -- yes --> K{Gate active?}
-  K -- no --> D8[Deny GATE_INACTIVE]
-  K -- yes --> L{{Atomic transaction:<br/>used &lt; limit ? used + 1}}
-  L -- limit reached --> D9[Deny EXHAUSTED]
-  L -- committed --> M[Grant: gate OPEN 5 s<br/>FR-24]
-  M --> N[Log GRANTED event FR-26<br/>notify resident FR-29]
-  N --> O([Page shows success +<br/>remaining openings])
-  D1 & D2 & D3 & D4 & D5 & D6 & D7 & D8 & D9 & D10 --> P[Log DENIED event<br/>with reason FR-26]
-  P --> Q([Page shows reason +<br/>guidance FR-21])
+  A([Guest taps 'Open gate'<br/>W-01 / S-11 · new request ID]) --> B{Rate limit OK?<br/>NFR-06}
+  B -- no --> RL([Deny RATE_LIMITED<br/>page shows reason])
+  B -- yes --> T[[BEGIN atomic transaction]]
+  T --> R{Receipt for<br/>invitation + request ID<br/>already exists?}
+  R -- yes --> RP([Return the original result<br/>nothing counted again])
+  R -- no --> C[Run checks 1–8 in order<br/>table below]
+  C -- a check fails --> DN[Write DENIED event + receipt<br/>with the first failing reason]
+  C -- all pass --> GR[Write together:<br/>used + 1 · gate openUntil = now + 5 s<br/>GRANTED event + receipt]
+  DN --> CM[[COMMIT]]
+  GR --> CM
+  CM -- granted --> N[After commit:<br/>notify resident FR-29]
+  N --> OK([Page: gate opening +<br/>remaining openings])
+  CM -- denied --> NO([Page: reason + guidance FR-21])
+  CM -- conflict / error --> X([Deny, fail closed NFR-11<br/>retry with same request ID is safe])
 </pre>
-<div class="exp"><b>What it shows:</b> the order of server-side checks for every opening request, with one denial reason per branch. <b>Why it matters:</b> the order is deliberate.
+<table style="margin-top:2mm">
+<thead><tr><th style="width:6%">#</th><th>Check (inside the transaction)</th><th style="width:30%">Denial reason if it fails</th></tr></thead>
+<tr><td>1</td><td>The token digest matches a non-revoked invitation</td><td><code>INVALID_LINK</code> (generic page W-02)</td></tr>
+<tr><td>2</td><td>The permission is not cancelled</td><td><code>CANCELLED</code></td></tr>
+<tr><td>3</td><td>The permission is not suspended</td><td><code>SUSPENDED</code></td></tr>
+<tr><td>4</td><td>Now is not before the start</td><td><code>NOT_STARTED</code></td></tr>
+<tr><td>5</td><td>Now is not after the end</td><td><code>EXPIRED</code></td></tr>
+<tr><td>6</td><td>Recurring only: today is a selected weekday and now is inside the daily window</td><td><code>OUTSIDE_HOURS</code></td></tr>
+<tr><td>7</td><td>The gate is included in the permission, and it is active</td><td><code>GATE_NOT_ALLOWED</code> · <code>GATE_INACTIVE</code></td></tr>
+<tr><td>8</td><td>Used openings are below the limit</td><td><code>EXHAUSTED</code></td></tr>
+</table>
+<div class="exp"><b>What it shows:</b> the server-side handling of every opening request. The table lists the checks in order, each with its denial reason. <b>Why it matters:</b>
 <ul>
-<li>Rate limiting and token checks come first, so invalid links reveal nothing.</li>
-<li>Cheap status checks precede time checks.</li>
-<li>The counter is checked and incremented <i>in a single atomic transaction</i>, so concurrent requests can never exceed the limit (AC-08.4).</li>
-<li>Any error inside the transaction results in a denial. The system fails closed (NFR-11).</li>
+<li>All reads and writes happen <b>inside one atomic transaction</b>: the receipt, invitation, permission and gate checks, and then the counter, gate open-until time, event and receipt writes. A concurrent cancel, suspend or edit therefore can't slip in between a check and the grant, and concurrent requests can never exceed the limit (AC-08.4).</li>
+<li>The receipt, keyed by invitation and request ID, makes retries return the original result (AC-07.2).</li>
+<li>Invalid links reveal nothing.</li>
+<li>Any conflict or error results in a denial. The system fails closed (NFR-11).</li>
+<li>Push notifications are sent only after the commit.</li>
 </ul>
-All time checks use the community's time zone (FR-07). The request ID makes retries idempotent (AC-07.2, AC-07.3).</div>
+All time checks use the community's time zone (FR-06, FR-07).</div>
 </div>
 </section>
 <!-- ===== Section 10 ===== -->
@@ -634,41 +638,47 @@ All time checks use the community's time zone (FR-07). The request ID makes retr
 <p>The resident and administrator use the mobile app (screens <span class="id">S-xx</span>). Guests use a browser page (<span class="id">W-xx</span>) that needs no install. A registered guest can see the same invitation inside the app (S-11). The administrator uses the same app as residents, with an extra "Community" area. Language: Hebrew UI with right-to-left layout as the primary language, and English as a Could (NFR-17).</p>
 <table>
 <thead><tr><th style="width:15%">Screen</th><th style="width:22%">Purpose</th><th>Available actions</th><th style="width:16%">Navigates to</th><th style="width:7%">Req.</th></tr></thead>
-<tr><td><b>S-01</b> Sign in · Sign up · Join community</td><td>Authenticate and join a community. Shows the "Waiting for approval" state for pending users.</td><td>Sign in, create account, enter community code, sign out (pending), reset password (Should)</td><td>S-02 (approved) · pending state</td><td>FR-01, FR-02</td></tr>
-<tr><td><b>S-02</b> Resident home</td><td>Dashboard summary and list of own permissions.</td><td>View summary tiles, filter by status, open a permission, "+ New permission" (form or guided)</td><td>S-03, S-07, S-04, S-06, S-12, S-08 (admin only)</td><td>FR-14, FR-31</td></tr>
-<tr><td><b>S-03</b> Create / edit permission</td><td>Form for one-time or recurring permissions.</td><td>Enter guest, choose type, dates, days and hours, gates, limit, notifications toggle, Save</td><td>S-05 (after create) · S-04 (after edit)</td><td>FR-06, FR-07, FR-09, FR-12</td></tr>
-<tr><td><b>S-04</b> Permission details</td><td>Status, remaining openings and recent activity of one permission.</td><td>Share, Show QR, Edit, Suspend / Resume, Cancel, Regenerate link, view its activity</td><td>S-05, S-03, S-06</td><td>FR-10–FR-13, FR-17</td></tr>
+<tr><td><b>S-01</b> Sign in · Sign up · Join community</td><td>Authenticate and join a community. Also shows the state screens "Waiting for approval" (pending) and "Membership rejected / removed".</td><td>Sign in, create account, reset password (Should), enter community code. Pending: sign out. Rejected or removed: read the explanation, enter a different code, or sign out.</td><td>S-02 (approved) · state screens</td><td>FR-01, FR-02</td></tr>
+<tr><td><b>S-02</b> Resident home</td><td>Dashboard summary and list of own permissions.</td><td>View summary tiles, filter by status (Active, Suspended, Ended), open a permission. "+ New permission" opens a chooser: form, guided, or describe in words (Could). An empty state explains how to start.</td><td>S-03, S-07, S-13, S-04, S-06, S-12, S-08 (admin only)</td><td>FR-14, FR-31</td></tr>
+<tr><td><b>S-03</b> Create / edit permission</td><td>Form for one-time or recurring permissions.</td><td>Enter guest name, choose type, dates, days and hours, gates (pre-selected if only one), limit (default 2 / 20), notifications toggle, Save. Link to switch to the guided mode.</td><td>S-05 (after create) · S-04 (after edit) · S-07</td><td>FR-06, FR-07, FR-09, FR-12</td></tr>
+<tr><td><b>S-04</b> Permission details</td><td>Status, remaining openings and recent activity of one permission.</td><td>Share, Show QR, Edit, Suspend / Resume, view all activity. Cancel is a separated destructive action with a confirmation dialog. Regenerate link (⋮ menu, with confirmation) opens S-05 with the new link.</td><td>S-05, S-03, S-06</td><td>FR-10–FR-13, FR-16–FR-18</td></tr>
 <tr><td><b>S-05</b> Share invitation (sheet)</td><td>Deliver the link to the guest.</td><td>Share via apps, Copy link, Show QR full-screen, Done</td><td>Device share sheet · S-04</td><td>FR-16, FR-18</td></tr>
 <tr><td><b>S-06</b> Activity</td><td>The resident's log of granted and denied requests.</td><td>Filter by permission and result, open an event's permission</td><td>S-04</td><td>FR-27</td></tr>
 <tr><td><b>S-07</b> Guided creation wizard</td><td>Step-by-step creation (rule-based in the MVP).</td><td>Answer step, Back, Next, review, Confirm</td><td>S-05 · S-02 (exit)</td><td>FR-32</td></tr>
 <tr><td><b>S-08</b> Community admin</td><td>Manage residents and gates.</td><td>Approve, reject or remove residents · add, rename, (de)activate gates</td><td>S-09, S-10</td><td>FR-04, FR-05</td></tr>
 <tr><td><b>S-09</b> Community log</td><td>Activity across the community (admin).</td><td>Filter by gate, date and result</td><td>S-08</td><td>FR-28</td></tr>
 <tr><td><b>S-10</b> Gate simulator</td><td>Live view of simulated gate states for demos.</td><td>Watch gate tiles change OPEN / CLOSED, see last event</td><td>S-08</td><td>FR-24, FR-25</td></tr>
-<tr><td><b>S-11</b> In-app invitation</td><td>Registered guest views an invitation in the app (deep link).</td><td>Same as W-01. Save to "My invitations" (Could).</td><td>—</td><td>FR-22, FR-23</td></tr>
+<tr><td><b>S-11</b> In-app invitation</td><td>Registered guest views an invitation in the app (deep link).</td><td>Same as W-01. Save to "My invitations" (Could).</td><td>S-02 (Back / Home, signed-in users)</td><td>FR-22, FR-23</td></tr>
 <tr><td><b>S-12</b> Settings</td><td>Profile, notification preferences, sign out.</td><td>Edit name, toggle notifications, sign out</td><td>S-01</td><td>FR-01, FR-29</td></tr>
 <tr><td><b>S-13</b> Describe in words (Could)</td><td>Natural-language draft of a permission.</td><td>Type text, Submit, review draft in S-03</td><td>S-03</td><td>FR-35</td></tr>
-<tr><td><b>W-01</b> Guest invitation page</td><td>Show validity and open the gate.</td><td>"Open gate" per allowed gate. Shows the result state (opening / success / reason).</td><td>— (single page)</td><td>FR-19–FR-21</td></tr>
+<tr><td><b>W-01</b> Guest invitation page</td><td>Show validity and open the gate.</td><td>One "Open gate" button per included gate (inactive ones disabled). States: ready, opening… (disabled), success with a 5-second countdown, reason with guidance, and "Check again" for time-based denials.</td><td>— (single page)</td><td>FR-19–FR-21</td></tr>
 <tr><td><b>W-02</b> Invalid link page</td><td>Generic page for unknown, regenerated or malformed links.</td><td>None, apart from a short explanation</td><td>—</td><td>FR-21</td></tr>
 </table>
 
 <div class="fig">
 <div class="cap">Diagram 4 · User flow: resident creating and sharing a permission, and a guest using it</div>
 <pre class="mermaid">
-flowchart LR
+flowchart TB
   subgraph Resident app
     S01[S-01 Sign in / join] -->|approved| S02[S-02 Home]
-    S01 -.->|pending| P[Waiting for approval]
+    S01 -.->|pending / rejected| P[State screen:<br/>waiting / rejected]
     S02 -->|+ New: form| S03[S-03 Create permission]
     S02 -->|+ New: guided| S07[S-07 Wizard]
     S03 -->|Save| S05[S-05 Share sheet]
     S07 -->|Confirm| S05
     S05 -->|Done| S04[S-04 Permission details]
     S02 --> S04
-    S04 -->|Suspend / Cancel / Edit| S04
+    S04 -->|Suspend / Cancel| S04
+    S04 -->|Edit| S03
+    S04 -->|Share / QR / new link| S05
+    S04 -->|View all activity| S06
+    S02 -.->|+ New: describe in words, Could| S13[S-13 Describe]
+    S13 -.->|draft| S03
     S02 --> S06[S-06 Activity]
   end
   S05 ==>|link / QR via messaging| L((Invitation link))
   subgraph Guest browser
+    direction LR
     L --> V{Link valid?}
     V -- no --> W02[W-02 Invalid link]
     V -- yes --> W01[W-01 Invitation page]
@@ -677,6 +687,7 @@ flowchart LR
     R -- denied --> NO[W-01 reason state]
   end
   L -.->|app installed + deep link| S11[S-11 In-app invitation]
+  S11 -.->|Back / Home| S02
   OK -.->|push FR-29| S06
 </pre>
 <div class="exp"><b>What it shows:</b> the main path through the screens in the table above. A resident signs in, creates a permission with the form or the wizard, and shares the link. The guest opens it in a browser (or in the app through a deep link) and requests an opening. A grant shows up in the resident's Activity screen. <b>Why it matters:</b> it confirms that the guest's path from link to opening is a single page with one tap (G4), and that the screen IDs match the table and the wireframes.</div>
@@ -684,6 +695,15 @@ flowchart LR
 </section>
 
 <section class="sec">
+<div class="note"><b>RTL and accessibility rules for all screens</b> (NFR-15, NFR-17):
+<ul>
+<li>Layout mirrors for Hebrew. URLs, phone-style numbers, times and counters stay left-to-right isolated inside RTL text.</li>
+<li>Weekday chips run Sunday→Saturday (א׳–ש׳), right to left, each with a full spoken label ("Tuesday").</li>
+<li>Every touch target, including Approve and Reject, is at least 48×48 dp.</li>
+<li>Text contrast is ≥ 4.5:1, including disabled-state labels, and is checked for outdoor readability.</li>
+<li>Status always pairs an icon or colour with a text label.</li>
+<li>W-01 announces state changes ("Opening…", "Gate opening", the reason) through a live region for screen readers.</li>
+</ul></div>
 <p><b>About the wireframes:</b> they are low-fidelity sketches in grayscale with no visual design. They show only what sits where on each screen. The final UI will be Hebrew, right-to-left. These sketches are drawn left-to-right in English so the PRD reads consistently.</p>
 
 <div class="fig">
@@ -696,8 +716,9 @@ flowchart LR
     <div class="lbl">Password</div><div class="field">••••••••</div>
     <div class="btn">Sign in</div>
     <div class="btn ghost">Create account</div>
+    <div style="text-align:center; text-decoration:underline">Forgot password?</div>
     <div class="grow"></div>
-    <div class="dash">After sign-up:<br>Community code [______] <b>Join</b><br>Pending → "Waiting for administrator approval"</div>
+    <div class="dash">After sign-up:<br>Community code [______] <b>Join</b><br>Pending → "Waiting for administrator approval" · [Sign out]<br>Rejected / removed → explanation · [Enter another code] [Sign out]</div>
   </div><div class="cap">S-01</div><div class="capsub">Sign in · Sign up · Join</div></div>
 
   <div class="wf"><div class="phone">
@@ -706,16 +727,16 @@ flowchart LR
     <div class="row"><div class="box" style="text-align:center"><b>Active</b></div><div class="box" style="text-align:center">Suspended</div><div class="box" style="text-align:center">Ended</div></div>
     <div class="box"><b>Noa</b> · One-time<br>Fri 19:00–23:59 · Main<br>2 of 2 left · <i>Scheduled</i></div>
     <div class="box"><b>Cleaner (Rina)</b> · Recurring<br>Tue 08–12 · Main, North<br>31 of 40 left · <i>Active</i></div>
-    <div class="box"><b>Plumber</b> · One-time<br>Today 10–14 · Main<br>0 of 1 left · <i>Exhausted</i></div>
+    <div class="box"><b>Electrician</b> · One-time<br>Today 10:00–14:00 · Main<br>1 of 1 left · <i>Active</i></div>
     <div class="grow"></div>
     <div class="btn">+ New permission</div>
+    <div class="dash" style="font-size:6.2pt">Chooser: Form · Guided · Describe in words (Could)</div>
     <div class="tabs"><span>Home</span><span>Activity</span><span>Community*</span></div>
   </div><div class="cap">S-02</div><div class="capsub">Resident home (*admin only)</div></div>
 
   <div class="wf"><div class="phone">
     <div class="bar"><span>← New permission</span><span>Guided</span></div>
     <div class="lbl">Guest name *</div><div class="field">Noa</div>
-    <div class="lbl">Phone (optional)</div><div class="field">05x-xxxxxxx</div>
     <div class="row"><div class="btn">One-time</div><div class="btn ghost">Recurring</div></div>
     <div class="lbl">From / To *</div><div class="row"><div class="field">Fri 19:00</div><div class="field">Fri 23:59</div></div>
     <div class="dash">Recurring: [S][M][T][W][T][F][S]<br>08:00 – 12:00 · date range</div>
@@ -738,12 +759,13 @@ flowchart LR
     <div class="box" style="text-align:center">Openings used<br><b>9 / 40</b> · 31 left</div>
     <div class="row"><div class="btn">Share</div><div class="btn ghost">QR</div></div>
     <div class="row"><div class="btn ghost">Edit</div><div class="btn ghost">Suspend</div></div>
-    <div class="btn ghost">Cancel permission</div>
     <div class="lbl">Recent activity</div>
     <div class="box">Tue 08:42 · Main · Granted</div>
-    <div class="box">Tue 12:05 · Main · Denied (outside hours)</div>
+    <div style="text-decoration:underline">View all activity →</div>
     <div class="grow"></div>
-    <div class="small" style="font-size:6.3pt">⋮ menu: Regenerate link</div>
+    <div style="border-top:1px dashed #777; padding-top:1mm"></div>
+    <div class="btn ghost" style="border-style:dashed">⚠ Cancel permission…</div>
+    <div class="small" style="font-size:6.3pt">⋮ menu: Regenerate link → S-05</div>
   </div><div class="cap">S-04</div><div class="capsub">Permission details</div></div>
 
   <div class="wf"><div class="phone">
@@ -762,16 +784,17 @@ flowchart LR
   <div class="wf"><div class="phone">
     <div class="bar"><span>← Guided · step 3 of 6</span><span></span></div>
     <div class="box" style="background:#eee">▮▮▮▯▯▯</div>
-    <div style="font-weight:700; font-size:8pt; margin-top:2mm">When should Rina be able to come in?</div>
-    <div class="btn ghost">Just once</div>
-    <div class="btn">On a regular schedule</div>
-    <div class="dash">Which days? [S][M][<b>T</b>][W][T][F][S]<br>From 08:00 to 12:00</div>
+    <div class="small" style="font-size:6.3pt">Step 2 answer: on a regular schedule</div>
+    <div style="font-weight:700; font-size:8pt; margin-top:1mm">When should Rina be able to come in?</div>
+    <div class="lbl">Which days?</div><div class="field">[S][M][<b>T</b>][W][T][F][S]</div>
+    <div class="lbl">Between</div><div class="row"><div class="field">08:00</div><div class="field">12:00</div></div>
+    <div class="lbl">From date – until date (inclusive)</div><div class="row"><div class="field">1 Dec 2026</div><div class="field">31 Mar 2027</div></div>
     <div class="grow"></div>
     <div class="row"><div class="btn ghost">Back</div><div class="btn">Next</div></div>
     <div class="small" style="font-size:6.3pt">Steps: who → type → when → gates → openings → review</div>
   </div><div class="cap">S-07</div><div class="capsub">Guided creation wizard</div></div>
 </div>
-<div class="exp"><b>What it shows:</b> S-04 shows status, the cumulative counter and every lifecycle action (FR-10–FR-12, FR-17). Cancel is visually separated to prevent mistakes. S-05 is shown right after creation, with share, copy and QR (FR-16, FR-18). S-07 is the rule-based guided assistant (F-21, FR-32), one question per step.</div>
+<div class="exp"><b>What it shows:</b> S-04 shows the derived status (FR-13), the cumulative counter and every lifecycle action (FR-10–FR-12, FR-17). Cancel is separated at the bottom as a destructive action and always asks for confirmation. Regenerating the link leads straight to S-05. S-05 is shown right after creation, with share, copy and QR (FR-16, FR-18). S-07 is the rule-based guided assistant (F-21, FR-32), one question per step.</div>
 </div>
 </section>
 
@@ -795,20 +818,21 @@ flowchart LR
     <div class="box" style="text-align:center; padding:5mm 1mm"><b style="font-size:10pt">✓ Gate opening</b><br>Main · 19:42</div>
     <div class="box" style="text-align:center">1 opening left</div>
     <div class="grow"></div>
-    <div class="btn ghost">Open gate · Main</div>
-    <div class="dash">Failure variant: "We couldn't confirm the gate opened. Check the gate and tap to try again."</div>
+    <div class="btn ghost" style="color:#555">Open gate · Main (available again in 4 s)</div>
+    <div class="dash">While sending: button shows "Opening…" and is disabled.<br>Failure variant: "We couldn't confirm the gate opened. Check the gate and tap to try again."</div>
   </div><div class="cap">W-01 · result</div><div class="capsub">Granted (and network failure)</div></div>
 
   <div class="wf browser"><div class="phone">
     <div class="url">https://porta.example/i/•••••••</div>
     <div class="bar"><span>Porta · Givat Example</span><span></span></div>
     <div class="box" style="text-align:center; padding:4mm 1mm"><b>Not available right now</b><br>Your access is on Tuesdays 08:00–12:00.<br>Next: Tue 8 Dec, 08:00</div>
-    <div class="btn ghost" style="color:#999">Open gate · Main (disabled)</div>
+    <div class="btn ghost" style="color:#555">Open gate · Main (disabled)</div>
+    <div class="btn ghost">Check again</div>
     <div class="grow"></div>
     <div class="dash"><b>W-02</b> (separate page, no community name): "This invitation link isn't valid. Ask your host for a new one."</div>
   </div><div class="cap">W-01 · denied / W-02</div><div class="capsub">Reason state · invalid link</div></div>
 </div>
-<div class="exp"><b>What it shows:</b> the guest's entire experience is one page. Its states are ready, result and reason (FR-19–FR-21). The primary action is large and is the only one, so opening takes ≤ 2 taps (G4). W-02 is deliberately generic and reveals nothing about any community or person (NFR-05, NFR-06). No resident phone or address appears on any guest page (NFR-09).</div>
+<div class="exp"><b>What it shows:</b> the guest's entire experience is one page. Its states are ready, result and reason (FR-19–FR-21). The primary action is large and is the only one, so opening takes ≤ 2 taps (G4). With several gates, one button per gate is stacked above the fold. W-02 is deliberately generic and reveals nothing about any community or person (NFR-05, NFR-06). No resident phone or address appears on any guest page (NFR-09).</div>
 </div>
 
 <div class="fig">
@@ -848,14 +872,15 @@ flowchart LR
 <table>
 <thead><tr><th style="width:7%">ID</th><th style="width:17%">Entity</th><th>Key fields</th><th style="width:22%">Notes</th></tr></thead>
 <tr><td>E-01</td><td><b>Community</b></td><td>id, name, timeZone (e.g. Asia/Jerusalem), joinCode, createdAt</td><td>One per gated community. The join code can be rotated by an administrator.</td></tr>
-<tr><td>E-02</td><td><b>User</b></td><td>id, fullName, email, role (RESIDENT / ADMIN), communityId, membershipStatus (PENDING / APPROVED / REJECTED / REMOVED), createdAt</td><td>Credentials are handled by the authentication service and never stored by Porta.</td></tr>
-<tr><td>E-03</td><td><b>Gate</b></td><td>id, communityId, name, isActive, simState (OPEN / CLOSED), simOpenUntil</td><td>Simulated. No hardware fields.</td></tr>
-<tr><td>E-04</td><td><b>Permission</b></td><td>id, residentId, communityId, guestName, guestPhone?, type (ONE_TIME / RECURRING), validFrom, validUntil, maxOpenings, usedOpenings, storedStatus (ACTIVE / SUSPENDED / CANCELLED), suspendedReason?, notifyOnEntry, createdAt, updatedAt</td><td>Displayed status is derived (FR-13). <code>usedOpenings</code> only ever increases (FR-08).</td></tr>
+<tr><td>E-02</td><td><b>User</b></td><td>id, fullName, email, role (RESIDENT / ADMIN), communityId? (empty until the user joins), membershipStatus (NONE / PENDING / APPROVED / REJECTED / REMOVED), createdAt</td><td>Credentials are handled by the authentication service and never stored by Porta.</td></tr>
+<tr><td>E-03</td><td><b>Gate</b></td><td>id, communityId, name, isActive, simOpenUntil</td><td>Simulated. No hardware fields. OPEN/CLOSED is derived from simOpenUntil (FR-24).</td></tr>
+<tr><td>E-04</td><td><b>Permission</b></td><td>id, residentId, communityId, guestName, type (ONE_TIME / RECURRING), validFrom, validUntil (instants for ONE_TIME), startDate, endDate (local dates for RECURRING, both inclusive), maxOpenings, usedOpenings, storedStatus (ACTIVE / SUSPENDED / CANCELLED), suspendedReason? (RESIDENT / RESIDENT_REMOVED), notifyOnEntry, createRequestId, createdAt, updatedAt</td><td>Displayed status is derived (FR-13). <code>usedOpenings</code> only ever increases (FR-08).</td></tr>
 <tr><td>E-05</td><td><b>PermissionGate</b></td><td>permissionId, gateId</td><td>Many-to-many link (F-06).</td></tr>
 <tr><td>E-06</td><td><b>RecurrenceRule</b></td><td>permissionId, daysOfWeek[], startTime, endTime</td><td>Only for RECURRING. One rule per permission in the MVP.</td></tr>
-<tr><td>E-07</td><td><b>Invitation</b></td><td>id, permissionId, tokenHash, createdAt, revokedAt?</td><td>Only a <i>hash</i> of the link token is stored (NFR-05). At most one non-revoked invitation per permission.</td></tr>
-<tr><td>E-08</td><td><b>AccessEvent</b></td><td>id, communityId, permissionId?, gateId?, invitationId?, requestId, occurredAt, channel (WEB / APP), result (GRANTED / DENIED), reasonCode</td><td>Append-only (FR-26). Unique requestId gives idempotency. Unresolvable links store no permission.</td></tr>
+<tr><td>E-07</td><td><b>Invitation</b></td><td>id, permissionId, tokenDigest (unique, used for lookup), linkForOwner (readable only by the owning resident), createdAt, revokedAt?</td><td>Guest requests are matched by digest only (NFR-05). At most one non-revoked invitation per permission.</td></tr>
+<tr><td>E-08</td><td><b>AccessEvent</b></td><td>id, communityId?, permissionId?, gateId?, invitationId?, requestId, guestNameSnapshot?, occurredAt, channel (WEB / APP), result (GRANTED / DENIED), reasonCode</td><td>Append-only (FR-26). Doubles as the request receipt: (invitationId, requestId) is unique, and a retry replays the stored result. Attempts with unresolvable links store no community, permission or gate.</td></tr>
 <tr><td>E-09</td><td><b>DeviceToken</b></td><td>userId, platform, pushToken, updatedAt</td><td>For push notifications (FR-29).</td></tr>
+<tr><td>E-12</td><td><b>AdminAction</b></td><td>id, communityId, actorUserId, action (APPROVE / REJECT / REMOVE_RESIDENT / CREATE_GATE / RENAME_GATE / SET_GATE_ACTIVE / ROTATE_JOIN_CODE), targetId, occurredAt</td><td>Append-only audit of administrator actions (NFR-20).</td></tr>
 <tr><td>E-10</td><td>Contact <span class="small">(Could)</span></td><td>id, residentId, name, phone?, kind (GUEST / SERVICE_PROVIDER)</td><td>F-11 / FR-34</td></tr>
 <tr><td>E-11</td><td>Template <span class="small">(Could)</span></td><td>id, residentId, name, type, gateIds[], recurrence?, maxOpenings</td><td>F-05 / FR-33. No dates.</td></tr>
 <tr><td>—</td><td>Post-MVP</td><td>GroupInvitation (F-12), ApprovalRequest (F-18), AnomalyAlert (F-17), Suggestion (F-20)</td><td>Defined in their milestones.</td></tr>
@@ -866,16 +891,18 @@ flowchart LR
 <div class="cap">Diagram 7 · ERD: the main entities and relationships (MVP plus Could)</div>
 <pre class="mermaid">
 erDiagram
-  COMMUNITY ||--o{ USER : "has members"
+  COMMUNITY |o--o{ USER : "has members"
   COMMUNITY ||--o{ GATE : "has"
   USER ||--o{ PERMISSION : "creates (resident)"
   PERMISSION ||--|{ PERMISSION_GATE : "valid at"
   GATE ||--o{ PERMISSION_GATE : "used by"
   PERMISSION ||--o| RECURRENCE_RULE : "schedule (recurring)"
   PERMISSION ||--|{ INVITATION : "link history"
-  PERMISSION ||--o{ ACCESS_EVENT : "logged as"
-  GATE ||--o{ ACCESS_EVENT : "at"
-  COMMUNITY ||--o{ ACCESS_EVENT : "scoped to"
+  PERMISSION |o--o{ ACCESS_EVENT : "logged as"
+  GATE |o--o{ ACCESS_EVENT : "at"
+  COMMUNITY |o--o{ ACCESS_EVENT : "scoped to"
+  USER ||--o{ ADMIN_ACTION : "performs (admin)"
+  COMMUNITY ||--o{ ADMIN_ACTION : "audited in"
   USER ||--o{ DEVICE_TOKEN : "notified via"
   USER ||--o{ CONTACT : "keeps (Could)"
   USER ||--o{ TEMPLATE : "saves (Could)"
@@ -892,7 +919,7 @@ erDiagram
   INVITATION {
     id id PK
     id permissionId FK
-    string tokenHash
+    string tokenDigest UK
     datetime revokedAt
   }
   ACCESS_EVENT {
@@ -906,10 +933,10 @@ erDiagram
     id id PK
     string name
     bool isActive
-    enum simState
+    datetime simOpenUntil
   }
 </pre>
-<div class="exp"><b>What it shows:</b> entities E-01 to E-11 and how they relate. Only key attributes are shown; the full fields are in the table above.
+<div class="exp"><b>What it shows:</b> entities E-01 to E-12 and how they relate. Only key attributes are shown; the full fields are in the table above.
 <ul>
 <li>A permission belongs to one resident.</li>
 <li>A permission is valid at one or more gates through PermissionGate.</li>
@@ -925,7 +952,8 @@ erDiagram
 <table>
 <thead><tr><th style="width:24%">Service (candidate)</th><th>What it provides to the product</th><th style="width:22%">Needed for</th></tr></thead>
 <tr><td>Backend-as-a-Service: Firebase Authentication, Cloud Firestore, Cloud Functions (candidate)</td><td>User accounts. Database with security rules. Server-side logic for gate validation, atomic counter transactions, token hashing and rate limiting.</td><td>FR-01–FR-35, NFR-04–NFR-07</td></tr>
-<tr><td>Web hosting with HTTPS: Firebase Hosting (candidate)</td><td>Serves the guest page W-01/W-02, plus the files that verify App Links and Universal Links (<code>assetlinks.json</code>, <code>apple-app-site-association</code>).</td><td>FR-19–FR-22</td></tr>
+<tr><td><i>Alternative if billing is not approved:</i> Supabase Free (Auth, Postgres, one transactional database function with a row lock on the permission, static hosting for the guest page)</td><td>The same server-side validation without a billing account. Free projects pause after inactivity, so the team must rehearse a resume before every demo (NFR-13).</td><td>Q-09, R-05</td></tr>
+<tr><td>Web hosting with HTTPS: Firebase Hosting on its default <code>*.web.app</code> domain (candidate)</td><td>Serves the guest page W-01/W-02, plus the files that verify App Links and Universal Links (<code>assetlinks.json</code>, <code>apple-app-site-association</code>).</td><td>FR-19–FR-22</td></tr>
 <tr><td>Push notifications: Firebase Cloud Messaging, and APNs for iOS</td><td>Delivers entry notifications to residents.</td><td>FR-29, FR-30</td></tr>
 <tr><td>Device share sheet and clipboard (OS)</td><td>Sends the link through any messaging app the resident has.</td><td>FR-16</td></tr>
 <tr><td>QR generation (on-device library)</td><td>Renders the link as a QR code. No external call.</td><td>FR-18</td></tr>
@@ -963,24 +991,26 @@ erDiagram
 <h2><span class="num">13</span>Non-Functional Requirements</h2>
 <table>
 <thead><tr><th style="width:8%">ID</th><th style="width:13%">Area</th><th>Requirement (measurable)</th><th style="width:20%">How verified</th></tr></thead>
-<tr><td>NFR-01</td><td>Performance</td><td>A gate-open request completes (from tap to result shown) in ≤ 2 s at the 95th percentile over a 4G-class connection.</td><td>50 timed trials (G5)</td></tr>
-<tr><td>NFR-02</td><td>Performance</td><td>The guest page W-01 shows the invitation status within 3 s on a 4G-class connection with a cold cache. Page transfer size ≤ 1 MB.</td><td>Browser dev-tools throttling, 10 loads</td></tr>
+<tr><td>NFR-01</td><td>Performance</td><td>Measured from the tap over 50 trials, on a mid-range Android phone (2022 or later) in Chrome with the DevTools "Fast 4G" throttling profile and a warm page: (a) the result is shown on the guest page within ≤ 2 s at the 95th percentile; (b) the simulator (S-10) shows OPEN within ≤ 2 s at the 95th percentile.</td><td>50 timed trials (G5)</td></tr>
+<tr><td>NFR-02</td><td>Performance</td><td>The guest page W-01 shows the invitation status within 3 s on the same "Fast 4G" profile with a cold cache. The compressed bytes transferred up to the status render are ≤ 1 MB. All 10 cold loads must meet both limits.</td><td>DevTools throttling, 10 cold loads</td></tr>
 <tr><td>NFR-03</td><td>Performance</td><td>The app's cold start to an interactive home screen takes ≤ 3 s on a mid-range Android device (2022 or later).</td><td>10 timed launches</td></tr>
 <tr><td>NFR-04</td><td>Security</td><td>Every authorization and validation decision is made on the server. Database rules deny all direct client writes to permissions' counters and status fields, invitations and access events.</td><td>Rule tests and manual attempts</td></tr>
-<tr><td>NFR-05</td><td>Security</td><td>Invitation tokens are generated with a cryptographically secure random generator, with at least 128 bits of entropy. Only a hash of each token is stored. Tokens never appear in logs or analytics.</td><td>Code review and log inspection</td></tr>
-<tr><td>NFR-06</td><td>Security</td><td>Rate limiting: at most 10 open requests per invitation per minute, and at most 30 invalid-link lookups per client IP address per 10 minutes. Excess requests are denied with <code>RATE_LIMITED</code>.</td><td>Scripted burst test</td></tr>
+<tr><td>NFR-05</td><td>Security</td><td>Invitation tokens are generated with a cryptographically secure random generator, with at least 128 bits of entropy. Guest requests are matched only by a digest of the token. The full link is stored only in a field readable by the owning resident, so they can re-share it from any device. Administrators, logs and analytics never see tokens. Where the link format allows, the token travels in the URL fragment (after <code>#</code>) so it is not sent in page requests or captured in hosting access logs. The page sends <code>Referrer-Policy: no-referrer</code>. <span class="open">The fragment approach is pending the deep-link feasibility check (Q-14).</span></td><td>Code review and log inspection</td></tr>
+<tr><td>NFR-06</td><td>Security</td><td>Rate limiting: at most 10 open requests per invitation per minute, and at most 30 invalid-link lookups per client IP address per 10 minutes. Excess requests are denied with <code>RATE_LIMITED</code>. Community join-code attempts are limited to 5 failures per account per hour.</td><td>Scripted burst test</td></tr>
 <tr><td>NFR-07</td><td>Security</td><td>All traffic uses HTTPS/TLS. Opening-counter updates are atomic, and each request ID is processed at most once (no double counting).</td><td>Concurrency test (AC-08.4)</td></tr>
-<tr><td>NFR-08</td><td>Security</td><td>Sessions expire after 30 days of inactivity. Signing out removes local credentials and the device push token. No API secrets are embedded in the app.</td><td>Code review and test</td></tr>
-<tr><td>NFR-09</td><td>Privacy</td><td>Data minimisation: the guest phone is optional and visible only to its resident. Guest pages never show the resident's name, phone or address, only the community name. Administrators see guest names in logs but not guest phones.</td><td>UI review against this rule</td></tr>
+<tr><td>NFR-08</td><td>Security</td><td>Sessions expire after 30 days with no authenticated app use, where any signed-in app launch resets the clock. Signing out removes local credentials and the device push token. No API secrets are embedded in the app.</td><td>Code review and test</td></tr>
+<tr><td>NFR-09</td><td>Privacy</td><td>Data minimisation: the MVP stores no guest phone number, only the guest name the resident enters. Guest pages never show the resident's name, phone or address, only the community name. Administrators see guest names in logs.</td><td>UI review against this rule</td></tr>
 <tr><td>NFR-10</td><td>Privacy</td><td>Access events are kept for 12 months and then deleted <span class="open">(proposed, Q-11)</span>. A user can delete their account, which deletes their permissions and contacts and anonymises their log entries. Privacy principles follow the Israeli Privacy Protection Law as general guidance. A formal legal review is out of scope.</td><td>Deletion test</td></tr>
 <tr><td>NFR-11</td><td>Reliability</td><td>Fail closed: if any validation step errors or times out, the request is denied and logged. An opening is never granted on uncertainty.</td><td>Fault-injection test</td></tr>
 <tr><td>NFR-12</td><td>Reliability</td><td>The derived permission status is always computed from the server's clock, never the device clock.</td><td>Test with a wrong device clock</td></tr>
 <tr><td>NFR-13</td><td>Reliability</td><td>The demo environment is available for the full scheduled demo and test sessions. The team keeps seed data and can restore it within 15 minutes.</td><td>Restore drill</td></tr>
 <tr><td>NFR-14</td><td>Weak / no connection</td><td><b>App:</b> when offline, it shows the cached permission list and activity read-only, with a banner "Offline: last updated hh:mm". Creating, editing, suspending and cancelling are blocked with a clear message, and entered data is kept (AC-01.4). <b>Gate opening is never possible offline</b>, by design. <b>Guest page:</b> requests time out after 10 s with a retry message (AC-07.2). Retries are idempotent.</td><td>Airplane-mode and throttling tests</td></tr>
 <tr><td>NFR-15</td><td>Accessibility</td><td>The guest page meets WCAG 2.1 AA for contrast (4.5:1 for text) and labels. App touch targets are ≥ 48×48 dp. All controls have screen-reader labels (TalkBack and VoiceOver). Layouts work with system font size at 200%. Status is never conveyed by colour alone.</td><td>Accessibility checklist and screen-reader pass</td></tr>
-<tr><td>NFR-16</td><td>Usability</td><td>A recurring permission can be created and shared in ≤ 90 s (G3). A guest opens the gate in ≤ 2 taps after the page loads (G4). Every error message states what happened and what to do next.</td><td>Usability test (n ≥ 5)</td></tr>
+<tr><td>NFR-16</td><td>Usability</td><td>A recurring permission can be created and shared in a median of ≤ 90 s (G3). A guest opens the gate in ≤ 2 taps after the page loads (G4). Every error message states what happened and what to do next.</td><td>Usability test (n ≥ 5)</td></tr>
 <tr><td>NFR-17</td><td>Usability / localisation</td><td>Hebrew UI with full right-to-left layout (Must). Dates and times use the community time zone and the Israeli format (dd/MM, 24-hour). English UI is a Could.</td><td>Visual review</td></tr>
 <tr><td>NFR-18</td><td>Maintainability</td><td>Gate-validation rules are covered by automated tests for every branch of Diagram 3. The scenarios are recorded in the repository.</td><td>Test report (G2)</td></tr>
+<tr><td>NFR-19</td><td>Security</td><td>Opening a link never opens a gate. Only an explicit "Open gate" action (a POST request) can trigger an opening. Link-preview crawlers and browser prefetching cause no state change and no counter change. Link previews in messaging apps show only "Porta invitation", with no guest, community or schedule details.</td><td>Preview test in two messaging apps</td></tr>
+<tr><td>NFR-20</td><td>Security</td><td>Administrative actions (approving, rejecting or removing residents; creating, renaming or deactivating gates; rotating the join code) are recorded with actor and time, and administrators cannot edit or delete those records.</td><td>Inspect records after actions</td></tr>
 </table>
 </section>
 <!-- ===== Section 14 ===== -->
@@ -1009,6 +1039,7 @@ erDiagram
 <tr><td>A-08</td><td>Holding the link means being authorised (a bearer link). This is acceptable for the MVP because of the time and count limits, instant revocation and notifications.</td><td>Add a PIN or phone check (Q-13).</td></tr>
 <tr><td>A-09</td><td>Each gate opening counts once, regardless of direction. The default one-time limit of 2 allows entry and exit if exiting needs an opening.</td><td>Revisit defaults after Q-02 validation.</td></tr>
 <tr><td>A-10</td><td>All MVP communities use the time zone Asia/Jerusalem. It is still stored per community.</td><td>No change needed. The field already exists.</td></tr>
+<tr><td>A-11</td><td>For the MVP, communities, their join codes and their first administrator are created by the project team with a setup script. That is enough for a demo with 1–2 communities.</td><td>Add self-service onboarding in a later milestone.</td></tr>
 </table>
 <h3>14.3 Dependencies (external services the product relies on)</h3>
 <ul>
@@ -1026,10 +1057,10 @@ erDiagram
 <tr><td>R-02</td><td>An invitation link is forwarded, and someone else uses it.</td><td>M / M</td><td>Time and count limits bound the damage. Instant cancel or regenerate (FR-11, FR-17). Entry notifications (FR-29). Optional PIN or proximity check in future (Q-13).</td></tr>
 <tr><td>R-03</td><td>Concurrent or retried requests double-count or exceed the limit.</td><td>M / H</td><td>An atomic server transaction plus a unique request ID (NFR-07). Concurrency tests (AC-08.4).</td></tr>
 <tr><td>R-04</td><td>iOS features (Universal Links, push, deployment to devices) need a paid Apple developer account (USD 99 per year, per Apple's published pricing).</td><td>H / M</td><td>Android is the guaranteed demo platform. Use the iOS simulator without push. Ask the college about an education account. Paying requires team approval (Q-10).</td></tr>
-<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by the start of M1 (Q-09). Options: approve the Blaze plan with budget alerts, or switch to an alternative BaaS with free server functions. Cost estimate is due before approval.</td></tr>
+<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by the start of M1 (Q-09). Develop against the free local emulators until then. Option 1: approve the Blaze plan with budget alerts. Option 2: switch to Supabase Free, with one transactional database function (Section 11.3). A cost estimate is due before any approval.</td></tr>
 <tr><td>R-06</td><td>The AI feature produces wrong drafts, costs money or is unavailable.</td><td>M / L</td><td>Keep it as a Could. Confirmation before saving, server re-validation, an 8 s timeout and a manual fallback (Section 11.4).</td></tr>
 <tr><td>R-07</td><td>Time-zone or daylight-saving bugs grant or deny at the wrong hour. Israel changes clocks in late March and late October.</td><td>M / H</td><td>Evaluate only on the server, in the community's time zone, with a time-zone library. Add test cases around the DST change dates.</td></tr>
-<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Decide the guest-page technology early (Q-14). A lightweight HTML/JS page is the fallback.</td></tr>
+<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Proposed: a lightweight HTML/JS guest page instead of Flutter Web, decided in M1 (Q-14).</td></tr>
 <tr><td>R-09</td><td>Deep-link verification is hard to set up.</td><td>M / L</td><td>It is a Should. The web fallback works for everyone (AC-09.2).</td></tr>
 <tr><td>R-10</td><td>Push notifications are delayed or not delivered.</td><td>M / L</td><td>The in-app Activity log is the source of truth. Push is a convenience.</td></tr>
 <tr><td>R-11</td><td>The problem or solution doesn't match real residents' needs (no research yet).</td><td>M / M</td><td>A validation round with at least 5 residents (Q-02) before M4. Update defaults and priorities from the findings.</td></tr>
@@ -1045,10 +1076,10 @@ erDiagram
 <table>
 <thead><tr><th style="width:17%">Stage</th><th>What we do in it</th><th style="width:30%">Expected output</th></tr></thead>
 <tr><td><b>CP0 · PRD</b><br><span class="small">to 21 Nov 2026</span></td><td>Analyse the assignment. Define product, scope, requirements, diagrams and wireframes. Independent reviews.</td><td>This PRD as a single PDF. Sources in GitHub.</td></tr>
-<tr><td><b>M1 · Foundations</b><br><span class="small">30 Nov – 13 Dec 2026</span></td><td>Settle open technical decisions (Q-09, Q-14). Flutter project setup. Auth and community joining. Roles and server-side rules. Gate administration. Data model.</td><td>FR-01–FR-05 working on Android. Security rules tested.</td></tr>
-<tr><td><b>M2 · Permission core</b><br><span class="small">14 – 31 Dec 2026</span></td><td>One-time and recurring permissions. Cumulative limit. Status derivation. Suspend, resume, cancel. List and details. Invitation tokens.</td><td>FR-06–FR-15 passing their acceptance criteria.</td></tr>
-<tr><td><b>M3 · Guest access</b><br><span class="small">1 – 14 Jan 2027</span></td><td>Guest web page. Gate-validation function with atomic counter. Simulator. Logs. Share and QR. Deep links.</td><td>The end-to-end flow (Diagram 4) demoable. FR-16–FR-28.</td></tr>
-<tr><td><b>M4 · MVP hardening</b><br><span class="small">15 – 31 Jan 2027</span></td><td>Notifications, dashboard and wizard (Should). NFR verification. Usability test (n ≥ 5). Security review. Bug fixing. Could items only if all of that is done.</td><td><b>MVP release, 31 Jan 2027.</b> Test report against G1–G7.</td></tr>
+<tr><td><b>M1 · Foundations</b><br><span class="small">30 Nov – 13 Dec 2026</span></td><td>Settle open technical decisions (Q-09, Q-14). Flutter project setup. Data model and server-side rules. Seeded community. <b>A thin deployed vertical slice:</b> a hard-coded permission opened from the browser page through the real backend, with the simulator reacting. Sign-in.</td><td>An end-to-end slice from Android to browser to simulator on the deployed backend. FR-01 working.</td></tr>
+<tr><td><b>M2 · Permission core</b><br><span class="small">14 – 31 Dec 2026</span></td><td>One-time and recurring permissions (single gate first). Cumulative limit and concurrency. Status derivation, DST and boundary tests. Suspend, resume, cancel. List and details. Invitation tokens and sharing.</td><td>The Must parts of FR-06–FR-16 passing their acceptance criteria, including AC-08.4.</td></tr>
+<tr><td><b>M3 · Guest access</b><br><span class="small">1 – 14 Jan 2027</span></td><td>Full guest page states. Community joining and administrator approval (FR-02–FR-05). Logs (FR-26, FR-27). Integration across roles. First Should items (QR, multiple gates).</td><td>All Must requirements demoable end to end (Diagram 4).</td></tr>
+<tr><td><b>M4 · MVP hardening</b><br><span class="small">15 – 31 Jan 2027</span></td><td>Acceptance run of all Must criteria, NFR verification, usability test (n ≥ 5), security review and fixes. Further Should items only in the order given in Section 7.2, and only while Must items stay green.</td><td><b>MVP release, 31 Jan 2027.</b> Test report against G1–G7.</td></tr>
 <tr><td><b>M5 · Guest management</b><br><span class="small">after MVP, unscheduled</span></td><td>Group invitations. Templates and contacts, if not already delivered.</td><td>F-12 (and F-05, F-11).</td></tr>
 <tr><td><b>M6 · Governance</b><br><span class="small">after MVP, unscheduled</span></td><td>Administrator reports, anomaly detection, approvals for sensitive permissions.</td><td>F-16, F-17, F-18.</td></tr>
 <tr><td><b>M7 · AI</b><br><span class="small">after MVP, unscheduled</span></td><td>Natural-language creation (if not already delivered). Smart reminders and suggestions. AI-enhanced assistant.</td><td>F-19, F-20, F-21 (AI).</td></tr>
@@ -1063,13 +1094,13 @@ gantt
   section Docs
   CP0 PRD              :done, cp0, 2026-11-19, 2026-11-21
   section MVP
-  M1 Foundations       :m1, 2026-11-30, 2026-12-13
+  M1 Foundations + slice:m1, 2026-11-30, 2026-12-13
   M2 Permission core   :m2, 2026-12-14, 2026-12-31
   M3 Guest access      :m3, 2027-01-01, 2027-01-14
   M4 MVP hardening     :m4, 2027-01-15, 2027-01-31
   MVP release          :milestone, mvp, 2027-01-31, 0d
 </pre>
-<div class="exp"><b>What it shows:</b> the four MVP milestones from the table above as consecutive blocks ending at the 31 Jan 2027 release. M5–M7 come after the MVP and are not scheduled yet. <b>Why it matters:</b> the most dependent work comes first: rules, then permissions, then guest access. The last two weeks are kept for verification and the Should items, which can be cut if needed (R-01).</div>
+<div class="exp"><b>What it shows:</b> the four MVP milestones from the table above as consecutive blocks ending at the 31 Jan 2027 release. M5–M7 come after the MVP and are not scheduled yet. <b>Why it matters:</b> a deployed end-to-end slice exists from M1, so integration risk shows up early. Permissions come next, then roles and integration. The last two weeks are kept for verification. Should items are added in a fixed order and can be cut (R-01).</div>
 </div>
 
 <h3>Open questions: still undecided or needing clarification</h3>
@@ -1083,13 +1114,13 @@ gantt
 <tr><td>Q-06</td><td>What makes a permission "sensitive" (needing approval), and what counts as "unusual" activity?</td><td>Team · M6</td></tr>
 <tr><td>Q-07</td><td>Will a user ever belong to more than one community (e.g. a resident with two homes)?</td><td>Team · post-MVP</td></tr>
 <tr><td>Q-08</td><td>Are overnight windows (crossing midnight) needed for recurring permissions?</td><td>Team · M2</td></tr>
-<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (billing account required), or an alternative? Cost estimate and approval are needed.</td><td>Team · start of M1</td></tr>
+<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (a billing account is required to deploy Cloud Functions, even within the free usage allowance), or Supabase Free with a transactional database function? A cost estimate and approval are needed.</td><td>Team · start of M1</td></tr>
 <tr><td>Q-10</td><td>iOS: is an Apple developer account available (college program or paid, with approval)? Which iOS devices can we test on?</td><td>Team · M1</td></tr>
 <tr><td>Q-11</td><td>How long should access logs be kept (12 months proposed)?</td><td>Team · M3</td></tr>
 <tr><td>Q-12</td><td>How do the official course checkpoints and dates map to M1–M4?</td><td>Team and lecturer · M1</td></tr>
 <tr><td>Q-13</td><td>Do guest links need extra protection against forwarding (PIN, phone check, proximity)?</td><td>Team · M3</td></tr>
-<tr><td>Q-14</td><td>Guest page technology: Flutter Web or a lightweight HTML/JS page (NFR-02)?</td><td>Team and Codex · M1</td></tr>
-<tr><td>Q-15</td><td>Which domain will invitation links use: the hosting provider's default domain (free) or a custom domain (paid)?</td><td>Team · M3</td></tr>
+<tr><td>Q-14</td><td>Guest page technology. <b>Proposed after the feasibility review:</b> lightweight HTML/JS on one canonical default hosting domain, because Flutter Web risks NFR-02. Can the token travel in the URL fragment and still work with App Links / Universal Links on signed devices (NFR-05)?</td><td>Team and Codex · M1</td></tr>
+<tr><td>Q-15</td><td>Which domain will invitation links use? <b>Proposed:</b> the hosting provider's free default domain. It can serve the App Links / Universal Links association files under <code>/.well-known/</code>, so no custom domain is needed.</td><td>Team · M3</td></tr>
 </table>
 </section>
 
@@ -1099,8 +1130,8 @@ gantt
 <p>Each capability maps to the requirements, stories and screens that implement it. Post-MVP capabilities have no stories yet; they will be detailed in their milestones.</p>
 <table>
 <thead><tr><th style="width:8%">F</th><th style="width:10%">MoSCoW</th><th style="width:28%">Functional requirements</th><th style="width:22%">User stories</th><th>Screens</th></tr></thead>
-<tr><td>F-01</td><td>Must</td><td>FR-06, FR-12, FR-13</td><td>US-01</td><td>S-03, S-04</td></tr>
-<tr><td>F-02</td><td>Must</td><td>FR-07, FR-12, FR-13</td><td>US-02</td><td>S-03, S-04</td></tr>
+<tr><td>F-01</td><td>Must</td><td>FR-06, FR-12, FR-13, FR-14</td><td>US-01</td><td>S-03, S-04</td></tr>
+<tr><td>F-02</td><td>Must</td><td>FR-07, FR-12, FR-13, FR-14</td><td>US-02</td><td>S-03, S-04</td></tr>
 <tr><td>F-03</td><td>Must</td><td>FR-06, FR-07, FR-08, FR-20</td><td>US-02, US-03, US-08</td><td>S-04, W-01</td></tr>
 <tr><td>F-04</td><td>Must</td><td>FR-10, FR-11</td><td>US-03, US-04</td><td>S-04, W-01</td></tr>
 <tr><td>F-05</td><td>Could</td><td>FR-33</td><td>—</td><td>S-03</td></tr>
@@ -1111,9 +1142,9 @@ gantt
 <tr><td>F-10</td><td>Should</td><td>FR-18</td><td>US-05</td><td>S-05</td></tr>
 <tr><td>F-11</td><td>Could</td><td>FR-34</td><td>—</td><td>S-03</td></tr>
 <tr><td>F-12</td><td>Won't</td><td>FR-36</td><td>—</td><td>—</td></tr>
-<tr><td>F-13</td><td>Must</td><td>FR-26, FR-27, FR-28</td><td>US-06, US-11</td><td>S-06, S-09, S-10</td></tr>
+<tr><td>F-13</td><td>Must</td><td>FR-26, FR-27, FR-28; NFR-20 (admin audit)</td><td>US-06, US-11</td><td>S-06, S-09, S-10</td></tr>
 <tr><td>F-14</td><td>Should</td><td>FR-29, FR-30</td><td>US-06</td><td>S-12</td></tr>
-<tr><td>F-15</td><td>Should</td><td>FR-14, FR-31</td><td>US-06</td><td>S-02</td></tr>
+<tr><td>F-15</td><td>Should</td><td>FR-31</td><td>US-06</td><td>S-02</td></tr>
 <tr><td>F-16</td><td>Won't</td><td>FR-37</td><td>—</td><td>—</td></tr>
 <tr><td>F-17</td><td>Won't</td><td>FR-38</td><td>—</td><td>—</td></tr>
 <tr><td>F-18</td><td>Won't</td><td>FR-39</td><td>—</td><td>—</td></tr>

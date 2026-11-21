@@ -18,3 +18,10 @@ Status values: **Confirmed** (by the team) · **Proposed** (awaiting team approv
 | D-12 | Backend candidate: Firebase (Auth, Firestore, Cloud Functions, Hosting, FCM). Cloud Functions require Blaze billing plan → budget approval needed. | Proposed / Open | PRD A-03, Q-09 |
 | D-13 | Gate-open validation is server-side, fail-closed, atomic counter + request-ID idempotency; tokens ≥128-bit, stored hashed. | Proposed | PRD Diagram 3, NFR-04–07, NFR-11 |
 | D-14 | Team member responsibilities | Open (TBD) | Q-01 |
+| D-15 | Gate opening = one atomic transaction covering receipt + all checks + counter + gate `simOpenUntil` + event; push after commit; receipt keyed by (invitation, requestId) replays original result. | Proposed | Codex CX-04/05 |
+| D-16 | Invitation lookup by token digest; full link readable only by the owning resident (enables re-share from any device). | Proposed | Codex CX-06 |
+| D-17 | Guest page as lightweight HTML/JS on the hosting provider's free default domain (not Flutter Web). | Proposed | Codex CX-03, Q-14/Q-15 |
+| D-18 | Backend fallback if Blaze billing isn't approved: Supabase Free + one transactional DB function. | Proposed | Codex CX-02, Q-09 |
+| D-19 | M1 delivers a deployed end-to-end vertical slice (Android → browser → backend → simulator); Should items added in a fixed order (PRD §7.2). | Proposed | Codex CX-01 |
+| D-20 | MVP stores no guest phone number (data minimisation). | Proposed | Antigravity AG-08 |
+| D-21 | Communities and their first administrator are provisioned by the team (no self-service in MVP). | Proposed | Claude SEC-01, A-11 |

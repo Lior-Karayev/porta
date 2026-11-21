@@ -24,6 +24,7 @@
 <tr><td>A-08</td><td>Holding the link means being authorised (a bearer link). This is acceptable for the MVP because of the time and count limits, instant revocation and notifications.</td><td>Add a PIN or phone check (Q-13).</td></tr>
 <tr><td>A-09</td><td>Each gate opening counts once, regardless of direction. The default one-time limit of 2 allows entry and exit if exiting needs an opening.</td><td>Revisit defaults after Q-02 validation.</td></tr>
 <tr><td>A-10</td><td>All MVP communities use the time zone Asia/Jerusalem. It is still stored per community.</td><td>No change needed. The field already exists.</td></tr>
+<tr><td>A-11</td><td>For the MVP, communities, their join codes and their first administrator are created by the project team with a setup script. That is enough for a demo with 1–2 communities.</td><td>Add self-service onboarding in a later milestone.</td></tr>
 </table>
 <h3>14.3 Dependencies (external services the product relies on)</h3>
 <ul>
@@ -41,10 +42,10 @@
 <tr><td>R-02</td><td>An invitation link is forwarded, and someone else uses it.</td><td>M / M</td><td>Time and count limits bound the damage. Instant cancel or regenerate (FR-11, FR-17). Entry notifications (FR-29). Optional PIN or proximity check in future (Q-13).</td></tr>
 <tr><td>R-03</td><td>Concurrent or retried requests double-count or exceed the limit.</td><td>M / H</td><td>An atomic server transaction plus a unique request ID (NFR-07). Concurrency tests (AC-08.4).</td></tr>
 <tr><td>R-04</td><td>iOS features (Universal Links, push, deployment to devices) need a paid Apple developer account (USD 99 per year, per Apple's published pricing).</td><td>H / M</td><td>Android is the guaranteed demo platform. Use the iOS simulator without push. Ask the college about an education account. Paying requires team approval (Q-10).</td></tr>
-<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by the start of M1 (Q-09). Options: approve the Blaze plan with budget alerts, or switch to an alternative BaaS with free server functions. Cost estimate is due before approval.</td></tr>
+<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by the start of M1 (Q-09). Develop against the free local emulators until then. Option 1: approve the Blaze plan with budget alerts. Option 2: switch to Supabase Free, with one transactional database function (Section 11.3). A cost estimate is due before any approval.</td></tr>
 <tr><td>R-06</td><td>The AI feature produces wrong drafts, costs money or is unavailable.</td><td>M / L</td><td>Keep it as a Could. Confirmation before saving, server re-validation, an 8 s timeout and a manual fallback (Section 11.4).</td></tr>
 <tr><td>R-07</td><td>Time-zone or daylight-saving bugs grant or deny at the wrong hour. Israel changes clocks in late March and late October.</td><td>M / H</td><td>Evaluate only on the server, in the community's time zone, with a time-zone library. Add test cases around the DST change dates.</td></tr>
-<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Decide the guest-page technology early (Q-14). A lightweight HTML/JS page is the fallback.</td></tr>
+<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Proposed: a lightweight HTML/JS guest page instead of Flutter Web, decided in M1 (Q-14).</td></tr>
 <tr><td>R-09</td><td>Deep-link verification is hard to set up.</td><td>M / L</td><td>It is a Should. The web fallback works for everyone (AC-09.2).</td></tr>
 <tr><td>R-10</td><td>Push notifications are delayed or not delivered.</td><td>M / L</td><td>The in-app Activity log is the source of truth. Push is a convenience.</td></tr>
 <tr><td>R-11</td><td>The problem or solution doesn't match real residents' needs (no research yet).</td><td>M / M</td><td>A validation round with at least 5 residents (Q-02) before M4. Update defaults and priorities from the findings.</td></tr>
@@ -60,10 +61,10 @@
 <table>
 <thead><tr><th style="width:17%">Stage</th><th>What we do in it</th><th style="width:30%">Expected output</th></tr></thead>
 <tr><td><b>CP0 · PRD</b><br><span class="small">to 21 Nov 2026</span></td><td>Analyse the assignment. Define product, scope, requirements, diagrams and wireframes. Independent reviews.</td><td>This PRD as a single PDF. Sources in GitHub.</td></tr>
-<tr><td><b>M1 · Foundations</b><br><span class="small">30 Nov – 13 Dec 2026</span></td><td>Settle open technical decisions (Q-09, Q-14). Flutter project setup. Auth and community joining. Roles and server-side rules. Gate administration. Data model.</td><td>FR-01–FR-05 working on Android. Security rules tested.</td></tr>
-<tr><td><b>M2 · Permission core</b><br><span class="small">14 – 31 Dec 2026</span></td><td>One-time and recurring permissions. Cumulative limit. Status derivation. Suspend, resume, cancel. List and details. Invitation tokens.</td><td>FR-06–FR-15 passing their acceptance criteria.</td></tr>
-<tr><td><b>M3 · Guest access</b><br><span class="small">1 – 14 Jan 2027</span></td><td>Guest web page. Gate-validation function with atomic counter. Simulator. Logs. Share and QR. Deep links.</td><td>The end-to-end flow (Diagram 4) demoable. FR-16–FR-28.</td></tr>
-<tr><td><b>M4 · MVP hardening</b><br><span class="small">15 – 31 Jan 2027</span></td><td>Notifications, dashboard and wizard (Should). NFR verification. Usability test (n ≥ 5). Security review. Bug fixing. Could items only if all of that is done.</td><td><b>MVP release, 31 Jan 2027.</b> Test report against G1–G7.</td></tr>
+<tr><td><b>M1 · Foundations</b><br><span class="small">30 Nov – 13 Dec 2026</span></td><td>Settle open technical decisions (Q-09, Q-14). Flutter project setup. Data model and server-side rules. Seeded community. <b>A thin deployed vertical slice:</b> a hard-coded permission opened from the browser page through the real backend, with the simulator reacting. Sign-in.</td><td>An end-to-end slice from Android to browser to simulator on the deployed backend. FR-01 working.</td></tr>
+<tr><td><b>M2 · Permission core</b><br><span class="small">14 – 31 Dec 2026</span></td><td>One-time and recurring permissions (single gate first). Cumulative limit and concurrency. Status derivation, DST and boundary tests. Suspend, resume, cancel. List and details. Invitation tokens and sharing.</td><td>The Must parts of FR-06–FR-16 passing their acceptance criteria, including AC-08.4.</td></tr>
+<tr><td><b>M3 · Guest access</b><br><span class="small">1 – 14 Jan 2027</span></td><td>Full guest page states. Community joining and administrator approval (FR-02–FR-05). Logs (FR-26, FR-27). Integration across roles. First Should items (QR, multiple gates).</td><td>All Must requirements demoable end to end (Diagram 4).</td></tr>
+<tr><td><b>M4 · MVP hardening</b><br><span class="small">15 – 31 Jan 2027</span></td><td>Acceptance run of all Must criteria, NFR verification, usability test (n ≥ 5), security review and fixes. Further Should items only in the order given in Section 7.2, and only while Must items stay green.</td><td><b>MVP release, 31 Jan 2027.</b> Test report against G1–G7.</td></tr>
 <tr><td><b>M5 · Guest management</b><br><span class="small">after MVP, unscheduled</span></td><td>Group invitations. Templates and contacts, if not already delivered.</td><td>F-12 (and F-05, F-11).</td></tr>
 <tr><td><b>M6 · Governance</b><br><span class="small">after MVP, unscheduled</span></td><td>Administrator reports, anomaly detection, approvals for sensitive permissions.</td><td>F-16, F-17, F-18.</td></tr>
 <tr><td><b>M7 · AI</b><br><span class="small">after MVP, unscheduled</span></td><td>Natural-language creation (if not already delivered). Smart reminders and suggestions. AI-enhanced assistant.</td><td>F-19, F-20, F-21 (AI).</td></tr>
@@ -78,13 +79,13 @@ gantt
   section Docs
   CP0 PRD              :done, cp0, 2026-11-19, 2026-11-21
   section MVP
-  M1 Foundations       :m1, 2026-11-30, 2026-12-13
+  M1 Foundations + slice:m1, 2026-11-30, 2026-12-13
   M2 Permission core   :m2, 2026-12-14, 2026-12-31
   M3 Guest access      :m3, 2027-01-01, 2027-01-14
   M4 MVP hardening     :m4, 2027-01-15, 2027-01-31
   MVP release          :milestone, mvp, 2027-01-31, 0d
 </pre>
-<div class="exp"><b>What it shows:</b> the four MVP milestones from the table above as consecutive blocks ending at the 31 Jan 2027 release. M5–M7 come after the MVP and are not scheduled yet. <b>Why it matters:</b> the most dependent work comes first: rules, then permissions, then guest access. The last two weeks are kept for verification and the Should items, which can be cut if needed (R-01).</div>
+<div class="exp"><b>What it shows:</b> the four MVP milestones from the table above as consecutive blocks ending at the 31 Jan 2027 release. M5–M7 come after the MVP and are not scheduled yet. <b>Why it matters:</b> a deployed end-to-end slice exists from M1, so integration risk shows up early. Permissions come next, then roles and integration. The last two weeks are kept for verification. Should items are added in a fixed order and can be cut (R-01).</div>
 </div>
 
 <h3>Open questions: still undecided or needing clarification</h3>
@@ -98,13 +99,13 @@ gantt
 <tr><td>Q-06</td><td>What makes a permission "sensitive" (needing approval), and what counts as "unusual" activity?</td><td>Team · M6</td></tr>
 <tr><td>Q-07</td><td>Will a user ever belong to more than one community (e.g. a resident with two homes)?</td><td>Team · post-MVP</td></tr>
 <tr><td>Q-08</td><td>Are overnight windows (crossing midnight) needed for recurring permissions?</td><td>Team · M2</td></tr>
-<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (billing account required), or an alternative? Cost estimate and approval are needed.</td><td>Team · start of M1</td></tr>
+<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (a billing account is required to deploy Cloud Functions, even within the free usage allowance), or Supabase Free with a transactional database function? A cost estimate and approval are needed.</td><td>Team · start of M1</td></tr>
 <tr><td>Q-10</td><td>iOS: is an Apple developer account available (college program or paid, with approval)? Which iOS devices can we test on?</td><td>Team · M1</td></tr>
 <tr><td>Q-11</td><td>How long should access logs be kept (12 months proposed)?</td><td>Team · M3</td></tr>
 <tr><td>Q-12</td><td>How do the official course checkpoints and dates map to M1–M4?</td><td>Team and lecturer · M1</td></tr>
 <tr><td>Q-13</td><td>Do guest links need extra protection against forwarding (PIN, phone check, proximity)?</td><td>Team · M3</td></tr>
-<tr><td>Q-14</td><td>Guest page technology: Flutter Web or a lightweight HTML/JS page (NFR-02)?</td><td>Team and Codex · M1</td></tr>
-<tr><td>Q-15</td><td>Which domain will invitation links use: the hosting provider's default domain (free) or a custom domain (paid)?</td><td>Team · M3</td></tr>
+<tr><td>Q-14</td><td>Guest page technology. <b>Proposed after the feasibility review:</b> lightweight HTML/JS on one canonical default hosting domain, because Flutter Web risks NFR-02. Can the token travel in the URL fragment and still work with App Links / Universal Links on signed devices (NFR-05)?</td><td>Team and Codex · M1</td></tr>
+<tr><td>Q-15</td><td>Which domain will invitation links use? <b>Proposed:</b> the hosting provider's free default domain. It can serve the App Links / Universal Links association files under <code>/.well-known/</code>, so no custom domain is needed.</td><td>Team · M3</td></tr>
 </table>
 </section>
 
@@ -114,8 +115,8 @@ gantt
 <p>Each capability maps to the requirements, stories and screens that implement it. Post-MVP capabilities have no stories yet; they will be detailed in their milestones.</p>
 <table>
 <thead><tr><th style="width:8%">F</th><th style="width:10%">MoSCoW</th><th style="width:28%">Functional requirements</th><th style="width:22%">User stories</th><th>Screens</th></tr></thead>
-<tr><td>F-01</td><td>Must</td><td>FR-06, FR-12, FR-13</td><td>US-01</td><td>S-03, S-04</td></tr>
-<tr><td>F-02</td><td>Must</td><td>FR-07, FR-12, FR-13</td><td>US-02</td><td>S-03, S-04</td></tr>
+<tr><td>F-01</td><td>Must</td><td>FR-06, FR-12, FR-13, FR-14</td><td>US-01</td><td>S-03, S-04</td></tr>
+<tr><td>F-02</td><td>Must</td><td>FR-07, FR-12, FR-13, FR-14</td><td>US-02</td><td>S-03, S-04</td></tr>
 <tr><td>F-03</td><td>Must</td><td>FR-06, FR-07, FR-08, FR-20</td><td>US-02, US-03, US-08</td><td>S-04, W-01</td></tr>
 <tr><td>F-04</td><td>Must</td><td>FR-10, FR-11</td><td>US-03, US-04</td><td>S-04, W-01</td></tr>
 <tr><td>F-05</td><td>Could</td><td>FR-33</td><td>—</td><td>S-03</td></tr>
@@ -126,9 +127,9 @@ gantt
 <tr><td>F-10</td><td>Should</td><td>FR-18</td><td>US-05</td><td>S-05</td></tr>
 <tr><td>F-11</td><td>Could</td><td>FR-34</td><td>—</td><td>S-03</td></tr>
 <tr><td>F-12</td><td>Won't</td><td>FR-36</td><td>—</td><td>—</td></tr>
-<tr><td>F-13</td><td>Must</td><td>FR-26, FR-27, FR-28</td><td>US-06, US-11</td><td>S-06, S-09, S-10</td></tr>
+<tr><td>F-13</td><td>Must</td><td>FR-26, FR-27, FR-28; NFR-20 (admin audit)</td><td>US-06, US-11</td><td>S-06, S-09, S-10</td></tr>
 <tr><td>F-14</td><td>Should</td><td>FR-29, FR-30</td><td>US-06</td><td>S-12</td></tr>
-<tr><td>F-15</td><td>Should</td><td>FR-14, FR-31</td><td>US-06</td><td>S-02</td></tr>
+<tr><td>F-15</td><td>Should</td><td>FR-31</td><td>US-06</td><td>S-02</td></tr>
 <tr><td>F-16</td><td>Won't</td><td>FR-37</td><td>—</td><td>—</td></tr>
 <tr><td>F-17</td><td>Won't</td><td>FR-38</td><td>—</td><td>—</td></tr>
 <tr><td>F-18</td><td>Won't</td><td>FR-39</td><td>—</td><td>—</td></tr>

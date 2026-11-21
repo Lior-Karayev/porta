@@ -41,6 +41,7 @@
 <ul>
 <li><b>Must:</b> sign-up and sign-in. Community membership approved by an administrator. Roles (F-07). Administrator gate management (simulated gates). One-time and recurring permissions (F-01, F-02) with a cumulative opening limit (F-03). Suspend, resume and cancel (F-04). A unique invitation link (F-08). A browser guest page with gate opening (F-09). The simulated gate and gate simulator. Resident activity log (F-13).</li>
 <li><b>Should:</b> multiple gates per permission (F-06). QR code (F-10). Push notifications (F-14). Home-screen dashboard (F-15). Rule-based guided creation wizard (F-21). Administrator community log. Link regeneration. Permission editing. Deep links to the app.</li>
+<li><b>Order in which Should items are added</b> (cheapest and most valuable first; the tail is cut if time runs out): QR code (F-10) → multiple gates (F-06) → administrator community log → dashboard (F-15) → guided wizard (F-21) → link regeneration → permission editing → push notifications (F-14) → deep links.</li>
 <li><b>Could (stretch):</b> templates (F-05). Contact directory (F-11). Natural-language creation (F-19). "My invitations" for registered guests. Expiry and last-opening reminders.</li>
 </ul>
 
@@ -57,6 +58,7 @@
 <li>Residents' own entry and exit through Porta, and vehicle or license-plate recognition.</li>
 <li>Video intercom, voice calls, and guard-station applications.</li>
 <li>Payments, billing, and multi-community SaaS administration. One user belongs to one community in the MVP.</li>
+<li>Self-service community creation and transferring the administrator role. Communities and their first administrator are provisioned by the team (A-11).</li>
 <li>A separate desktop web admin portal. Administrator functions are in the mobile app in the MVP.</li>
 <li>Opening a gate offline (deliberately prohibited, see NFR-14). Proximity or geofence verification (possible future work).</li>
 <li>Legal compliance certification. Privacy principles are applied (Section 13), but no formal compliance audit is planned.</li>
@@ -67,7 +69,7 @@
 <p><b>Proposed decision, pending team approval (Q-04):</b> the MVP does <b>not depend</b> on any AI capability.</p>
 <ol>
 <li><b>F-21 Guided assistant</b> enters the MVP as a <b>deterministic, rule-based</b> step-by-step wizard (<span class="tag should">Should</span>). It delivers the guided experience with no external dependency, cost or unpredictability.</li>
-<li><b>F-19 Natural-language creation</b> is a <span class="tag could">Could</span> stretch goal. It is started only after every Must and Should item passes, and only if the team approves the LLM API cost (Budget Policy). Its design is safe by construction: the AI only <i>drafts</i> fields, the resident must confirm, and the system falls back to the manual form (FR-35, US-17).</li>
+<li><b>F-19 Natural-language creation</b> is a <span class="tag could">Could</span> stretch goal. It is started only after every Must and Should item passes, and only if the team approves the LLM API cost (Budget Policy). Its design is safe by construction: the AI only <i>drafts</i> fields, the resident must confirm, and the system falls back to the manual form (FR-35, US-13).</li>
 <li><b>F-20 Smart reminders and suggestions</b> is scheduled for M7. It needs usage history that the MVP will not have.</li>
 </ol>
 <p><b>Why:</b> about 10 weeks remain until 31 Jan 2027 and the team is new to Flutter. An external LLM adds paid usage, latency, non-deterministic output and a new failure mode (R-06). Putting the core access logic at risk for an optional feature would go against the project's first priority.</p>

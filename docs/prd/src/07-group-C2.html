@@ -5,14 +5,15 @@
 <table>
 <thead><tr><th style="width:7%">ID</th><th style="width:17%">Entity</th><th>Key fields</th><th style="width:22%">Notes</th></tr></thead>
 <tr><td>E-01</td><td><b>Community</b></td><td>id, name, timeZone (e.g. Asia/Jerusalem), joinCode, createdAt</td><td>One per gated community. The join code can be rotated by an administrator.</td></tr>
-<tr><td>E-02</td><td><b>User</b></td><td>id, fullName, email, role (RESIDENT / ADMIN), communityId, membershipStatus (PENDING / APPROVED / REJECTED / REMOVED), createdAt</td><td>Credentials are handled by the authentication service and never stored by Porta.</td></tr>
-<tr><td>E-03</td><td><b>Gate</b></td><td>id, communityId, name, isActive, simState (OPEN / CLOSED), simOpenUntil</td><td>Simulated. No hardware fields.</td></tr>
-<tr><td>E-04</td><td><b>Permission</b></td><td>id, residentId, communityId, guestName, guestPhone?, type (ONE_TIME / RECURRING), validFrom, validUntil, maxOpenings, usedOpenings, storedStatus (ACTIVE / SUSPENDED / CANCELLED), suspendedReason?, notifyOnEntry, createdAt, updatedAt</td><td>Displayed status is derived (FR-13). <code>usedOpenings</code> only ever increases (FR-08).</td></tr>
+<tr><td>E-02</td><td><b>User</b></td><td>id, fullName, email, role (RESIDENT / ADMIN), communityId? (empty until the user joins), membershipStatus (NONE / PENDING / APPROVED / REJECTED / REMOVED), createdAt</td><td>Credentials are handled by the authentication service and never stored by Porta.</td></tr>
+<tr><td>E-03</td><td><b>Gate</b></td><td>id, communityId, name, isActive, simOpenUntil</td><td>Simulated. No hardware fields. OPEN/CLOSED is derived from simOpenUntil (FR-24).</td></tr>
+<tr><td>E-04</td><td><b>Permission</b></td><td>id, residentId, communityId, guestName, type (ONE_TIME / RECURRING), validFrom, validUntil (instants for ONE_TIME), startDate, endDate (local dates for RECURRING, both inclusive), maxOpenings, usedOpenings, storedStatus (ACTIVE / SUSPENDED / CANCELLED), suspendedReason? (RESIDENT / RESIDENT_REMOVED), notifyOnEntry, createRequestId, createdAt, updatedAt</td><td>Displayed status is derived (FR-13). <code>usedOpenings</code> only ever increases (FR-08).</td></tr>
 <tr><td>E-05</td><td><b>PermissionGate</b></td><td>permissionId, gateId</td><td>Many-to-many link (F-06).</td></tr>
 <tr><td>E-06</td><td><b>RecurrenceRule</b></td><td>permissionId, daysOfWeek[], startTime, endTime</td><td>Only for RECURRING. One rule per permission in the MVP.</td></tr>
-<tr><td>E-07</td><td><b>Invitation</b></td><td>id, permissionId, tokenHash, createdAt, revokedAt?</td><td>Only a <i>hash</i> of the link token is stored (NFR-05). At most one non-revoked invitation per permission.</td></tr>
-<tr><td>E-08</td><td><b>AccessEvent</b></td><td>id, communityId, permissionId?, gateId?, invitationId?, requestId, occurredAt, channel (WEB / APP), result (GRANTED / DENIED), reasonCode</td><td>Append-only (FR-26). Unique requestId gives idempotency. Unresolvable links store no permission.</td></tr>
+<tr><td>E-07</td><td><b>Invitation</b></td><td>id, permissionId, tokenDigest (unique, used for lookup), linkForOwner (readable only by the owning resident), createdAt, revokedAt?</td><td>Guest requests are matched by digest only (NFR-05). At most one non-revoked invitation per permission.</td></tr>
+<tr><td>E-08</td><td><b>AccessEvent</b></td><td>id, communityId?, permissionId?, gateId?, invitationId?, requestId, guestNameSnapshot?, occurredAt, channel (WEB / APP), result (GRANTED / DENIED), reasonCode</td><td>Append-only (FR-26). Doubles as the request receipt: (invitationId, requestId) is unique, and a retry replays the stored result. Attempts with unresolvable links store no community, permission or gate.</td></tr>
 <tr><td>E-09</td><td><b>DeviceToken</b></td><td>userId, platform, pushToken, updatedAt</td><td>For push notifications (FR-29).</td></tr>
+<tr><td>E-12</td><td><b>AdminAction</b></td><td>id, communityId, actorUserId, action (APPROVE / REJECT / REMOVE_RESIDENT / CREATE_GATE / RENAME_GATE / SET_GATE_ACTIVE / ROTATE_JOIN_CODE), targetId, occurredAt</td><td>Append-only audit of administrator actions (NFR-20).</td></tr>
 <tr><td>E-10</td><td>Contact <span class="small">(Could)</span></td><td>id, residentId, name, phone?, kind (GUEST / SERVICE_PROVIDER)</td><td>F-11 / FR-34</td></tr>
 <tr><td>E-11</td><td>Template <span class="small">(Could)</span></td><td>id, residentId, name, type, gateIds[], recurrence?, maxOpenings</td><td>F-05 / FR-33. No dates.</td></tr>
 <tr><td>—</td><td>Post-MVP</td><td>GroupInvitation (F-12), ApprovalRequest (F-18), AnomalyAlert (F-17), Suggestion (F-20)</td><td>Defined in their milestones.</td></tr>
@@ -23,16 +24,18 @@
 <div class="cap">Diagram 7 · ERD: the main entities and relationships (MVP plus Could)</div>
 <pre class="mermaid">
 erDiagram
-  COMMUNITY ||--o{ USER : "has members"
+  COMMUNITY |o--o{ USER : "has members"
   COMMUNITY ||--o{ GATE : "has"
   USER ||--o{ PERMISSION : "creates (resident)"
   PERMISSION ||--|{ PERMISSION_GATE : "valid at"
   GATE ||--o{ PERMISSION_GATE : "used by"
   PERMISSION ||--o| RECURRENCE_RULE : "schedule (recurring)"
   PERMISSION ||--|{ INVITATION : "link history"
-  PERMISSION ||--o{ ACCESS_EVENT : "logged as"
-  GATE ||--o{ ACCESS_EVENT : "at"
-  COMMUNITY ||--o{ ACCESS_EVENT : "scoped to"
+  PERMISSION |o--o{ ACCESS_EVENT : "logged as"
+  GATE |o--o{ ACCESS_EVENT : "at"
+  COMMUNITY |o--o{ ACCESS_EVENT : "scoped to"
+  USER ||--o{ ADMIN_ACTION : "performs (admin)"
+  COMMUNITY ||--o{ ADMIN_ACTION : "audited in"
   USER ||--o{ DEVICE_TOKEN : "notified via"
   USER ||--o{ CONTACT : "keeps (Could)"
   USER ||--o{ TEMPLATE : "saves (Could)"
@@ -49,7 +52,7 @@ erDiagram
   INVITATION {
     id id PK
     id permissionId FK
-    string tokenHash
+    string tokenDigest UK
     datetime revokedAt
   }
   ACCESS_EVENT {
@@ -63,10 +66,10 @@ erDiagram
     id id PK
     string name
     bool isActive
-    enum simState
+    datetime simOpenUntil
   }
 </pre>
-<div class="exp"><b>What it shows:</b> entities E-01 to E-11 and how they relate. Only key attributes are shown; the full fields are in the table above.
+<div class="exp"><b>What it shows:</b> entities E-01 to E-12 and how they relate. Only key attributes are shown; the full fields are in the table above.
 <ul>
 <li>A permission belongs to one resident.</li>
 <li>A permission is valid at one or more gates through PermissionGate.</li>
@@ -82,7 +85,8 @@ erDiagram
 <table>
 <thead><tr><th style="width:24%">Service (candidate)</th><th>What it provides to the product</th><th style="width:22%">Needed for</th></tr></thead>
 <tr><td>Backend-as-a-Service: Firebase Authentication, Cloud Firestore, Cloud Functions (candidate)</td><td>User accounts. Database with security rules. Server-side logic for gate validation, atomic counter transactions, token hashing and rate limiting.</td><td>FR-01–FR-35, NFR-04–NFR-07</td></tr>
-<tr><td>Web hosting with HTTPS: Firebase Hosting (candidate)</td><td>Serves the guest page W-01/W-02, plus the files that verify App Links and Universal Links (<code>assetlinks.json</code>, <code>apple-app-site-association</code>).</td><td>FR-19–FR-22</td></tr>
+<tr><td><i>Alternative if billing is not approved:</i> Supabase Free (Auth, Postgres, one transactional database function with a row lock on the permission, static hosting for the guest page)</td><td>The same server-side validation without a billing account. Free projects pause after inactivity, so the team must rehearse a resume before every demo (NFR-13).</td><td>Q-09, R-05</td></tr>
+<tr><td>Web hosting with HTTPS: Firebase Hosting on its default <code>*.web.app</code> domain (candidate)</td><td>Serves the guest page W-01/W-02, plus the files that verify App Links and Universal Links (<code>assetlinks.json</code>, <code>apple-app-site-association</code>).</td><td>FR-19–FR-22</td></tr>
 <tr><td>Push notifications: Firebase Cloud Messaging, and APNs for iOS</td><td>Delivers entry notifications to residents.</td><td>FR-29, FR-30</td></tr>
 <tr><td>Device share sheet and clipboard (OS)</td><td>Sends the link through any messaging app the resident has.</td><td>FR-16</td></tr>
 <tr><td>QR generation (on-device library)</td><td>Renders the link as a QR code. No external call.</td><td>FR-18</td></tr>
@@ -120,23 +124,25 @@ erDiagram
 <h2><span class="num">13</span>Non-Functional Requirements</h2>
 <table>
 <thead><tr><th style="width:8%">ID</th><th style="width:13%">Area</th><th>Requirement (measurable)</th><th style="width:20%">How verified</th></tr></thead>
-<tr><td>NFR-01</td><td>Performance</td><td>A gate-open request completes (from tap to result shown) in ≤ 2 s at the 95th percentile over a 4G-class connection.</td><td>50 timed trials (G5)</td></tr>
-<tr><td>NFR-02</td><td>Performance</td><td>The guest page W-01 shows the invitation status within 3 s on a 4G-class connection with a cold cache. Page transfer size ≤ 1 MB.</td><td>Browser dev-tools throttling, 10 loads</td></tr>
+<tr><td>NFR-01</td><td>Performance</td><td>Measured from the tap over 50 trials, on a mid-range Android phone (2022 or later) in Chrome with the DevTools "Fast 4G" throttling profile and a warm page: (a) the result is shown on the guest page within ≤ 2 s at the 95th percentile; (b) the simulator (S-10) shows OPEN within ≤ 2 s at the 95th percentile.</td><td>50 timed trials (G5)</td></tr>
+<tr><td>NFR-02</td><td>Performance</td><td>The guest page W-01 shows the invitation status within 3 s on the same "Fast 4G" profile with a cold cache. The compressed bytes transferred up to the status render are ≤ 1 MB. All 10 cold loads must meet both limits.</td><td>DevTools throttling, 10 cold loads</td></tr>
 <tr><td>NFR-03</td><td>Performance</td><td>The app's cold start to an interactive home screen takes ≤ 3 s on a mid-range Android device (2022 or later).</td><td>10 timed launches</td></tr>
 <tr><td>NFR-04</td><td>Security</td><td>Every authorization and validation decision is made on the server. Database rules deny all direct client writes to permissions' counters and status fields, invitations and access events.</td><td>Rule tests and manual attempts</td></tr>
-<tr><td>NFR-05</td><td>Security</td><td>Invitation tokens are generated with a cryptographically secure random generator, with at least 128 bits of entropy. Only a hash of each token is stored. Tokens never appear in logs or analytics.</td><td>Code review and log inspection</td></tr>
-<tr><td>NFR-06</td><td>Security</td><td>Rate limiting: at most 10 open requests per invitation per minute, and at most 30 invalid-link lookups per client IP address per 10 minutes. Excess requests are denied with <code>RATE_LIMITED</code>.</td><td>Scripted burst test</td></tr>
+<tr><td>NFR-05</td><td>Security</td><td>Invitation tokens are generated with a cryptographically secure random generator, with at least 128 bits of entropy. Guest requests are matched only by a digest of the token. The full link is stored only in a field readable by the owning resident, so they can re-share it from any device. Administrators, logs and analytics never see tokens. Where the link format allows, the token travels in the URL fragment (after <code>#</code>) so it is not sent in page requests or captured in hosting access logs. The page sends <code>Referrer-Policy: no-referrer</code>. <span class="open">The fragment approach is pending the deep-link feasibility check (Q-14).</span></td><td>Code review and log inspection</td></tr>
+<tr><td>NFR-06</td><td>Security</td><td>Rate limiting: at most 10 open requests per invitation per minute, and at most 30 invalid-link lookups per client IP address per 10 minutes. Excess requests are denied with <code>RATE_LIMITED</code>. Community join-code attempts are limited to 5 failures per account per hour.</td><td>Scripted burst test</td></tr>
 <tr><td>NFR-07</td><td>Security</td><td>All traffic uses HTTPS/TLS. Opening-counter updates are atomic, and each request ID is processed at most once (no double counting).</td><td>Concurrency test (AC-08.4)</td></tr>
-<tr><td>NFR-08</td><td>Security</td><td>Sessions expire after 30 days of inactivity. Signing out removes local credentials and the device push token. No API secrets are embedded in the app.</td><td>Code review and test</td></tr>
-<tr><td>NFR-09</td><td>Privacy</td><td>Data minimisation: the guest phone is optional and visible only to its resident. Guest pages never show the resident's name, phone or address, only the community name. Administrators see guest names in logs but not guest phones.</td><td>UI review against this rule</td></tr>
+<tr><td>NFR-08</td><td>Security</td><td>Sessions expire after 30 days with no authenticated app use, where any signed-in app launch resets the clock. Signing out removes local credentials and the device push token. No API secrets are embedded in the app.</td><td>Code review and test</td></tr>
+<tr><td>NFR-09</td><td>Privacy</td><td>Data minimisation: the MVP stores no guest phone number, only the guest name the resident enters. Guest pages never show the resident's name, phone or address, only the community name. Administrators see guest names in logs.</td><td>UI review against this rule</td></tr>
 <tr><td>NFR-10</td><td>Privacy</td><td>Access events are kept for 12 months and then deleted <span class="open">(proposed, Q-11)</span>. A user can delete their account, which deletes their permissions and contacts and anonymises their log entries. Privacy principles follow the Israeli Privacy Protection Law as general guidance. A formal legal review is out of scope.</td><td>Deletion test</td></tr>
 <tr><td>NFR-11</td><td>Reliability</td><td>Fail closed: if any validation step errors or times out, the request is denied and logged. An opening is never granted on uncertainty.</td><td>Fault-injection test</td></tr>
 <tr><td>NFR-12</td><td>Reliability</td><td>The derived permission status is always computed from the server's clock, never the device clock.</td><td>Test with a wrong device clock</td></tr>
 <tr><td>NFR-13</td><td>Reliability</td><td>The demo environment is available for the full scheduled demo and test sessions. The team keeps seed data and can restore it within 15 minutes.</td><td>Restore drill</td></tr>
 <tr><td>NFR-14</td><td>Weak / no connection</td><td><b>App:</b> when offline, it shows the cached permission list and activity read-only, with a banner "Offline: last updated hh:mm". Creating, editing, suspending and cancelling are blocked with a clear message, and entered data is kept (AC-01.4). <b>Gate opening is never possible offline</b>, by design. <b>Guest page:</b> requests time out after 10 s with a retry message (AC-07.2). Retries are idempotent.</td><td>Airplane-mode and throttling tests</td></tr>
 <tr><td>NFR-15</td><td>Accessibility</td><td>The guest page meets WCAG 2.1 AA for contrast (4.5:1 for text) and labels. App touch targets are ≥ 48×48 dp. All controls have screen-reader labels (TalkBack and VoiceOver). Layouts work with system font size at 200%. Status is never conveyed by colour alone.</td><td>Accessibility checklist and screen-reader pass</td></tr>
-<tr><td>NFR-16</td><td>Usability</td><td>A recurring permission can be created and shared in ≤ 90 s (G3). A guest opens the gate in ≤ 2 taps after the page loads (G4). Every error message states what happened and what to do next.</td><td>Usability test (n ≥ 5)</td></tr>
+<tr><td>NFR-16</td><td>Usability</td><td>A recurring permission can be created and shared in a median of ≤ 90 s (G3). A guest opens the gate in ≤ 2 taps after the page loads (G4). Every error message states what happened and what to do next.</td><td>Usability test (n ≥ 5)</td></tr>
 <tr><td>NFR-17</td><td>Usability / localisation</td><td>Hebrew UI with full right-to-left layout (Must). Dates and times use the community time zone and the Israeli format (dd/MM, 24-hour). English UI is a Could.</td><td>Visual review</td></tr>
 <tr><td>NFR-18</td><td>Maintainability</td><td>Gate-validation rules are covered by automated tests for every branch of Diagram 3. The scenarios are recorded in the repository.</td><td>Test report (G2)</td></tr>
+<tr><td>NFR-19</td><td>Security</td><td>Opening a link never opens a gate. Only an explicit "Open gate" action (a POST request) can trigger an opening. Link-preview crawlers and browser prefetching cause no state change and no counter change. Link previews in messaging apps show only "Porta invitation", with no guest, community or schedule details.</td><td>Preview test in two messaging apps</td></tr>
+<tr><td>NFR-20</td><td>Security</td><td>Administrative actions (approving, rejecting or removing residents; creating, renaming or deactivating gates; rotating the join code) are recorded with actor and time, and administrators cannot edit or delete those records.</td><td>Inspect records after actions</td></tr>
 </table>
 </section>

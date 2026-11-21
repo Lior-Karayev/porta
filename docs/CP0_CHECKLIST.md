@@ -24,7 +24,7 @@ Source: instructor assignment "מטלה: מסמך דרישות מוצר (PRD)" (
 | 10 | Screens & UX | Screen, purpose, actions, navigation; **wireframes mandatory** | §10 table, Diagram 4, Wireframes 5a–6b | ✅ |
 | 11 | Data & external interfaces | Stored data, entities & relations (ERD), external services/APIs; AI: input/output/failure | §11.1–11.4, Diagram 7 | ✅ |
 | 12 | Platforms & device capabilities | Android/iOS, screen sizes, camera/location/notifications/local storage — why + permission denied | §12 | ✅ |
-| 13 | Non-functional requirements | Performance, security, privacy, accessibility, reliability, usability, weak/no connection | §13 NFR-01–NFR-18 | ✅ |
+| 13 | Non-functional requirements | Performance, security, privacy, accessibility, reliability, usability, weak/no connection | §13 NFR-01–NFR-20 | ✅ |
 | 14 | Assumptions, constraints, dependencies, risks | Constraints, assumptions, dependencies, risk + mitigation | §14 | ✅ |
 | 15 | Milestones & open questions | Stage, what is done, expected output; open questions list | §15 + Diagram 8 | ✅ |
 
