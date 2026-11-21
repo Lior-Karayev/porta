@@ -1,0 +1,159 @@
+<!-- ===== Section 14 ===== -->
+<section class="sec">
+<div class="group-label">GROUP D · PLANNING AHEAD</div>
+<h2><span class="num">14</span>Assumptions, Constraints, Dependencies and Risks</h2>
+<h3>14.1 Constraints</h3>
+<ul>
+<li><b>Time:</b> about 10 weeks from this PRD (21 Nov 2026) to the MVP deadline (31 Jan 2027). The period overlaps other courses and the end-of-semester exam season.</li>
+<li><b>Team:</b> three members (Daniel, Lior, Avishag). Their roles are not yet assigned (Q-01).</li>
+<li><b>Knowledge:</b> the team is learning Flutter/Dart during the course (assumed limited prior experience).</li>
+<li><b>Budget:</b> zero by default. Any paid service (cloud billing plan, Apple developer account, LLM API, custom domain) needs explicit team approval, with cost, benefit and alternatives stated.</li>
+<li><b>Hardware:</b> no real gates. Everything is simulated.</li>
+<li><b>Course:</b> the app must be developed in Flutter/Dart and delivered according to the course checkpoints.</li>
+</ul>
+<h3>14.2 Working assumptions (believed true, not fully verified)</h3>
+<table>
+<thead><tr><th style="width:8%">ID</th><th>Assumption</th><th style="width:28%">If it turns out false</th></tr></thead>
+<tr><td>A-01</td><td>Guests have a smartphone with a modern browser and mobile data when they arrive at the gate.</td><td>Out of scope for the MVP. A future fallback could be a gate keypad code.</td></tr>
+<tr><td>A-02</td><td>Each user belongs to exactly one community.</td><td>Multi-community support (Q-07) changes E-02.</td></tr>
+<tr><td>A-03</td><td>A Backend-as-a-Service (Firebase is the candidate) can host auth, data, server functions and the guest page within free or low-cost limits.</td><td>Choose an alternative (Q-09, R-05).</td></tr>
+<tr><td>A-04</td><td>A simulated gate (S-10) is acceptable for demonstrating and evaluating the product in the course.</td><td>Confirm with the lecturer.</td></tr>
+<tr><td>A-05</td><td>Minimum OS versions of Android 8 and iOS 15 are supported by the Flutter version we will use.</td><td>Raise the minimum versions.</td></tr>
+<tr><td>A-06</td><td>The team has at least one Android device for testing. iOS testing depends on device and account access (Q-10).</td><td>Use emulators and simulators.</td></tr>
+<tr><td>A-07</td><td>The administrator knows the residents personally, so verifying identity at approval time happens outside the system.</td><td>Add identity verification later.</td></tr>
+<tr><td>A-08</td><td>Holding the link means being authorised (a bearer link). This is acceptable for the MVP because of the time and count limits, instant revocation and notifications.</td><td>Add a PIN or phone check (Q-13).</td></tr>
+<tr><td>A-09</td><td>Each gate opening counts once, regardless of direction. The default one-time limit of 2 allows entry and exit if exiting needs an opening.</td><td>Revisit defaults after Q-02 validation.</td></tr>
+<tr><td>A-10</td><td>All MVP communities use the time zone Asia/Jerusalem. It is still stored per community.</td><td>No change needed. The field already exists.</td></tr>
+<tr><td>A-11</td><td>For the MVP, communities, their join codes and their first administrator are created by the project team with a setup script. That is enough for a demo with 1–2 communities.</td><td>Add self-service onboarding in a later milestone.</td></tr>
+</table>
+<h3>14.3 Dependencies (external services the product relies on)</h3>
+<ul>
+<li>A Backend-as-a-Service for authentication, database, server functions and hosting (A-03). <b>Note:</b> Firebase Cloud Functions require the pay-as-you-go (Blaze) plan with a linked billing account, even within free usage quotas. That is a budget decision (Q-09).</li>
+<li>Push delivery: FCM for Android, and APNs for iOS, which requires an Apple developer account.</li>
+<li>Domain and HTTPS hosting for invitation links and link-verification files (Q-15).</li>
+<li>The Apple Developer Program, for iOS device deployment, Universal Links and push (R-04).</li>
+<li>Flutter SDK and open-source packages (QR rendering, secure storage, deep links).</li>
+<li>LLM API provider: only for FR-35 (Could), and only after approval.</li>
+</ul>
+<h3>14.4 Risks and mitigations</h3>
+<table>
+<thead><tr><th style="width:7%">ID</th><th style="width:35%">Risk: what could go wrong</th><th style="width:9%">Likeli-hood / Impact</th><th>Proposed mitigation: what we will do</th></tr></thead>
+<tr><td>R-01</td><td>The schedule slips: the team is new to Flutter, and January has exams.</td><td>H / H</td><td>Strict MoSCoW: cut Should items before touching Must. Fixed milestone dates (Section 15). A weekly progress check, and an early vertical slice (M2–M3) before polish.</td></tr>
+<tr><td>R-02</td><td>An invitation link is forwarded, and someone else uses it.</td><td>M / M</td><td>Time and count limits bound the damage. Instant cancel or regenerate (FR-11, FR-17). Entry notifications (FR-29). Optional PIN or proximity check in future (Q-13).</td></tr>
+<tr><td>R-03</td><td>Concurrent or retried requests double-count or exceed the limit.</td><td>M / H</td><td>An atomic server transaction plus a unique request ID (NFR-07). Concurrency tests (AC-08.4).</td></tr>
+<tr><td>R-04</td><td>iOS features (Universal Links, push, deployment to devices) need a paid Apple developer account (USD 99 per year, per Apple's published pricing).</td><td>H / M</td><td>Android is the guaranteed demo platform. Use the iOS simulator without push. Ask the college about an education account. Paying requires team approval (Q-10).</td></tr>
+<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by the start of M1 (Q-09). Develop against the free local emulators until then. Option 1: approve the Blaze plan with budget alerts. Option 2: switch to Supabase Free, with one transactional database function (Section 11.3). A cost estimate is due before any approval.</td></tr>
+<tr><td>R-06</td><td>The AI feature produces wrong drafts, costs money or is unavailable.</td><td>M / L</td><td>Keep it as a Could. Confirmation before saving, server re-validation, an 8 s timeout and a manual fallback (Section 11.4).</td></tr>
+<tr><td>R-07</td><td>Time-zone or daylight-saving bugs grant or deny at the wrong hour. Israel changes clocks in late March and late October.</td><td>M / H</td><td>Evaluate only on the server, in the community's time zone, with a time-zone library. Add test cases around the DST change dates.</td></tr>
+<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Proposed: a lightweight HTML/JS guest page instead of Flutter Web, decided in M1 (Q-14).</td></tr>
+<tr><td>R-09</td><td>Deep-link verification is hard to set up.</td><td>M / L</td><td>It is a Should. The web fallback works for everyone (AC-09.2).</td></tr>
+<tr><td>R-10</td><td>Push notifications are delayed or not delivered.</td><td>M / L</td><td>The in-app Activity log is the source of truth. Push is a convenience.</td></tr>
+<tr><td>R-11</td><td>The problem or solution doesn't match real residents' needs (no research yet).</td><td>M / M</td><td>A validation round with at least 5 residents (Q-02) before M4. Update defaults and priorities from the findings.</td></tr>
+<tr><td>R-12</td><td>Someone guesses tokens or probes links.</td><td>L / H</td><td>128-bit tokens, hashed storage, rate limiting and a generic invalid page (NFR-05, NFR-06).</td></tr>
+<tr><td>R-13</td><td>Responsibilities are unclear, so work is duplicated or gaps appear.</td><td>M / M</td><td>Assign roles (Q-01) before M1 begins. Track tasks in GitHub issues.</td></tr>
+</table>
+</section>
+
+<!-- ===== Section 15 ===== -->
+<section class="sec">
+<h2><span class="num">15</span>Milestones and Open Questions</h2>
+<p>The milestone dates below are a <b>proposal by the team</b>. How they map to the course's official checkpoints is still open (Q-12). Each milestone ends with a demo of its output and a review before the next one starts.</p>
+<table>
+<thead><tr><th style="width:17%">Stage</th><th>What we do in it</th><th style="width:30%">Expected output</th></tr></thead>
+<tr><td><b>CP0 · PRD</b><br><span class="small">to 21 Nov 2026</span></td><td>Analyse the assignment. Define product, scope, requirements, diagrams and wireframes. Independent reviews.</td><td>This PRD as a single PDF. Sources in GitHub.</td></tr>
+<tr><td><b>M1 · Foundations</b><br><span class="small">30 Nov – 13 Dec 2026</span></td><td>Settle open technical decisions (Q-09, Q-14). Flutter project setup. Data model and server-side rules. Seeded community. <b>A thin deployed vertical slice:</b> a hard-coded permission opened from the browser page through the real backend, with the simulator reacting. Sign-in.</td><td>An end-to-end slice from Android to browser to simulator on the deployed backend. FR-01 working.</td></tr>
+<tr><td><b>M2 · Permission core</b><br><span class="small">14 – 31 Dec 2026</span></td><td>One-time and recurring permissions (single gate first). Cumulative limit and concurrency. Status derivation, DST and boundary tests. Suspend, resume, cancel. List and details. Invitation tokens and sharing.</td><td>The Must parts of FR-06–FR-16 passing their acceptance criteria, including AC-08.4.</td></tr>
+<tr><td><b>M3 · Guest access</b><br><span class="small">1 – 14 Jan 2027</span></td><td>Full guest page states. Community joining and administrator approval (FR-02–FR-05). Logs (FR-26, FR-27). Integration across roles. First Should items (QR, multiple gates).</td><td>All Must requirements demoable end to end (Diagram 4).</td></tr>
+<tr><td><b>M4 · MVP hardening</b><br><span class="small">15 – 31 Jan 2027</span></td><td>Acceptance run of all Must criteria, NFR verification, usability test (n ≥ 5), security review and fixes. Further Should items only in the order given in Section 7.2, and only while Must items stay green.</td><td><b>MVP release, 31 Jan 2027.</b> Test report against G1–G7.</td></tr>
+<tr><td><b>M5 · Guest management</b><br><span class="small">after MVP, unscheduled</span></td><td>Group invitations. Templates and contacts, if not already delivered.</td><td>F-12 (and F-05, F-11).</td></tr>
+<tr><td><b>M6 · Governance</b><br><span class="small">after MVP, unscheduled</span></td><td>Administrator reports, anomaly detection, approvals for sensitive permissions.</td><td>F-16, F-17, F-18.</td></tr>
+<tr><td><b>M7 · AI</b><br><span class="small">after MVP, unscheduled</span></td><td>Natural-language creation (if not already delivered). Smart reminders and suggestions. AI-enhanced assistant.</td><td>F-19, F-20, F-21 (AI).</td></tr>
+</table>
+
+<div class="fig">
+<div class="cap">Diagram 8 · Milestone timeline to the MVP (proposed)</div>
+<pre class="mermaid">
+gantt
+  dateFormat YYYY-MM-DD
+  axisFormat %d %b
+  section Docs
+  CP0 PRD              :done, cp0, 2026-11-19, 2026-11-21
+  section MVP
+  M1 Foundations + slice:m1, 2026-11-30, 2026-12-13
+  M2 Permission core   :m2, 2026-12-14, 2026-12-31
+  M3 Guest access      :m3, 2027-01-01, 2027-01-14
+  M4 MVP hardening     :m4, 2027-01-15, 2027-01-31
+  MVP release          :milestone, mvp, 2027-01-31, 0d
+</pre>
+<div class="exp"><b>What it shows:</b> the four MVP milestones from the table above as consecutive blocks ending at the 31 Jan 2027 release. M5–M7 come after the MVP and are not scheduled yet. <b>Why it matters:</b> a deployed end-to-end slice exists from M1, so integration risk shows up early. Permissions come next, then roles and integration. The last two weeks are kept for verification. Should items are added in a fixed order and can be cut (R-01).</div>
+</div>
+
+<h3>Open questions: still undecided or needing clarification</h3>
+<table>
+<thead><tr><th style="width:7%">ID</th><th>Question</th><th style="width:22%">Owner · needed by</th></tr></thead>
+<tr><td>Q-01</td><td>What is each member's area of responsibility? Members' surnames are also needed for Section 1.</td><td>Team · before submission</td></tr>
+<tr><td>Q-02</td><td>Who will run the validation round with at least 5 residents, and when? Which questions will it ask?</td><td>Team · before M4</td></tr>
+<tr><td>Q-03</td><td>Hands-on verification of the products in Section 5: which ones, and what do they offer guests today?</td><td>Team · M1</td></tr>
+<tr><td>Q-04</td><td>Does the course require an AI feature inside the MVP? Is an LLM API cost approved for FR-35?</td><td>Team and lecturer · M1</td></tr>
+<tr><td>Q-05</td><td>For group invitations: is there one opening limit per guest or one shared by the group? Is there one link or one per guest?</td><td>Team · M5</td></tr>
+<tr><td>Q-06</td><td>What makes a permission "sensitive" (needing approval), and what counts as "unusual" activity?</td><td>Team · M6</td></tr>
+<tr><td>Q-07</td><td>Will a user ever belong to more than one community (e.g. a resident with two homes)?</td><td>Team · post-MVP</td></tr>
+<tr><td>Q-08</td><td>Are overnight windows (crossing midnight) needed for recurring permissions?</td><td>Team · M2</td></tr>
+<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (a billing account is required to deploy Cloud Functions, even within the free usage allowance), or Supabase Free with a transactional database function? A cost estimate and approval are needed.</td><td>Team · start of M1</td></tr>
+<tr><td>Q-10</td><td>iOS: is an Apple developer account available (college program or paid, with approval)? Which iOS devices can we test on?</td><td>Team · M1</td></tr>
+<tr><td>Q-11</td><td>How long should access logs be kept (12 months proposed)?</td><td>Team · M3</td></tr>
+<tr><td>Q-12</td><td>How do the official course checkpoints and dates map to M1–M4?</td><td>Team and lecturer · M1</td></tr>
+<tr><td>Q-13</td><td>Do guest links need extra protection against forwarding (PIN, phone check, proximity)?</td><td>Team · M3</td></tr>
+<tr><td>Q-14</td><td>Guest page technology. <b>Proposed after the feasibility review:</b> lightweight HTML/JS on one canonical default hosting domain, because Flutter Web risks NFR-02. Can the token travel in the URL fragment and still work with App Links / Universal Links on signed devices (NFR-05)?</td><td>Team and Codex · start of M1</td></tr>
+<tr><td>Q-15</td><td>Which domain will invitation links use? <b>Proposed:</b> the hosting provider's free default domain. It can serve the App Links / Universal Links association files under <code>/.well-known/</code>, so no custom domain is needed.</td><td>Team · start of M1 (before the slice is deployed)</td></tr>
+</table>
+</section>
+
+<!-- ===== Appendices ===== -->
+<section class="sec">
+<h2><span class="num">A</span>Appendix A · Traceability Matrix</h2>
+<p>Each capability maps to the requirements, stories and screens that implement it. Post-MVP capabilities have no stories yet; they will be detailed in their milestones.</p>
+<table>
+<thead><tr><th style="width:8%">F</th><th style="width:10%">MoSCoW</th><th style="width:28%">Functional requirements</th><th style="width:22%">User stories</th><th>Screens</th></tr></thead>
+<tr><td>F-01</td><td>Must</td><td>FR-06, FR-12, FR-13, FR-14</td><td>US-01</td><td>S-03, S-04</td></tr>
+<tr><td>F-02</td><td>Must</td><td>FR-07, FR-12, FR-13, FR-14</td><td>US-02</td><td>S-03, S-04</td></tr>
+<tr><td>F-03</td><td>Must</td><td>FR-06, FR-07, FR-08, FR-20</td><td>US-02, US-03, US-08</td><td>S-04, W-01</td></tr>
+<tr><td>F-04</td><td>Must</td><td>FR-10, FR-11</td><td>US-03, US-04</td><td>S-04, W-01</td></tr>
+<tr><td>F-05</td><td>Could</td><td>FR-33</td><td>—</td><td>S-03</td></tr>
+<tr><td>F-06</td><td>Should</td><td>FR-04, FR-09</td><td>US-07, US-11</td><td>S-03, S-08</td></tr>
+<tr><td>F-07</td><td>Must</td><td>FR-01–FR-05</td><td>US-10</td><td>S-01, S-08</td></tr>
+<tr><td>F-08</td><td>Must</td><td>FR-15, FR-16, FR-17</td><td>US-01, US-05</td><td>S-05, S-04</td></tr>
+<tr><td>F-09</td><td>Must</td><td>FR-19–FR-23</td><td>US-07, US-08, US-09</td><td>W-01, W-02, S-11</td></tr>
+<tr><td>F-10</td><td>Should</td><td>FR-18</td><td>US-05</td><td>S-05</td></tr>
+<tr><td>F-11</td><td>Could</td><td>FR-34</td><td>—</td><td>S-03</td></tr>
+<tr><td>F-12</td><td>Won't</td><td>FR-36</td><td>—</td><td>—</td></tr>
+<tr><td>F-13</td><td>Must</td><td>FR-26, FR-27, FR-28; NFR-20 (admin audit)</td><td>US-06, US-11</td><td>S-06, S-09, S-10</td></tr>
+<tr><td>F-14</td><td>Should</td><td>FR-29, FR-30</td><td>US-06</td><td>S-12</td></tr>
+<tr><td>F-15</td><td>Should</td><td>FR-31</td><td>US-06</td><td>S-02</td></tr>
+<tr><td>F-16</td><td>Won't</td><td>FR-37</td><td>—</td><td>—</td></tr>
+<tr><td>F-17</td><td>Won't</td><td>FR-38</td><td>—</td><td>—</td></tr>
+<tr><td>F-18</td><td>Won't</td><td>FR-39</td><td>—</td><td>—</td></tr>
+<tr><td>F-19</td><td>Could</td><td>FR-35</td><td>US-13</td><td>S-13, S-03</td></tr>
+<tr><td>F-20</td><td>Won't</td><td>FR-40</td><td>—</td><td>—</td></tr>
+<tr><td>F-21</td><td>Should</td><td>FR-32</td><td>US-12</td><td>S-07</td></tr>
+<tr><td>Simulation</td><td>Must</td><td>FR-24, FR-25</td><td>US-07, US-11</td><td>S-10</td></tr>
+</table>
+
+<h2 style="margin-top:8mm"><span class="num">B</span>Appendix B · Sources</h2>
+<ol>
+<li>K. Zoabi, <i>Assignment: Product Requirements Document (PRD)</i>, Kinneret College, 2026–27. The 15-section structure, tips and pre-submission checklist.</li>
+<li>Course practice sessions 1 ("What a PRD is and what it contains") and 2 ("Writing a PRD in parts"), linked from the assignment. <span class="open">Not consulted for this version; the team should add any specific material it uses from them.</span></li>
+<li>MoSCoW prioritisation: DSDM / Agile Business Consortium, <i>MoSCoW Prioritisation</i>.</li>
+<li>User-story format (As a… I want… so that…) and Given / When / Then acceptance criteria: common agile practice (Connextra format; Gherkin / behaviour-driven development).</li>
+<li>W3C, <i>Web Content Accessibility Guidelines (WCAG) 2.1</i>, Level AA.</li>
+<li>OWASP, <i>Mobile Application Security Verification Standard (MASVS)</i> and <i>Application Security Verification Standard (ASVS)</i>, used for the security review checklist.</li>
+<li>Brooke, J. (1996), <i>SUS: A "quick and dirty" usability scale</i>, the System Usability Scale used in G7.</li>
+<li>Android Developers, <i>App Links</i>, and Apple Developer, <i>Universal Links</i> documentation (deep linking, FR-22).</li>
+<li>Firebase documentation (Authentication, Firestore, Cloud Functions, Hosting, Cloud Messaging, and pricing plans), for the candidate backend (A-03, Q-09).</li>
+<li>AI assistance: this PRD was drafted with AI agents (Claude, Codex, Antigravity, orchestrated by Omnigent) under the team's direction. All content was reviewed by the team.</li>
+</ol>
+<p class="small">Diagrams were drawn with Mermaid. Wireframes were drawn as HTML/CSS sketches.</p>
+</section>
+
+</body>
+</html>
