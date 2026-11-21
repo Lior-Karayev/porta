@@ -52,6 +52,10 @@ Codex re-checked CX-01…CX-12: 8 resolved; 4 needed more work, plus 2 new major
 | NEW-1 (major) | Diagram 3 reordered: receipt replay happens **before** the per-invitation quota; only the per-IP invalid-link limit precedes the transaction |
 | NEW-2 (major) | FR-26: rate-limited attempts are logged as one summary event per invitation (or IP) per minute with `attemptCount` |
 
+Final Codex check (commit 2a0e264): **no merge blocker.** Two residual gaps fixed in the next commit:
+- CX-04: Supabase fallback also locks the owning resident's membership row (or serializable isolation).
+- Rate-limit ordering: token validated first (check 1), before receipt replay; the per-IP limit applies only to invalid links, so valid retries are never throttled by it.
+
 ## Not adopted / deferred
 - CX-01 suggested deferring *all* other Shoulds incl. editing/regeneration. Adopted as an explicit add-order (§7.2) rather than removal, so the MVP definition (all Musts) is unchanged and Shoulds are cut from the tail if time runs out.
 - CX-08 suggested requiring user disambiguation for repeated DST wall times; v1.0 uses "first occurrence" for simplicity (one hour per year in late October). Revisit in M2 if tests show confusion.

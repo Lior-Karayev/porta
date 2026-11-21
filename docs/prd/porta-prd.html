@@ -597,15 +597,18 @@ stateDiagram-v2
 <div class="cap">Diagram 3 · Process diagram: validating a gate-open request (FR-20, FR-21)</div>
 <pre class="mermaid">
 flowchart TD
-  A([Guest taps 'Open gate'<br/>W-01 / S-11 · new request ID]) --> B{Client IP under the<br/>invalid-link limit? NFR-06}
+  A([Guest taps 'Open gate'<br/>W-01 / S-11 · new request ID]) --> T[[BEGIN atomic transaction]]
+  T --> V{Check 1: token digest matches<br/>a non-revoked invitation?}
+  V -- no --> B{Client IP under the<br/>invalid-link limit? NFR-06}
+  B -- yes --> IL[Deny INVALID_LINK<br/>generic page W-02]
   B -- no --> RL[Deny RATE_LIMITED<br/>log summarised FR-26]
-  B -- yes --> T[[BEGIN atomic transaction]]
-  T --> R{Receipt for<br/>invitation + request ID<br/>already exists?}
+  IL --> CM
+  V -- yes --> R{Receipt for<br/>invitation + request ID<br/>already exists?}
   R -- "yes, same gate" --> RP([Return the stored result<br/>incl. remaining count · nothing counted])
   R -- "yes, other gate" --> DUP[Deny DUPLICATE_REQUEST<br/>nothing counted]
   R -- no --> Q{Invitation under its<br/>per-minute quota? NFR-06}
   Q -- no --> RL2[Deny RATE_LIMITED<br/>log summarised FR-26]
-  Q -- yes --> C[Run checks 1–9 in order<br/>table below]
+  Q -- yes --> C[Run checks 2–9 in order<br/>table below]
   C -- a check fails --> DN[Write DENIED event + receipt<br/>with the first failing reason]
   C -- all pass --> GR[Write together:<br/>used + 1 · gate openUntil = now + 5 s<br/>GRANTED event + receipt incl. remaining]
   DN --> CM[[COMMIT]]
@@ -620,7 +623,7 @@ flowchart TD
 </pre>
 <table style="margin-top:2mm">
 <thead><tr><th style="width:6%">#</th><th>Check (inside the transaction; reads permission, invitation, owner membership and gate)</th><th style="width:30%">Denial reason if it fails</th></tr></thead>
-<tr><td>1</td><td>The token digest matches a non-revoked invitation</td><td><code>INVALID_LINK</code> (generic page W-02)</td></tr>
+<tr><td>1</td><td>The token digest matches a non-revoked invitation. This runs first, before receipt replay, and the per-IP invalid-link limit applies only when it fails.</td><td><code>INVALID_LINK</code> (generic page W-02), or <code>RATE_LIMITED</code> after too many invalid links from one IP</td></tr>
 <tr><td>2</td><td>The permission is not cancelled</td><td><code>CANCELLED</code></td></tr>
 <tr><td>3</td><td>The permission is not suspended</td><td><code>SUSPENDED</code></td></tr>
 <tr><td>4</td><td>The owning resident is still an approved member of the community (defence in depth for FR-05)</td><td><code>SUSPENDED</code></td></tr>
@@ -633,7 +636,7 @@ flowchart TD
 <div class="exp"><b>What it shows:</b> the server-side handling of every opening request. The table lists the checks in order, each with its denial reason. <b>Why it matters:</b>
 <ul>
 <li>All reads and writes happen <b>inside one atomic transaction</b>: the receipt, invitation, permission and gate checks, and then the counter, gate open-until time, event and receipt writes. A concurrent cancel, suspend, edit, link regeneration, resident removal or gate deactivation therefore can't slip in between a check and the grant, and concurrent requests can never exceed the limit (AC-08.4).</li>
-<li>Receipts are looked up <i>before</i> the per-invitation quota, so a retry of a request that was already committed always gets its stored result (AC-07.2) and is never refused as rate-limited. A request ID reused for a different gate is rejected without counting.</li>
+<li>The invitation is validated first. The per-IP limit applies only to invalid links, so valid retries are never blocked by it. Receipts are then looked up <i>before</i> the per-invitation quota, so a retry of a request that was already committed always gets its stored result (AC-07.2) and is never refused as rate-limited. A request ID reused for a different gate is rejected without counting.</li>
 <li>If the outcome of the commit is unknown to the client (for example the connection drops), the page treats it as unconfirmed and offers a retry with the same request ID. The server logs the failure whenever storage is available.</li>
 <li>Invalid links reveal nothing.</li>
 <li>Any conflict or error results in a denial. The system fails closed (NFR-11).</li>
@@ -963,7 +966,7 @@ erDiagram
 <table>
 <thead><tr><th style="width:24%">Service (candidate)</th><th>What it provides to the product</th><th style="width:22%">Needed for</th></tr></thead>
 <tr><td>Backend-as-a-Service: Firebase Authentication, Cloud Firestore, Cloud Functions (candidate)</td><td>User accounts. Database with security rules. Server-side logic for gate validation, atomic counter transactions, token hashing and rate limiting.</td><td>FR-01–FR-35, NFR-04–NFR-07</td></tr>
-<tr><td><i>Alternative if billing is not approved:</i> Supabase Free (Auth, Postgres, one transactional database function that locks the permission, invitation and gate rows (or runs at serializable isolation), so changes to any of them are serialized with grants; static hosting for the guest page)</td><td>The same server-side validation without a billing account. Free projects pause after inactivity, so the team must rehearse a resume before every demo (NFR-13).</td><td>Q-09, R-05</td></tr>
+<tr><td><i>Alternative if billing is not approved:</i> Supabase Free (Auth, Postgres, one transactional database function that locks the permission, invitation, gate and owning resident's membership rows (or runs at serializable isolation), so changes to any of them, including resident removal, are serialized with grants; static hosting for the guest page)</td><td>The same server-side validation without a billing account. Free projects pause after inactivity, so the team must rehearse a resume before every demo (NFR-13).</td><td>Q-09, R-05</td></tr>
 <tr><td>Web hosting with HTTPS: Firebase Hosting on its default <code>*.web.app</code> domain (candidate)</td><td>Serves the guest page W-01/W-02, plus the files that verify App Links and Universal Links (<code>assetlinks.json</code>, <code>apple-app-site-association</code>).</td><td>FR-19–FR-22</td></tr>
 <tr><td>Push notifications: Firebase Cloud Messaging, and APNs for iOS</td><td>Delivers entry notifications to residents.</td><td>FR-29, FR-30</td></tr>
 <tr><td>Device share sheet and clipboard (OS)</td><td>Sends the link through any messaging app the resident has.</td><td>FR-16</td></tr>
