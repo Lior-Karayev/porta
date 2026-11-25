@@ -11,7 +11,7 @@
 <tr><td>AC-01.2</td><td>E</td><td>Given the creation form, when the end time is before or equal to the start, or more than 7 days after it, then the form shows an inline error on the end field, the Save button stays disabled, and nothing is saved.</td></tr>
 <tr><td>AC-01.3</td><td>X</td><td>Given the creation form, when the guest name is empty or only spaces, or no gate is selected, then an inline "required" message is shown and nothing is saved.</td></tr>
 <tr><td>AC-01.4</td><td>E</td><td>Given no internet connection, when the resident taps Save, then the app shows "No connection. Your permission was not saved.", keeps everything entered, and offers Retry. No link exists until the save succeeds.</td></tr>
-<tr><td>AC-01.5</td><td>X</td><td>Given a slow connection, when the resident taps Save twice quickly, then exactly one permission is created (the button is disabled while the save is in progress, and the server rejects a duplicate request ID).</td></tr>
+<tr><td>AC-01.5</td><td>X</td><td>Given a slow connection, when the resident taps Save twice quickly, then exactly one permission is created (the button is disabled while the save is in progress, and a repeated save with the same request ID returns the first result without creating another permission or link, FR-16).</td></tr>
 
 <tr><td colspan="3"><b>US-02</b> · As a <b>resident</b>, I want to give my cleaner recurring access on Tuesdays 08:00–12:00, so that I don't have to be home to let them in. <span class="small">P-F02 · Implements FR-07, FR-08, FR-13</span></td></tr>
 <tr><td>AC-02.1</td><td>H</td><td>Given a recurring permission for Tuesdays 08:00–12:00 from 1 Dec 2026 to 31 Mar 2027 with limit 40, when the guest requests an opening on Tue 1 Dec 2026 at 09:15 (community time zone), then it is granted and the used count becomes 1.</td></tr>
@@ -73,6 +73,7 @@
 <tr><td>AC-10.1</td><td>H</td><td>Given a user who joined with a valid code, when the administrator approves them, then the user's next app launch shows the resident home screen (S-02).</td></tr>
 <tr><td>AC-10.2</td><td>E</td><td>Given a pending user, when they try to create a permission (including by calling the server directly), then the request is rejected with "not authorized" and nothing is created.</td></tr>
 <tr><td>AC-10.3</td><td>X</td><td>Given a user who enters an unknown community code, when they submit, then "Community code not found" is shown and they remain unassigned.</td></tr>
+<tr><td>AC-10.6</td><td>E</td><td>Given an approved resident with 2 active permissions, when the team's setup script marks the membership REMOVED (at the administrator's request), then both permissions are denied with <code>SUSPENDED</code> on the next request, the resident cannot create or resume permissions, and their next app launch shows "Membership removed".</td></tr>
 <tr><td>AC-10.5</td><td>E</td><td>Given a pending user, when the administrator rejects them, then the user's next app launch shows "Your request to join was not approved", with the options to enter a different code or sign out. The decision is stored with who made it and when (FR-05).</td></tr>
 
 <tr><td colspan="3"><b>US-11</b> · As an <b>administrator</b>, I want to watch the community's gates in a simulator, so that the demo reflects real gate behaviour. <span class="small">P-F04 · Implements FR-04, FR-24, FR-25</span></td></tr>
@@ -84,8 +85,8 @@
 <table>
 <thead><tr><th style="width:9%">ID</th><th style="width:5%">Type</th><th>Acceptance criterion</th></tr></thead>
 <tr><td colspan="3"><b>US-13</b> · As a <b>resident</b>, I want to type "Gardener every Sunday 7–10 until end of March", so that the permission is drafted for me. <span class="small">P-F06 · Implements FR-35, FR-41, FR-42</span></td></tr>
-<tr><td>AC-13.1</td><td>H</td><td>Given the text above, when the resident submits it, then a draft opens with type Recurring, Sundays, 07:00–10:00, from today until 31 Mar, with the gate and limit highlighted as "please choose". Nothing is created until the resident confirms.</td></tr>
-<tr><td>AC-13.2</td><td>E</td><td>Given the AI service is unavailable or takes more than 8 s, when the resident submits, then "Couldn't understand automatically. Please fill in the form." is shown, the manual form opens, and the original text stays visible.</td></tr>
+<tr><td>AC-13.1</td><td>H</td><td>Given the text above, when the resident submits it, then a draft opens in S-03 with guest name "Gardener", type Recurring, Sundays, 07:00–10:00, from today until 31 Mar (all marked ✦ AI-filled), and the gate and limit empty and highlighted as "please choose". Nothing is created until the resident confirms.</td></tr>
+<tr><td>AC-13.2</td><td>E</td><td>Given the AI service is unavailable or takes more than 8 s, when the resident submits, then "Automatic drafts are unavailable right now. Please fill in the form." is shown (or, when the service answered but nothing could be understood, "Couldn't understand the text. Please fill in the form."), the manual form opens, and the original text stays visible.</td></tr>
 <tr><td>AC-13.3</td><td>X</td><td>Given ambiguous or out-of-range text (e.g. "forever", "1000 times"), when it is processed, then the draft never contains values outside FR-06/FR-07 limits. Those fields are flagged for the resident to fix.</td></tr>
 <tr><td>AC-13.4</td><td>X</td><td>Given a draft with a field still marked "please choose", when the resident taps Save, then saving is blocked until the field is filled. When the saved values are sent, the server validates them exactly like manual input, and a value outside the limits is rejected even if the client was bypassed.</td></tr>
 <tr><td>AC-13.5</td><td>E</td><td>Given the resident has reached the daily limit of AI drafts (NFR-21), or the AI service is not configured, when they submit text, then "Automatic drafts aren't available right now. Please use the form." is shown, the manual form opens with the text visible, and nothing is sent to the AI service.</td></tr>
@@ -96,7 +97,7 @@
 <pre class="mermaid">
 flowchart TD
   A([Guest taps 'Open gate'<br/>W-01 / S-11 · new request ID]) --> T[[BEGIN atomic transaction]]
-  T --> V{Check 1: token digest matches<br/>a non-revoked invitation?}
+  T --> V{Check 1: token digest matches<br/>a known invitation?}
   V -- no --> B{Client IP under the<br/>invalid-link limit? NFR-06}
   B -- yes --> IL[Deny INVALID_LINK<br/>generic page W-02]
   B -- no --> RL[Deny RATE_LIMITED<br/>log summarised FR-26]
@@ -121,7 +122,7 @@ flowchart TD
 </pre>
 <table style="margin-top:2mm">
 <thead><tr><th style="width:6%">#</th><th>Check (inside the transaction; reads permission, invitation, owner membership and gate)</th><th style="width:30%">Denial reason if it fails</th></tr></thead>
-<tr><td>1</td><td>The token digest matches a non-revoked invitation. This runs first, before receipt replay, and the per-IP invalid-link limit applies only when it fails.</td><td><code>INVALID_LINK</code> (generic page W-02), or <code>RATE_LIMITED</code> after too many invalid links from one IP</td></tr>
+<tr><td>1</td><td>The token digest matches a known invitation (cancelled permissions keep their invitation, so their link reaches check 2 and shows <code>CANCELLED</code>). This runs first, before receipt replay, and the per-IP invalid-link limit applies only when it fails.</td><td><code>INVALID_LINK</code> (generic page W-02), or <code>RATE_LIMITED</code> after too many invalid links from one IP</td></tr>
 <tr><td>2</td><td>The permission is not cancelled</td><td><code>CANCELLED</code></td></tr>
 <tr><td>3</td><td>The permission is not suspended</td><td><code>SUSPENDED</code></td></tr>
 <tr><td>4</td><td>The owning resident is still an approved member of the community (defence in depth)</td><td><code>SUSPENDED</code></td></tr>
@@ -137,7 +138,8 @@ flowchart TD
 <li>The invitation is validated first. The per-IP limit applies only to invalid links, so valid retries are never blocked by it. Receipts are then looked up <i>before</i> the per-invitation quota, so a retry of a request that was already committed always gets its stored result (AC-07.2) and is never refused as rate-limited. A request ID reused for a different gate is rejected without counting.</li>
 <li>If the outcome of the commit is unknown to the client (for example the connection drops), the page treats it as unconfirmed and offers a retry with the same request ID. The server logs the failure whenever storage is available.</li>
 <li>Invalid links reveal nothing.</li>
-<li>Any conflict or error results in a denial. The system fails closed (NFR-11).</li>
+<li>A transaction that fails because of a concurrent write is retried by the server up to 3 times, re-running every check on fresh data. Two simultaneous requests for the last opening therefore end as one grant and one <code>EXHAUSTED</code> (AC-08.4). Any other error, or a conflict after the retries, results in a denial. The system fails closed (NFR-11).</li>
+<li>Receipts: every request that reaches the receipt lookup gets its own receipt (E-08), keyed by invitation and request ID and storing the requested gate. <code>DUPLICATE_REQUEST</code> is answered from the existing receipt and adds none. <code>RATE_LIMITED</code> denials create no receipt; they are counted in one summary record per minute (FR-26), and a retry after the limit is processed normally.</li>
 <li>Push notifications are sent only after the commit.</li>
 </ul>
 All time checks use the community's time zone (FR-06, FR-07).</div>

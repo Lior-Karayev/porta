@@ -6,7 +6,7 @@ Sources:
 - The instructor's clarification of the course requirements, as relayed to the team in Nov 2026.
 - The team's CP0 restructuring assignment (25 Nov 2026).
 
-The table below shows every mandatory item and where **PRD v2.0** (`docs/prd/Porta-PRD.pdf`, 52 pages) covers it.
+The table below shows every mandatory item and where **PRD v2.0** (`docs/prd/Porta-PRD.pdf`, 55 pages) covers it.
 
 ## Deliverable
 | # | Requirement | Where | Status |

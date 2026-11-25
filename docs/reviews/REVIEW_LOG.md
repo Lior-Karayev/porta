@@ -24,7 +24,15 @@ Detailed findings of a round may live in their own file in `docs/reviews/` (for 
 
 ### R2 · 2026-11-25 · CP0 revision: PRD v2.0, agent policy, sprint plan
 
-Findings and their resolution: [`CP0_REVISION_REVIEWS.md`](CP0_REVISION_REVIEWS.md).
+| Field | Value |
+|---|---|
+| Subject | Draft commit `3b535a1` on `cp0/scope-reduction` |
+| Review level | focused (technical, UX, policy/security) |
+| Implementing agent | Claude Code (Opus 5.5) via Omnigent |
+| Reviewing agent(s) | Codex (technical), Antigravity (UX), Claude Code subagent (policy/security) |
+| Findings | 40 (3 critical, 26 major, 11 minor) — [`CP0_REVISION_REVIEWS.md`](CP0_REVISION_REVIEWS.md) |
+| Resolution | All critical and major findings fixed; detail parts of 3 findings deferred to Feature PRDs |
+| Open after review | No re-review round was run on the fixes (proportional effort for a documentation checkpoint); Lior's human review is the next gate |
 
 ### R1 · 2026-11-21 · CP0: PRD v0.9 → v1.0
 

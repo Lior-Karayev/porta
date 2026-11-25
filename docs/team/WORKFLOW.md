@@ -32,7 +32,7 @@ Identity statements are a coordination safeguard, not authentication. Agents nev
 | Checks | Format, analysis and tests must pass in CI once CI exists (Sprint 1). |
 | Review | Proportional review (Section 5). Findings and fixes are recorded in the PR and, for critical logic, in `docs/reviews/REVIEW_LOG.md`. |
 | Ready | The agent sets the task status to `READY_FOR_HUMAN_REVIEW`, reports the PR URL, and **stops**. |
-| Merge | Only after Lior explicitly authorises that specific PR. The status becomes `MERGED` only when the merge has actually happened. |
+| Merge | Lior reviews and merges the PR himself (`AGENTS.md` §4). Agents never merge. The status becomes `MERGED` only when the merge has actually happened. |
 
 **PR checklist** (copy into each PR description):
 

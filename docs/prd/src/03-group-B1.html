@@ -32,7 +32,7 @@
 
 <h4>Porta v1.0: milestone M2, 30 January 2027 (proposed)</h4>
 <p><b>Porta v1.0 is complete when every Must part of P-F01–P-F06 passes its acceptance criteria</b> (goal G1), subject to documented feasibility decisions and approved changes. The date is a proposed end-of-semester milestone, not an instructor-confirmed deadline (Q-16). The feature freeze is on 23 January 2027 (Section 15).</p>
-<p><b>Cut order if time runs out</b> (first item cut first; validation, security and tests are never cut): deep links (FR-22, Could) → push notifications (FR-29, Should; the activity history stays) → password reset (Could) → English UI (Could, NFR-17) → QR code (FR-18; native sharing stays). If no AI provider can be approved (Section 7.5), descoping P-F06 is a team decision. Porta would still demonstrate the five significant features P-F01–P-F05.</p>
+<p><b>Cut order if time runs out</b> (first item cut first; validation, security and tests are never cut). Cutting any item is a team decision recorded in the decision log. Cutting a <span class="tag must">Must</span> item (QR) is an approved scope change that also updates FR-18, US-05 and the G1 baseline: deep links (FR-22, Could) → push notifications (FR-29, Should; the activity history stays) → password reset (Could) → English UI (Could, NFR-17) → QR code (FR-18; native sharing stays). If no AI provider can be approved (Section 7.5), descoping P-F06 is a team decision. Porta would still demonstrate the five significant features P-F01–P-F05.</p>
 
 <h3>7.3 Future enhancements (not in this project)</h3>
 <p>These are possible directions after the course. They are recorded so that the vision stays visible. They carry no implementation commitment.</p>
@@ -46,7 +46,7 @@
 <ul>
 <li>Integration with real gate hardware or controllers. <b>All gates are simulated.</b></li>
 <li>Every v1.0 capability mapped to "Out of Scope" in Section 7.6, unless it later becomes a minimal technical dependency of P-F01–P-F06 and the team approves it as a decision.</li>
-<li>Administration beyond approving residents: gate management screens, removing residents, community-wide logs, and an administrator audit trail. Communities, gates and the first administrator are provisioned by the team with a setup script (A-11, D-31).</li>
+<li>Administration beyond approving residents: gate management screens, removing residents in the app, community-wide logs, and an administrator audit trail. Communities, gates and the first administrator are provisioned by the team with a setup script, which is also used to remove a resident who has left (A-11, D-31, FR-05).</li>
 <li>Residents' own entry and exit through Porta, and vehicle or licence-plate recognition.</li>
 <li>Video intercom, voice calls, and guard-station applications.</li>
 <li>Payments, billing, and multi-community SaaS administration. A user belongs to one community.</li>
@@ -60,8 +60,8 @@
 <p><b>Decision (D-32, proposed):</b> AI-assisted creation (P-F06) is part of Porta v1.0, but <b>no core function depends on it</b>. The regular form (S-03) always works.</p>
 <ol>
 <li><b>Safe by construction:</b> the AI only <i>drafts</i> fields. The resident reviews the draft in the regular form and confirms it, and the server validates it exactly like manual input (FR-41). If the AI is unavailable, slow, over its usage cap or not approved, the manual form opens with the text kept (FR-42).</li>
-<li><b>Privacy and keys:</b> the app never holds an AI key. Requests go through a backend proxy that sends only the resident's text, today's date, the time zone and the names of active gates (Section 11.4, NFR-21).</li>
-<li><b>Cost:</b> the AI provider and any cost need <b>explicit team approval by 26 Dec 2026</b> (Q-04). A free tier is preferred if it meets the privacy limits. A per-user daily cap keeps usage bounded. Nothing is bought without approval.</li>
+<li><b>Privacy and keys:</b> the app never holds an AI key. Requests go through a backend proxy, which accepts approved residents only. It sends only the resident's text, today's date, the time zone and the names of the caller's own active gates, and it treats both the text and the model's answer as untrusted (Section 11.4, NFR-21).</li>
+<li><b>Cost:</b> the AI provider and any cost need <b>explicit team approval by 26 Dec 2026</b> (Q-04). A free tier is preferred if its data-use terms are acceptable (Section 11.4). Per-user and global daily caps, an output-length limit and a provider spending limit keep usage bounded. Nothing is bought without approval.</li>
 <li><b>If nothing can be approved:</b> the team decides between a free tier, an approved paid plan within a stated budget, or descoping P-F06 (Section 7.2). The decision is recorded. It is never made silently.</li>
 </ol>
 <p><b>Why it is scheduled late (Sprints 3–4):</b> it depends on a working permission model (P-F02), and its provider decision needs time. The core access logic is built and tested first.</p>
@@ -99,10 +99,10 @@
 <h4>Retired and changed identifiers</h4>
 <table>
 <thead><tr><th style="width:18%">Kind</th><th style="width:40%">Retired in v2.0 (numbers not reused)</th><th>Changed or added</th></tr></thead>
-<tr><td>Functional requirements</td><td>FR-09 multiple gates · FR-12 edit · FR-17 regenerate link · FR-23 "My invitations" · FR-28 community log · FR-30 reminders · FR-31 dashboard · FR-32 wizard · FR-33 templates · FR-34 contacts · FR-36–FR-40 (post-MVP items)</td><td>FR-04 gates provisioned, not managed · FR-05 approve / reject only · FR-06/FR-07 one gate · FR-18 now Must · FR-22 now Could · FR-35 now Must · <b>new</b> FR-41, FR-42</td></tr>
-<tr><td>Stories and criteria</td><td>US-12 · AC-05.3 · AC-10.4 · AC-11.1 · AC-11.2</td><td>AC-07.4 one gate · US-09 now Could · US-13 now Must · <b>new</b> US-14, AC-05.4, AC-10.5, AC-13.4, AC-13.5</td></tr>
+<tr><td>Functional requirements</td><td>FR-09 multiple gates · FR-12 edit · FR-17 regenerate link · FR-23 "My invitations" · FR-28 community log · FR-30 reminders · FR-31 dashboard · FR-32 wizard · FR-33 templates · FR-34 contacts · FR-36–FR-40 (post-MVP items)</td><td>FR-04 gates provisioned, not managed · FR-05 approve / reject in the app, removal only by setup script · FR-06/FR-07 one gate · FR-18 now Must · FR-22 now Could · FR-35 now Must · <b>new</b> FR-41, FR-42</td></tr>
+<tr><td>Stories and criteria</td><td>US-12 · AC-05.3 · AC-10.4 · AC-11.1 · AC-11.2</td><td>AC-07.4 one gate · US-09 now Could · US-13 now Must · <b>new</b> US-14, AC-05.4, AC-10.5, AC-10.6, AC-13.4, AC-13.5</td></tr>
 <tr><td>Screens</td><td>S-07 wizard · S-09 community log</td><td>S-02 no dashboard · S-08 approvals only · S-11 Could · S-13 now Must</td></tr>
-<tr><td>Entities</td><td>E-05 PermissionGate · E-10 Contact · E-11 Template · E-12 AdminAction</td><td>E-04 gains <code>gateId</code> and <code>createdVia</code> · E-02 gains decision fields · <b>new</b> E-13 AiUsage</td></tr>
+<tr><td>Entities</td><td>E-05 PermissionGate · E-10 Contact · E-11 Template · E-12 AdminAction</td><td>E-04 gains <code>gateId</code> and <code>createdVia</code> · E-02 gains decision fields · E-07 loses <code>revokedAt</code> · E-08 separates receipts from rate-limit summaries · <b>new</b> E-13 AiUsage</td></tr>
 <tr><td>NFRs, goals, risks, questions</td><td>Q-05, Q-06, Q-07 (their topics are out of scope)</td><td>NFR-20 changed · <b>new</b> NFR-21, NFR-22, G8, G9, A-12, R-14–R-17, Q-16, Q-17</td></tr>
 </table>
 </section>
