@@ -4,144 +4,168 @@
 <h2><span class="num">14</span>Assumptions, Constraints, Dependencies and Risks</h2>
 <h3>14.1 Constraints</h3>
 <ul>
-<li><b>Time:</b> about 10 weeks from this PRD (21 Nov 2026) to the MVP deadline (31 Jan 2027). The period overlaps other courses and the end-of-semester exam season.</li>
-<li><b>Team:</b> three members (Daniel, Lior, Avishag). Their roles are not yet assigned (Q-01).</li>
+<li><b>Time:</b> two weeks from this PRD to the first MVP (12 Dec 2026), and about nine weeks to Porta v1.0 (30 Jan 2027), organised as five 14-day sprints. The period overlaps other courses and the end-of-semester exam season. Nothing finished after 30 Jan counts toward v1.0.</li>
+<li><b>Team:</b> three members (Daniel, Lior, Avishag), each with an estimated 8–10 hours per week (to be confirmed). Roles are provisional: Lior is Contributor C; roles A and B are not yet assigned to names (Q-01).</li>
+<li><b>Scope:</b> six major feature groups (D-22). Anything else needs a team decision.</li>
 <li><b>Knowledge:</b> the team is learning Flutter/Dart during the course (assumed limited prior experience).</li>
-<li><b>Budget:</b> zero by default. Any paid service (cloud billing plan, Apple developer account, LLM API, custom domain) needs explicit team approval, with cost, benefit and alternatives stated.</li>
+<li><b>Budget:</b> zero by default. Any paid service (cloud billing plan, Apple developer account, LLM API, custom domain, AI model credits) needs explicit team approval, with purpose, cost, benefits, free alternatives and the consequences of not buying stated.</li>
 <li><b>Hardware:</b> no real gates. Everything is simulated.</li>
-<li><b>Course:</b> the app must be developed in Flutter/Dart and delivered according to the course checkpoints.</li>
+<li><b>Course:</b> the app must be developed in Flutter/Dart, follow an Agile process, demonstrate at least five significant technical features, have a Feature PRD per implemented feature, and be delivered according to the course checkpoints (possibly every 7 or 14 days).</li>
+<li><b>Process:</b> AI agents follow the shared rules in the repository (<code>AGENTS.md</code>). No agent merges into the main branch: only Lior authorises merges.</li>
 </ul>
 <h3>14.2 Working assumptions (believed true, not fully verified)</h3>
 <table>
 <thead><tr><th style="width:8%">ID</th><th>Assumption</th><th style="width:28%">If it turns out false</th></tr></thead>
-<tr><td>A-01</td><td>Guests have a smartphone with a modern browser and mobile data when they arrive at the gate.</td><td>Out of scope for the MVP. A future fallback could be a gate keypad code.</td></tr>
-<tr><td>A-02</td><td>Each user belongs to exactly one community.</td><td>Multi-community support (Q-07) changes E-02.</td></tr>
-<tr><td>A-03</td><td>A Backend-as-a-Service (Firebase is the candidate) can host auth, data, server functions and the guest page within free or low-cost limits.</td><td>Choose an alternative (Q-09, R-05).</td></tr>
-<tr><td>A-04</td><td>A simulated gate (S-10) is acceptable for demonstrating and evaluating the product in the course.</td><td>Confirm with the lecturer.</td></tr>
+<tr><td>A-01</td><td>Guests have a smartphone with a modern browser and mobile data when they arrive at the gate.</td><td>Out of scope. A future fallback could be a gate keypad code.</td></tr>
+<tr><td>A-02</td><td>Each user belongs to exactly one community.</td><td>Multi-community support (out of scope) would change E-02.</td></tr>
+<tr><td>A-03</td><td>A Backend-as-a-Service (Firebase is the candidate) can host auth, data, server functions and the guest page within free or low-cost limits.</td><td>Choose the alternative (Q-09, R-05).</td></tr>
+<tr><td>A-04</td><td>A simulated gate (S-10) is acceptable for demonstrating and evaluating the product in the course, and the six feature groups count as significant technical features.</td><td>Confirm with the lecturer (Q-16).</td></tr>
 <tr><td>A-05</td><td>Minimum OS versions of Android 8 and iOS 15 are supported by the Flutter version we will use.</td><td>Raise the minimum versions.</td></tr>
 <tr><td>A-06</td><td>The team has at least one Android device for testing. iOS testing depends on device and account access (Q-10).</td><td>Use emulators and simulators.</td></tr>
 <tr><td>A-07</td><td>The administrator knows the residents personally, so verifying identity at approval time happens outside the system.</td><td>Add identity verification later.</td></tr>
-<tr><td>A-08</td><td>Holding the link means being authorised (a bearer link). This is acceptable for the MVP because of the time and count limits, instant revocation and notifications.</td><td>Add a PIN or phone check (Q-13).</td></tr>
+<tr><td>A-08</td><td>Holding the link means being authorised (a bearer link). This is acceptable for Porta v1.0 because of the time and count limits, instant revocation and notifications.</td><td>Add a PIN or phone check (Q-13).</td></tr>
 <tr><td>A-09</td><td>Each gate opening counts once, regardless of direction. The default one-time limit of 2 allows entry and exit if exiting needs an opening.</td><td>Revisit defaults after Q-02 validation.</td></tr>
-<tr><td>A-10</td><td>All MVP communities use the time zone Asia/Jerusalem. It is still stored per community.</td><td>No change needed. The field already exists.</td></tr>
-<tr><td>A-11</td><td>For the MVP, communities, their join codes and their first administrator are created by the project team with a setup script. That is enough for a demo with 1–2 communities.</td><td>Add self-service onboarding in a later milestone.</td></tr>
+<tr><td>A-10</td><td>All demo communities use the time zone Asia/Jerusalem. It is still stored per community.</td><td>No change needed. The field already exists.</td></tr>
+<tr><td>A-11</td><td>Communities, their gates, their join codes and their first administrator are created by the project team with a setup script. That is enough for a demo with 1–2 communities.</td><td>Self-service onboarding is a future enhancement.</td></tr>
+<tr><td>A-12</td><td>An AI provider with acceptable data-use terms can be approved by 26 Dec 2026, on a free tier or within an approved budget.</td><td>Team decides on descoping P-F06 (Section 7.5); five features remain.</td></tr>
 </table>
 <h3>14.3 Dependencies (external services the product relies on)</h3>
 <ul>
 <li>A Backend-as-a-Service for authentication, database, server functions and hosting (A-03). <b>Note:</b> Firebase Cloud Functions require the pay-as-you-go (Blaze) plan with a linked billing account, even within free usage quotas. That is a budget decision (Q-09).</li>
 <li>Push delivery: FCM for Android, and APNs for iOS, which requires an Apple developer account.</li>
-<li>Domain and HTTPS hosting for invitation links and link-verification files (Q-15).</li>
+<li>Domain and HTTPS hosting for invitation links, and for link-verification files if deep links are delivered (Q-15).</li>
 <li>The Apple Developer Program, for iOS device deployment, Universal Links and push (R-04).</li>
-<li>Flutter SDK and open-source packages (QR rendering, secure storage, deep links).</li>
-<li>LLM API provider: only for FR-35 (Could), and only after approval.</li>
+<li>Flutter SDK and open-source packages (QR rendering, secure storage, sharing).</li>
+<li>An LLM API provider for P-F06, only after the provider and cost are approved (Q-04).</li>
+<li>GitHub (repository, Pull Requests, CI) and the AI development agents (Claude Code, Codex, Antigravity) under their own first-party accounts.</li>
 </ul>
 <h3>14.4 Risks and mitigations</h3>
 <table>
 <thead><tr><th style="width:7%">ID</th><th style="width:35%">Risk: what could go wrong</th><th style="width:9%">Likeli-hood / Impact</th><th>Proposed mitigation: what we will do</th></tr></thead>
-<tr><td>R-01</td><td>The schedule slips: the team is new to Flutter, and January has exams.</td><td>H / H</td><td>Strict MoSCoW: cut Should items before touching Must. Fixed milestone dates (Section 15). A weekly progress check, and an early vertical slice (M2–M3) before polish.</td></tr>
-<tr><td>R-02</td><td>An invitation link is forwarded, and someone else uses it.</td><td>M / M</td><td>Time and count limits bound the damage. Instant cancel or regenerate (FR-11, FR-17). Entry notifications (FR-29). Optional PIN or proximity check in future (Q-13).</td></tr>
+<tr><td>R-01</td><td>The schedule slips: the team is new to Flutter, and January has exams.</td><td>H / H</td><td>Reduced scope (D-22). A vertical slice in Sprint 1. Feature freeze on 23 Jan. A fixed cut order (Section 7.2). Sprints end on their date, and unfinished work is recorded and decided on, never hidden (carryover log).</td></tr>
+<tr><td>R-02</td><td>An invitation link is forwarded, and someone else uses it.</td><td>M / M</td><td>Time and count limits bound the damage. Instant cancel (FR-11), then a new permission with a new link. Entry notifications (FR-29) and the activity history (FR-27). A PIN or proximity check is out of scope (Q-13).</td></tr>
 <tr><td>R-03</td><td>Concurrent or retried requests double-count or exceed the limit.</td><td>M / H</td><td>An atomic server transaction plus a unique request ID (NFR-07). Concurrency tests (AC-08.4).</td></tr>
 <tr><td>R-04</td><td>iOS features (Universal Links, push, deployment to devices) need a paid Apple developer account (USD 99 per year, per Apple's published pricing).</td><td>H / M</td><td>Android is the guaranteed demo platform. Use the iOS simulator without push. Ask the college about an education account. Paying requires team approval (Q-10).</td></tr>
-<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by the start of M1 (Q-09). Develop against the free local emulators until then. Option 1: approve the Blaze plan with budget alerts. Option 2: switch to Supabase Free, with one transactional database function (Section 11.3). A cost estimate is due before any approval.</td></tr>
-<tr><td>R-06</td><td>The AI feature produces wrong drafts, costs money or is unavailable.</td><td>M / L</td><td>Keep it as a Could. Confirmation before saving, server re-validation, an 8 s timeout and a manual fallback (Section 11.4).</td></tr>
+<tr><td>R-05</td><td>The backend's free tier doesn't cover server functions, or a billing account is required.</td><td>M / H</td><td>Decide by 1 Dec 2026, at the start of Sprint 1 (Q-09). Develop against the free local emulators until then. Option 1: approve the Blaze plan with budget alerts. Option 2: switch to Supabase Free, with one transactional database function (Section 11.3). A cost estimate is due before any approval.</td></tr>
+<tr><td>R-06</td><td>The AI feature produces wrong drafts or is unavailable.</td><td>M / M</td><td>Confirmation before saving, server re-validation, flagged fields, an 8 s timeout and a manual fallback (FR-41, FR-42). Measured on a fixed test set (G8).</td></tr>
 <tr><td>R-07</td><td>Time-zone or daylight-saving bugs grant or deny at the wrong hour. Israel changes clocks in late March and late October.</td><td>M / H</td><td>Evaluate only on the server, in the community's time zone, with a time-zone library. Add test cases around the DST change dates.</td></tr>
-<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Proposed: a lightweight HTML/JS guest page instead of Flutter Web, decided in M1 (Q-14).</td></tr>
-<tr><td>R-09</td><td>Deep-link verification is hard to set up.</td><td>M / L</td><td>It is a Should. The web fallback works for everyone (AC-09.2).</td></tr>
+<tr><td>R-08</td><td>A Flutter Web guest page is too heavy to meet NFR-02 (≤ 3 s, ≤ 1 MB).</td><td>M / M</td><td>Proposed: a lightweight HTML/JS guest page instead of Flutter Web, decided by 1 Dec 2026 (Q-14).</td></tr>
+<tr><td>R-09</td><td>Deep-link verification is hard to set up.</td><td>M / L</td><td>It is a Could with a 2-day time box in Sprint 3, deferred if risky (D-27). The web page works for everyone (AC-09.2).</td></tr>
 <tr><td>R-10</td><td>Push notifications are delayed or not delivered.</td><td>M / L</td><td>The in-app Activity log is the source of truth. Push is a convenience.</td></tr>
-<tr><td>R-11</td><td>The problem or solution doesn't match real residents' needs (no research yet).</td><td>M / M</td><td>A validation round with at least 5 residents (Q-02) before M4. Update defaults and priorities from the findings.</td></tr>
+<tr><td>R-11</td><td>The problem or solution doesn't match real residents' needs (no research yet).</td><td>M / M</td><td>A validation round with at least 5 residents (Q-02) during the Sprint 4 usability test. Update defaults from the findings.</td></tr>
 <tr><td>R-12</td><td>Someone guesses tokens or probes links.</td><td>L / H</td><td>128-bit tokens, hashed storage, rate limiting and a generic invalid page (NFR-05, NFR-06).</td></tr>
-<tr><td>R-13</td><td>Responsibilities are unclear, so work is duplicated or gaps appear.</td><td>M / M</td><td>Assign roles (Q-01) before M1 begins. Track tasks in GitHub issues.</td></tr>
+<tr><td>R-13</td><td>Responsibilities are unclear, so work is duplicated or gaps appear.</td><td>M / M</td><td>Component roles A/B/C (Section 1), confirmed by name at Sprint 1 planning (Q-01). A contributor registry, and GitHub Issues per task.</td></tr>
+<tr><td>R-14</td><td>No AI provider can be approved in time, or its cost or data-use terms are unacceptable.</td><td>M / M</td><td>Decision due 26 Dec 2026 (Q-04). Prefer a free tier with a per-user cap. Otherwise the team decides between an approved paid plan and descoping P-F06 (Section 7.5); five features remain.</td></tr>
+<tr><td>R-15</td><td>Components built by three people don't fit together (API mismatches, late integration).</td><td>M / H</td><td>End-to-end increments in every sprint. Contributor C owns integration tests and CI. Feature PRDs define the APIs before implementation.</td></tr>
+<tr><td>R-16</td><td>The instructor sets different or earlier deadlines (every 7 or 14 days).</td><td>M / M</td><td>Milestones are tracked separately from sprints. Each change is recorded as a decision and the plan is updated. The feature freeze on 23 Jan leaves a week of buffer before v1.0.</td></tr>
+<tr><td>R-17</td><td>An AI agent acts outside policy (merging, out-of-scope changes, spending).</td><td>L / H</td><td>Shared agent rules (<code>AGENTS.md</code>). Protection rules on the main branch (owner action, Q-17). Merges need Lior's explicit authorisation for each PR.</td></tr>
 </table>
 </section>
 
 <!-- ===== Section 15 ===== -->
 <section class="sec">
 <h2><span class="num">15</span>Milestones and Open Questions</h2>
-<p>The milestone dates below are a <b>proposal by the team</b>. How they map to the course's official checkpoints is still open (Q-12). Each milestone ends with a demo of its output and a review before the next one starts.</p>
+<p>The project follows Agile development in <b>14-day sprints</b>. A <b>milestone</b> is a delivery date. A <b>sprint</b> is a planning and review cycle. They are tracked separately, and some milestones fall inside a sprint. The instructor may set submission deadlines every 7 or 14 days. Each changed deadline is recorded as a decision, and the plan is updated (R-16). The detailed sprint plan, with tasks, owners, AI support, dependencies, acceptance criteria, integration tests, documentation and risks, is kept in the repository (<code>docs/sprints/SPRINT_PLAN.md</code>).</p>
+
+<h3>15.1 Milestones</h3>
 <table>
-<thead><tr><th style="width:17%">Stage</th><th>What we do in it</th><th style="width:30%">Expected output</th></tr></thead>
-<tr><td><b>CP0 · PRD</b><br><span class="small">to 21 Nov 2026</span></td><td>Analyse the assignment. Define product, scope, requirements, diagrams and wireframes. Independent reviews.</td><td>This PRD as a single PDF. Sources in GitHub.</td></tr>
-<tr><td><b>M1 · Foundations</b><br><span class="small">30 Nov – 13 Dec 2026</span></td><td>Settle open technical decisions (Q-09, Q-14). Flutter project setup. Data model and server-side rules. Seeded community. <b>A thin deployed vertical slice:</b> a hard-coded permission opened from the browser page through the real backend, with the simulator reacting. Sign-in.</td><td>An end-to-end slice from Android to browser to simulator on the deployed backend. FR-01 working.</td></tr>
-<tr><td><b>M2 · Permission core</b><br><span class="small">14 – 31 Dec 2026</span></td><td>One-time and recurring permissions (single gate first). Cumulative limit and concurrency. Status derivation, DST and boundary tests. Suspend, resume, cancel. List and details. Invitation tokens and sharing.</td><td>The Must parts of FR-06–FR-16 passing their acceptance criteria, including AC-08.4.</td></tr>
-<tr><td><b>M3 · Guest access</b><br><span class="small">1 – 14 Jan 2027</span></td><td>Full guest page states. Community joining and administrator approval (FR-02–FR-05). Logs (FR-26, FR-27). Integration across roles. First Should items (QR, multiple gates).</td><td>All Must requirements demoable end to end (Diagram 4).</td></tr>
-<tr><td><b>M4 · MVP hardening</b><br><span class="small">15 – 31 Jan 2027</span></td><td>Acceptance run of all Must criteria, NFR verification, usability test (n ≥ 5), security review and fixes. Further Should items only in the order given in Section 7.2, and only while Must items stay green.</td><td><b>MVP release, 31 Jan 2027.</b> Test report against G1–G7.</td></tr>
-<tr><td><b>M5 · Guest management</b><br><span class="small">after MVP, unscheduled</span></td><td>Group invitations. Templates and contacts, if not already delivered.</td><td>F-12 (and F-05, F-11).</td></tr>
-<tr><td><b>M6 · Governance</b><br><span class="small">after MVP, unscheduled</span></td><td>Administrator reports, anomaly detection, approvals for sensitive permissions.</td><td>F-16, F-17, F-18.</td></tr>
-<tr><td><b>M7 · AI</b><br><span class="small">after MVP, unscheduled</span></td><td>Natural-language creation (if not already delivered). Smart reminders and suggestions. AI-enhanced assistant.</td><td>F-19, F-20, F-21 (AI).</td></tr>
+<thead><tr><th style="width:20%">Milestone</th><th>What is delivered</th><th style="width:30%">Expected output</th></tr></thead>
+<tr><td><b>CP0 · PRD v1.0</b><br><span class="small">21 Nov 2026 (done)</span></td><td>First complete PRD with independent reviews.</td><td>PRD v1.0 (superseded by this version).</td></tr>
+<tr><td><b>M0 · Master PRD submission</b><br><span class="small">Sat 28 Nov 2026</span></td><td>The revised PRD with the six-feature scope, the sprint plan and the team process.</td><td>This PRD (v2.0) as one PDF.</td></tr>
+<tr><td><b>M1 · First MVP submission</b><br><span class="small">Sat 12 Dec 2026 (end of Sprint 1)</span></td><td>The initial working vertical slice (Section 7.2): create → store → link → guest opens → backend checks → simulator opens or rejects.</td><td>A deployed slice and a demo (goal G9). Not the completion of all six features.</td></tr>
+<tr><td><b>M2 · Porta v1.0</b><br><span class="small">Sat 30 Jan 2027 (inside Sprint 5)</span></td><td>A stable release of the six-feature scope, subject to documented feasibility decisions and approved changes. Feature freeze on 23 Jan.</td><td>Release build, acceptance and test report against G1–G8. <span class="open">Proposed end-of-semester date, not instructor-confirmed (Q-16).</span></td></tr>
+</table>
+<p class="small">All three milestones fall on a Saturday. The team's internal target is the Thursday before (26 Nov, 10 Dec, 28 Jan).</p>
+
+<h3>15.2 Sprint plan (summary)</h3>
+<table>
+<thead><tr><th style="width:15%">Sprint</th><th style="width:30%">Sprint goal</th><th>Main work (owners: A Flutter/UX · B backend/data · C guest/integration/QA)</th></tr></thead>
+<tr><td><b>Sprint 1</b><br><span class="small">29 Nov – 12 Dec 2026</span></td><td>A deployed vertical slice (M1).</td><td>Backend and guest-page technology decided by 1 Dec (Q-09, Q-14, Q-15). Project skeleton and CI (A, C). Data model, rules and seed script (B). Sign-in for seeded users (B, A). One-time permission (A, B). Invitation token and link (B). Atomic gate-open transaction (B, deep review). Minimal guest page and simulator (C). E2E slice test (C).</td></tr>
+<tr><td><b>Sprint 2</b><br><span class="small">13 – 26 Dec 2026</span></td><td>Accounts and the permission core work, enforced by the backend.</td><td>Sign-up, join, approval, roles (P-F01). Recurring permissions, DST, suspend / resume / cancel, status, list and details (P-F02). Native sharing (P-F03). All guest-page states, rate limiting (P-F04). Diagram 3 test suite (≥ 25 scenarios). <b>AI provider decision due 26 Dec (Q-04).</b></td></tr>
+<tr><td><b>Sprint 3</b><br><span class="small">27 Dec 2026 – 9 Jan 2027</span></td><td>Sharing, history and notifications complete; first AI draft works.</td><td>QR code (P-F03). Deep-link spike, time-boxed (Could). Activity history and S-06 (P-F05). Push notifications (Should). AI proxy and S-13 (P-F06). Automated central E2E scenario (C).</td></tr>
+<tr><td><b>Sprint 4</b><br><span class="small">10 – 23 Jan 2027</span></td><td>P-F06 complete; quality verified; <b>feature freeze 23 Jan</b>.</td><td>AI review, validation, fallback and cap (P-F06), and its evaluation (G8). RTL and accessibility pass. Security review of critical logic (G6). Performance (G5). Usability test, n ≥ 5 (G3, G4, G7). Full acceptance run (G1) and bug fixing.</td></tr>
+<tr><td><b>Sprint 5</b><br><span class="small">24 Jan – 6 Feb 2027</span></td><td>Release Porta v1.0 on 30 Jan.</td><td>Regression run, release-blocking fixes only, demo rehearsal, release notes, code walkthrough (24–29 Jan). <b>M2 on 30 Jan.</b> After it: retrospective and documentation. That work does not count toward v1.0.</td></tr>
 </table>
 
 <div class="fig">
-<div class="cap">Diagram 8 · Milestone timeline to the MVP (proposed)</div>
+<div class="cap">Diagram 8 · Sprint and milestone timeline</div>
 <pre class="mermaid">
 gantt
   dateFormat YYYY-MM-DD
   axisFormat %d %b
-  section Docs
-  CP0 PRD              :done, cp0, 2026-11-19, 2026-11-21
-  section MVP
-  M1 Foundations + slice:m1, 2026-11-30, 2026-12-13
-  M2 Permission core   :m2, 2026-12-14, 2026-12-31
-  M3 Guest access      :m3, 2027-01-01, 2027-01-14
-  M4 MVP hardening     :m4, 2027-01-15, 2027-01-31
-  MVP release          :milestone, mvp, 2027-01-31, 0d
+  todayMarker off
+  section Documentation
+  CP0 PRD v1.0 and v2.0      :done, cp0, 2026-11-19, 2026-11-28
+  M0 PRD submission          :milestone, m0, 2026-11-28, 0d
+  section Sprints
+  Sprint 1 vertical slice    :s1, 2026-11-29, 14d
+  Sprint 2 accounts and permissions :s2, 2026-12-13, 14d
+  Sprint 3 sharing, history, AI groundwork :s3, 2026-12-27, 14d
+  Sprint 4 AI, quality, freeze :s4, 2027-01-10, 14d
+  Sprint 5 release            :s5, 2027-01-24, 14d
+  section Milestones
+  M1 First MVP               :milestone, m1, 2026-12-12, 0d
+  Feature freeze             :milestone, ff, 2027-01-23, 0d
+  M2 Porta v1.0              :milestone, m2, 2027-01-30, 0d
 </pre>
-<div class="exp"><b>What it shows:</b> the four MVP milestones from the table above as consecutive blocks ending at the 31 Jan 2027 release. M5–M7 come after the MVP and are not scheduled yet. <b>Why it matters:</b> a deployed end-to-end slice exists from M1, so integration risk shows up early. Permissions come next, then roles and integration. The last two weeks are kept for verification. Should items are added in a fixed order and can be cut (R-01).</div>
+<div class="exp"><b>What it shows:</b> the five 14-day sprints as consecutive blocks, and the milestones on their dates. M1 coincides with the end of Sprint 1. M2 falls inside Sprint 5. <b>Why it matters:</b> the critical access logic is built in Sprints 1–2, leaving two sprints to find bugs. Features are frozen a week before the release. Nothing after 30 January counts toward Porta v1.0, so no release-critical work is planned in Sprint 5 (R-01, R-16).</div>
 </div>
 
-<h3>Open questions: still undecided or needing clarification</h3>
+<div class="note"><b>Incomplete sprint work.</b> A sprint ends on its planned date, even if tasks are unfinished. It is never silently extended, and unfinished work is never marked complete. For every incomplete commitment, the team records nine things in a permanent carryover log:
+<ol>
+<li>the original task and goal</li>
+<li>the work completed</li>
+<li>the remaining work</li>
+<li>why it was not finished</li>
+<li>blockers and dependencies</li>
+<li>the impact on future work</li>
+<li>the recommended next step</li>
+<li>the responsible contributor</li>
+<li>the team's decision: carry over, or reduce scope</li>
+</ol>
+Earlier sprint outcomes are never erased when the plan changes. Cuts follow the order in Section 7.2.</div>
+
+<h3>15.3 Open questions: still undecided or needing clarification</h3>
 <table>
 <thead><tr><th style="width:7%">ID</th><th>Question</th><th style="width:22%">Owner · needed by</th></tr></thead>
-<tr><td>Q-01</td><td>What is each member's area of responsibility? Members' surnames are also needed for Section 1.</td><td>Team · before submission</td></tr>
-<tr><td>Q-02</td><td>Who will run the validation round with at least 5 residents, and when? Which questions will it ask?</td><td>Team · before M4</td></tr>
-<tr><td>Q-03</td><td>Hands-on verification of the products in Section 5: which ones, and what do they offer guests today?</td><td>Team · M1</td></tr>
-<tr><td>Q-04</td><td>Does the course require an AI feature inside the MVP? Is an LLM API cost approved for FR-35?</td><td>Team and lecturer · M1</td></tr>
-<tr><td>Q-05</td><td>For group invitations: is there one opening limit per guest or one shared by the group? Is there one link or one per guest?</td><td>Team · M5</td></tr>
-<tr><td>Q-06</td><td>What makes a permission "sensitive" (needing approval), and what counts as "unusual" activity?</td><td>Team · M6</td></tr>
-<tr><td>Q-07</td><td>Will a user ever belong to more than one community (e.g. a resident with two homes)?</td><td>Team · post-MVP</td></tr>
-<tr><td>Q-08</td><td>Are overnight windows (crossing midnight) needed for recurring permissions?</td><td>Team · M2</td></tr>
-<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (a billing account is required to deploy Cloud Functions, even within the free usage allowance), or Supabase Free with a transactional database function? A cost estimate and approval are needed.</td><td>Team · start of M1</td></tr>
-<tr><td>Q-10</td><td>iOS: is an Apple developer account available (college program or paid, with approval)? Which iOS devices can we test on?</td><td>Team · M1</td></tr>
-<tr><td>Q-11</td><td>How long should access logs be kept (12 months proposed)?</td><td>Team · M3</td></tr>
-<tr><td>Q-12</td><td>How do the official course checkpoints and dates map to M1–M4?</td><td>Team and lecturer · M1</td></tr>
-<tr><td>Q-13</td><td>Do guest links need extra protection against forwarding (PIN, phone check, proximity)?</td><td>Team · M3</td></tr>
-<tr><td>Q-14</td><td>Guest page technology. <b>Proposed after the feasibility review:</b> lightweight HTML/JS on one canonical default hosting domain, because Flutter Web risks NFR-02. Can the token travel in the URL fragment and still work with App Links / Universal Links on signed devices (NFR-05)?</td><td>Team and Codex · start of M1</td></tr>
-<tr><td>Q-15</td><td>Which domain will invitation links use? <b>Proposed:</b> the hosting provider's free default domain. It can serve the App Links / Universal Links association files under <code>/.well-known/</code>, so no custom domain is needed.</td><td>Team · start of M1 (before the slice is deployed)</td></tr>
+<tr><td>Q-01</td><td>Which of Daniel and Avishag takes role A (Flutter and UX) and which takes role B (backend and data)? Members' surnames and GitHub usernames are also needed for Section 1.</td><td>Team · Sprint 1 planning (29 Nov)</td></tr>
+<tr><td>Q-02</td><td>Who will run the validation round with at least 5 residents, and which questions will it ask? (Planned together with the Sprint 4 usability test.)</td><td>Team · Sprint 3</td></tr>
+<tr><td>Q-03</td><td>Hands-on verification of the products in Section 5: which ones, and what do they offer guests today?</td><td>Team · Sprint 2</td></tr>
+<tr><td>Q-04</td><td>Which AI provider will P-F06 use, under which data-use terms, and is any cost approved? A free tier is preferred. If nothing is approved: an approved paid plan, or descoping P-F06?</td><td>Team · <b>26 Dec 2026</b></td></tr>
+<tr><td>Q-08</td><td>Are overnight windows (crossing midnight) needed for recurring permissions?</td><td>Team · Sprint 2</td></tr>
+<tr><td>Q-09</td><td>Backend choice: Firebase with the Blaze plan (a billing account is required to deploy Cloud Functions, even within the free usage allowance), or Supabase Free with a transactional database function? A cost estimate and approval are needed.</td><td>Team · <b>1 Dec 2026</b></td></tr>
+<tr><td>Q-10</td><td>iOS: is an Apple developer account available (college program, or paid with approval)? Which iOS devices can we test on?</td><td>Team · Sprint 2</td></tr>
+<tr><td>Q-11</td><td>How long should access history be kept (12 months proposed)?</td><td>Team · Sprint 3</td></tr>
+<tr><td>Q-12</td><td>What are the instructor's exact submission dates after M1 (every 7 or 14 days?), and what must each submission contain?</td><td>Team and lecturer · Sprint 1</td></tr>
+<tr><td>Q-13</td><td>Do guest links need extra protection against forwarding (PIN, phone check, proximity)? Currently out of scope.</td><td>Team · post-v1.0</td></tr>
+<tr><td>Q-14</td><td>Guest page technology. <b>Proposed:</b> lightweight HTML/JS on one canonical default hosting domain, because Flutter Web risks NFR-02. If deep links are attempted, can the token travel in the URL fragment and still work with App Links / Universal Links (NFR-05)?</td><td>Team (C) · <b>1 Dec 2026</b></td></tr>
+<tr><td>Q-15</td><td>Which domain will invitation links use? <b>Proposed:</b> the hosting provider's free default domain, which needs no custom domain.</td><td>Team (C) · <b>1 Dec 2026</b></td></tr>
+<tr><td>Q-16</td><td>Does the lecturer confirm that (a) 30 Jan 2027 is acceptable for the final version, (b) the six feature groups count as significant technical features, and (c) the simulated gate is acceptable?</td><td>Team and lecturer · Sprint 1</td></tr>
+<tr><td>Q-17</td><td>Repository protection: change the default branch to <code>main</code> and enable the protection rules for the main branch (owner action; instructions in the repository).</td><td>Lior · before Sprint 1</td></tr>
 </table>
+<p class="small">Q-05 (group-invitation limits), Q-06 ("sensitive" and "unusual") and Q-07 (multiple communities) were retired in v2.0, because their topics are out of scope (Section 7.6).</p>
 </section>
 
 <!-- ===== Appendices ===== -->
 <section class="sec">
 <h2><span class="num">A</span>Appendix A · Traceability Matrix</h2>
-<p>Each capability maps to the requirements, stories and screens that implement it. Post-MVP capabilities have no stories yet; they will be detailed in their milestones.</p>
+<p>Each feature group maps to the v1.0 capabilities it covers, and to the requirements, stories, screens and entities that implement it. Every requirement and story appears exactly once. The mapping from v1.0 and the retired IDs are in Section 7.6.</p>
 <table>
-<thead><tr><th style="width:8%">F</th><th style="width:10%">MoSCoW</th><th style="width:28%">Functional requirements</th><th style="width:22%">User stories</th><th>Screens</th></tr></thead>
-<tr><td>F-01</td><td>Must</td><td>FR-06, FR-12, FR-13, FR-14</td><td>US-01</td><td>S-03, S-04</td></tr>
-<tr><td>F-02</td><td>Must</td><td>FR-07, FR-12, FR-13, FR-14</td><td>US-02</td><td>S-03, S-04</td></tr>
-<tr><td>F-03</td><td>Must</td><td>FR-06, FR-07, FR-08, FR-20</td><td>US-02, US-03, US-08</td><td>S-04, W-01</td></tr>
-<tr><td>F-04</td><td>Must</td><td>FR-10, FR-11</td><td>US-03, US-04</td><td>S-04, W-01</td></tr>
-<tr><td>F-05</td><td>Could</td><td>FR-33</td><td>—</td><td>S-03</td></tr>
-<tr><td>F-06</td><td>Should</td><td>FR-04, FR-09</td><td>US-07, US-11</td><td>S-03, S-08</td></tr>
-<tr><td>F-07</td><td>Must</td><td>FR-01–FR-05</td><td>US-10</td><td>S-01, S-08</td></tr>
-<tr><td>F-08</td><td>Must</td><td>FR-15, FR-16, FR-17</td><td>US-01, US-05</td><td>S-05, S-04</td></tr>
-<tr><td>F-09</td><td>Must</td><td>FR-19–FR-23</td><td>US-07, US-08, US-09</td><td>W-01, W-02, S-11</td></tr>
-<tr><td>F-10</td><td>Should</td><td>FR-18</td><td>US-05</td><td>S-05</td></tr>
-<tr><td>F-11</td><td>Could</td><td>FR-34</td><td>—</td><td>S-03</td></tr>
-<tr><td>F-12</td><td>Won't</td><td>FR-36</td><td>—</td><td>—</td></tr>
-<tr><td>F-13</td><td>Must</td><td>FR-26, FR-27, FR-28; NFR-20 (admin audit)</td><td>US-06, US-11</td><td>S-06, S-09, S-10</td></tr>
-<tr><td>F-14</td><td>Should</td><td>FR-29, FR-30</td><td>US-06</td><td>S-12</td></tr>
-<tr><td>F-15</td><td>Should</td><td>FR-31</td><td>US-06</td><td>S-02</td></tr>
-<tr><td>F-16</td><td>Won't</td><td>FR-37</td><td>—</td><td>—</td></tr>
-<tr><td>F-17</td><td>Won't</td><td>FR-38</td><td>—</td><td>—</td></tr>
-<tr><td>F-18</td><td>Won't</td><td>FR-39</td><td>—</td><td>—</td></tr>
-<tr><td>F-19</td><td>Could</td><td>FR-35</td><td>US-13</td><td>S-13, S-03</td></tr>
-<tr><td>F-20</td><td>Won't</td><td>FR-40</td><td>—</td><td>—</td></tr>
-<tr><td>F-21</td><td>Should</td><td>FR-32</td><td>US-12</td><td>S-07</td></tr>
-<tr><td>Simulation</td><td>Must</td><td>FR-24, FR-25</td><td>US-07, US-11</td><td>S-10</td></tr>
+<thead><tr><th style="width:8%">Group</th><th style="width:10%">From v1.0</th><th style="width:22%">Functional requirements</th><th style="width:15%">User stories</th><th style="width:14%">Screens</th><th style="width:13%">Entities</th><th>Key NFRs · goals</th></tr></thead>
+<tr><td>P-F01</td><td>F-07</td><td>FR-01, FR-02, FR-03, FR-04, FR-05</td><td>US-14, US-10</td><td>S-01, S-08, S-12</td><td>E-01, E-02, E-03</td><td>NFR-04, NFR-06, NFR-08, NFR-20</td></tr>
+<tr><td>P-F02</td><td>F-01–F-04</td><td>FR-06, FR-07, FR-08, FR-10, FR-11, FR-13, FR-14</td><td>US-01, US-02, US-03, US-04</td><td>S-02, S-03, S-04</td><td>E-04, E-06</td><td>NFR-07, NFR-12, NFR-14, NFR-18 · G2, G3</td></tr>
+<tr><td>P-F03</td><td>F-08, F-10, part of F-09</td><td>FR-15, FR-16, FR-18, FR-22 (Could)</td><td>US-05, US-09 (Could)</td><td>S-05, S-11 (Could)</td><td>E-07</td><td>NFR-05, NFR-19</td></tr>
+<tr><td>P-F04</td><td>F-09, simulation</td><td>FR-19, FR-20, FR-21, FR-24, FR-25</td><td>US-07, US-08, US-11</td><td>W-01, W-02, S-10</td><td>E-03, E-08</td><td>NFR-01, NFR-02, NFR-06, NFR-11, NFR-15 · G4, G5</td></tr>
+<tr><td>P-F05</td><td>F-13, F-14</td><td>FR-26, FR-27, FR-29 (Should)</td><td>US-06</td><td>S-06, S-12</td><td>E-08, E-09</td><td>NFR-10, NFR-14</td></tr>
+<tr><td>P-F06</td><td>F-19 (goal of F-21)</td><td>FR-35, FR-41, FR-42</td><td>US-13</td><td>S-13, S-03</td><td>E-13</td><td>NFR-21 · G8</td></tr>
+<tr><td>All</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>NFR-03, NFR-09, NFR-13, NFR-16, NFR-17, NFR-22 · G1, G6, G7, G9</td></tr>
 </table>
+<p class="small">S-03 is listed under both P-F02 (the form) and P-F06 (review of the AI draft), and S-12 under P-F01 (profile, sign-out) and P-F05 (notification toggle), because each serves both.</p>
 
 <h2 style="margin-top:8mm"><span class="num">B</span>Appendix B · Sources</h2>
 <ol>
 <li>K. Zoabi, <i>Assignment: Product Requirements Document (PRD)</i>, Kinneret College, 2026–27. The 15-section structure, tips and pre-submission checklist.</li>
+<li>K. Zoabi, clarification of the course requirements (Nov 2026), as relayed to the team: at least five significant technical features, a Feature PRD for each implemented feature, Agile development with 14-day sprints. <span class="open">Not available to the team as a written document; the team should add the reference if one exists.</span></li>
 <li>Course practice sessions 1 ("What a PRD is and what it contains") and 2 ("Writing a PRD in parts"), linked from the assignment. <span class="open">Not consulted for this version; the team should add any specific material it uses from them.</span></li>
 <li>MoSCoW prioritisation: DSDM / Agile Business Consortium, <i>MoSCoW Prioritisation</i>.</li>
 <li>User-story format (As a… I want… so that…) and Given / When / Then acceptance criteria: common agile practice (Connextra format; Gherkin / behaviour-driven development).</li>
@@ -150,7 +174,7 @@ gantt
 <li>Brooke, J. (1996), <i>SUS: A "quick and dirty" usability scale</i>, the System Usability Scale used in G7.</li>
 <li>Android Developers, <i>App Links</i>, and Apple Developer, <i>Universal Links</i> documentation (deep linking, FR-22).</li>
 <li>Firebase documentation (Authentication, Firestore, Cloud Functions, Hosting, Cloud Messaging, and pricing plans), for the candidate backend (A-03, Q-09).</li>
-<li>AI assistance: this PRD was drafted with AI agents (Claude, Codex, Antigravity, orchestrated by Omnigent) under the team's direction. All content was reviewed by the team.</li>
+<li>AI assistance: this PRD was drafted with AI agents (Claude Code, Codex and Antigravity, orchestrated by Omnigent) under the team's direction. Version 2.0 was revised the same way. All content is subject to team review before submission.</li>
 </ol>
 <p class="small">Diagrams were drawn with Mermaid. Wireframes were drawn as HTML/CSS sketches.</p>
 </section>

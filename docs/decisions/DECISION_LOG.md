@@ -1,0 +1,55 @@
+# Porta — Decision Log
+
+Moved from `docs/DECISIONS.md` on 25 Nov 2026 (Git history preserved). Earlier entries are kept. When a decision is replaced, its status says which decision supersedes it.
+
+**Status values**
+
+- **Confirmed:** approved by the named human decision maker
+- **Proposed:** recommended (often by an AI agent), awaiting human approval. An AI recommendation is never recorded as Confirmed without that approval.
+- **Open:** undecided (see the PRD, Section 15)
+- **Superseded by D-xx:** replaced; kept for history
+
+"Team" as decision maker means the three contributors. Where only the source of a confirmed decision is known (for example, a team instruction relayed by Lior), it is stated.
+
+## Decisions from the CP0 restructuring (25 Nov 2026)
+
+| ID | Decision | Rationale | Status | Decision maker | Date | Affects |
+|---|---|---|---|---|---|---|
+| D-22 | Development scope is reduced to **six major feature groups**, P-F01–P-F06: authentication and user management; permission management; guest invitations and sharing; guest access and simulated gate; activity history and notifications; AI-assisted permission creation. All other earlier capabilities are Out of Scope unless they are minimal technical dependencies. | Official reason: *the project scope is being reduced to decrease workload, improve development feasibility, and allow the team to focus on a smaller number of meaningful, well-tested features during the academic semester.* The instructor requires at least five significant features; the team chose six. | Confirmed | Team (CP0 restructuring assignment, relayed by Lior) | 25 Nov 2026 | PRD v2.0 §7 and all of §§8–15; supersedes D-07, D-10 |
+| D-23 | Milestones: **M0** Master PRD submission 28 Nov 2026 · **M1** first MVP (vertical slice) 12 Dec 2026 · **M2** Porta v1.0 30 Jan 2027. The 30 Jan date is a proposed end-of-semester milestone, not an instructor-confirmed deadline. | The instructor's checkpoints call for an early working MVP; v1.0 completes the six-feature scope within the semester. | Confirmed | Team (assignment, relayed by Lior) | 25 Nov 2026 | PRD §15, cover; supersedes D-09; refines D-19 |
+| D-24 | Provisional component allocation: **A** Flutter and UX (Claude Code) · **B** Backend and Data (Claude Code) · **C** Guest experience, integration and QA (Omnigent). Contributor C is **Lior**. Names for A and B are not yet assigned. | Assignment by implementation component avoids gaps and lets features span contributors. | Confirmed for C (Lior); A/B names **Open** (Q-01) | Team | 25 Nov 2026 | `docs/team/CONTRIBUTORS.md`, PRD §1; replaces D-14 |
+| D-25 | Agile development in **14-day sprints**: S1 29 Nov–12 Dec · S2 13–26 Dec · S3 27 Dec–9 Jan · S4 10–23 Jan · S5 24 Jan–6 Feb. A sprint ends on its planned date; unfinished work goes to the carryover log. | Course requirement for Agile; a fixed cadence keeps progress visible. | Confirmed | Team (assignment) | 25 Nov 2026 | `docs/sprints/`, PRD §15 |
+| D-26 | **Only Lior may authorise a merge into `main`**, one specific PR at a time. AI agents never merge, push to `main`, enable auto-merge, or rewrite shared history. | Keeps humans in control of the integration branch. | Confirmed | Lior | 25 Nov 2026 | `AGENTS.md` §4, `docs/team/GITHUB_PROTECTION.md` |
+| D-27 | Android App Links / iOS Universal Links (FR-22) may be **deferred** if they threaten the schedule. They are a Could inside P-F03; the browser page always works. | High setup risk, low marginal value (R-09). | Confirmed | Team (assignment) | 25 Nov 2026 | FR-22, US-09, S-11; supersedes D-05 |
+| D-28 | `AGENTS.md` is the single authoritative source of shared agent rules. `CLAUDE.md` imports it, and other entry points only point to it. | Avoids conflicting copies of instructions. | Confirmed | Lior | 25 Nov 2026 | `AGENTS.md`, `CLAUDE.md`, `docs/team/WORKFLOW.md` §4 |
+| D-29 | Inside the six groups: **one gate per permission**; no permission editing (FR-12); no link regeneration (FR-17); no rule-based wizard (F-21) or dashboard (F-15); no administrator community log (FR-28) or reminders (FR-30). The resident cancels and re-creates instead of editing or regenerating. | Each item adds UI and lifecycle states without being one of the six features. Removing them cuts the most work at the least product cost. | Proposed | Omnigent recommendation; awaiting team | 25 Nov 2026 | PRD §7.4, §7.6, §8, Diagram 2, ERD |
+| D-30 | The sprint plan in `docs/sprints/SPRINT_PLAN.md`: vertical slice in S1, core rules in S2, sharing / history / AI groundwork in S3, AI completion and quality with **feature freeze on 23 Jan** in S4, release on 30 Jan in S5. | Critical logic early; nothing after 30 Jan counts for v1.0; January exams. | Proposed | Omnigent recommendation; awaiting team | 25 Nov 2026 | `docs/sprints/SPRINT_PLAN.md`, PRD §15 |
+| D-31 | Minimal administration: the team provisions communities, gates and the first administrator with a setup script. The administrator only approves or rejects pending residents and opens the gate simulator. Gate management screens, resident removal and the admin audit entity (E-12) are out of scope. An approval decision stores who decided and when on the membership. | The assignment asks to avoid complex community administration. | Proposed | Omnigent recommendation; awaiting team | 25 Nov 2026 | FR-04, FR-05, NFR-20, E-02, E-12, S-08, S-09; extends D-21 |
+| D-32 | P-F06 design: AI is reached only through a **server-side proxy** (no key in the app), sends only the resident's text, today's date, the time zone and gate names, returns a schema-checked draft that the resident must confirm, and has a per-user daily cap. **Provider and cost need explicit team approval by 26 Dec 2026 (Q-04).** If none is approved, the team decides between a free tier, an approved paid plan, or descoping P-F06. | AI is now in scope, but paid services require approval; core functions must never depend on it. | Proposed | Omnigent recommendation; awaiting team | 25 Nov 2026 | FR-35, FR-41, FR-42, NFR-21, §11.4, R-06, R-14; supersedes D-11 |
+| D-33 | GitHub: change the repository's default branch from `cp0/prd` to `main` and add the `protect-main` ruleset (no direct pushes, no force pushes, no deletion, PR required, checks once CI exists, empty bypass list). | `main` is currently not verifiably protected, and new PRs target `cp0/prd` by default. | Proposed (owner action) | Lior | 25 Nov 2026 | `docs/team/GITHUB_PROTECTION.md`, Q-17 |
+
+## Decisions from CP0 v1.0 (21 Nov 2026)
+
+| ID | Decision | Rationale | Status | Decision maker | Date | Affects |
+|---|---|---|---|---|---|---|
+| D-01 | Project name: Porta. Flutter/Dart, Android + iOS. | Course requires Flutter/Dart. | Confirmed | Team | 21 Nov 2026 | PRD §1, §12 |
+| D-02 | All gates are simulated; no real hardware integration in the course. | Course scope and safety. | Confirmed | Team | 21 Nov 2026 | PRD §2, §7.4, FR-24, FR-25 |
+| D-03 | Permissions are one-time or recurring; each has a total opening limit that is cumulative over the permission's lifetime and never resets. | Core product rule. | Confirmed | Team | 21 Nov 2026 | FR-06–FR-08 |
+| D-04 | Guests use invitation links in a web browser without registration; registered users may open them in the app. | Zero-install guest experience. | Confirmed (in-app opening now a Could, D-27) | Team | 21 Nov 2026 | FR-19, FR-22 |
+| D-05 | Support Android App Links / iOS Universal Links where feasible. | Native experience for registered users. | Superseded by D-27 | Team | 21 Nov 2026 | FR-22 |
+| D-06 | Full product vision includes AI natural-language creation (F-19) and a guided assistant (F-21). | Product vision. | Updated: F-19 is now in scope as P-F06; F-21 is out of scope (D-22, D-29) | Team | 21 Nov 2026 | §7 |
+| D-07 | The 21 features are candidate requirements; none silently excluded. | Keep the full vision visible. | Superseded by D-22 (excluded items are mapped explicitly in PRD §7.6) | Team | 21 Nov 2026 | §7 |
+| D-08 | PRD and documentation written in English. | Team instruction. | Confirmed | Team | 21 Nov 2026 | All documents |
+| D-09 | MVP target date 31 Jan 2027. | — | Superseded by D-23 | Team | 21 Nov 2026 | §15 |
+| D-10 | MoSCoW over the 21 features (Must F-01–F-04, F-07–F-09, F-13; …). | — | Superseded by D-22 (PRD v2.0 §7); was Proposed | Omnigent proposal, not approved | 21 Nov 2026 | §7 |
+| D-11 | MVP does not depend on AI; F-21 as a rule-based wizard; F-19 a Could. | Cost and risk of AI. | Superseded by D-32; was Proposed | Omnigent proposal, not approved | 21 Nov 2026 | §7.5 |
+| D-12 | Backend candidate: Firebase (Auth, Firestore, Cloud Functions, Hosting, FCM). Cloud Functions require the Blaze billing plan → budget approval needed. | Managed services for a student team. | Proposed / Open — **decide by 1 Dec 2026** (Q-09) | Team | 21 Nov 2026 | §11.3, A-03, R-05 |
+| D-13 | Gate-open validation is server-side, fail-closed, atomic counter + request-ID idempotency; tokens ≥ 128-bit, stored hashed. | Security of the core promise. | Proposed | Team review pending | 21 Nov 2026 | Diagram 3, NFR-04–07, NFR-11 |
+| D-14 | Team member responsibilities. | — | Replaced by D-24 | Team | 21 Nov 2026 | §1 |
+| D-15 | Gate opening = one atomic transaction covering receipt + all checks + counter + gate `simOpenUntil` + event; push after commit; receipt keyed by (invitation, requestId) replays the original result. | Codex CX-04/05. | Proposed | Team review pending | 21 Nov 2026 | FR-20, Diagram 3, E-08 |
+| D-16 | Invitation lookup by token digest; full link readable only by the owning resident. | Codex CX-06. | Proposed | Team review pending | 21 Nov 2026 | FR-15, E-07, NFR-05 |
+| D-17 | Guest page as lightweight HTML/JS on the hosting provider's free default domain (not Flutter Web). | Codex CX-03, NFR-02. | Proposed — decide by 1 Dec 2026 (Q-14, Q-15) | Team | 21 Nov 2026 | W-01, W-02, R-08 |
+| D-18 | Backend fallback if Blaze billing isn't approved: Supabase Free + one transactional DB function. | Codex CX-02; zero budget. | Proposed — decide with D-12 | Team | 21 Nov 2026 | §11.3, Q-09 |
+| D-19 | M1 delivers a deployed end-to-end vertical slice. | Codex CX-01. | Confirmed in revised form by D-23 (M1 = 12 Dec 2026) | Team | 21 Nov 2026 | §15 |
+| D-20 | The product stores no guest phone number (data minimisation). | Antigravity AG-08. | Proposed | Team review pending | 21 Nov 2026 | NFR-09 |
+| D-21 | Communities and their first administrator are provisioned by the team (no self-service). | Claude SEC-01. | Proposed; extended by D-31 | Team review pending | 21 Nov 2026 | §4, A-11 |
