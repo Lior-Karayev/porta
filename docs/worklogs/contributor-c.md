@@ -1,6 +1,6 @@
 # Work Log — Contributor C (Guest experience, integration and QA)
 
-Name: **Lior**. AI: Omnigent, coordinating Claude Code, Codex and Antigravity.
+Name: **Lior Karayev**. GitHub: `Lior-Karayev` (confirmed). AI: Omnigent, coordinating Claude Code, Codex and Antigravity.
 
 One entry per significant task, newest first. Keep entries short; link to PRs instead of copying content. Do not paste whole conversations. For delegated work, name the implementing agent and the reviewing agent.
 
@@ -12,7 +12,7 @@ One entry per significant task, newest first. Keep entries short; link to PRs in
 | Field | Value |
 |---|---|
 | Sprint | Sprint N |
-| Human contributor | Contributor C (Lior) |
+| Human contributor | Lior Karayev (C) |
 | AI agent used | Omnigent → implementing: … · reviewing: … |
 | GitHub Issue | #… |
 | Work completed | … |
@@ -23,6 +23,20 @@ One entry per significant task, newest first. Keep entries short; link to PRs in
 ```
 
 ## Entries
+
+### 2026-11-26 · PR #2 completion: team decisions, research, PRD v2.1
+
+| Field | Value |
+|---|---|
+| Sprint | CP0 (before Sprint 1) |
+| Human contributor | Lior Karayev (C), who supplied the team decisions |
+| AI agent used | Omnigent (Claude Code, Opus 5.5). Implementing: Claude Code. No delegated review (documentation change, proportional review: consistency checks by the implementing agent) |
+| GitHub Issue | — (PR #2) |
+| Work completed | Names and roles confirmed throughout (D-24). D-30, D-31 and D-32 recorded as approved by Lior; D-29 left Proposed. iOS limitation documented (D-36). Official documentation checked for Flutter platform minimums (D-37), Section 5 products, Firebase versus Supabase (D-34), guest-page hosting (D-35) and deep-link fragment handling (NFR-05). Sprint 1 task estimates, capacity, critical path and fallback added. Usability test plan written. Q-table reworked, with partly answered questions keeping only the open parts. Appendix B corrected. PDF v2.1 rebuilt |
+| Decisions | D-24, D-30, D-31, D-32 Confirmed (Lior, 26 Nov); D-36 Confirmed (fact); D-34, D-35, D-37 Proposed; D-29 still Proposed |
+| Problems encountered | The GitHub account mapping for Daniel and Avishag can't be verified from the repository, so it is left pending. No hands-on product tests were possible. Several official pages were read through web search summaries, not as full pages |
+| Tests performed | PDF rebuilt (57 pages): all 15 sections and both appendices extracted, no Mermaid errors, no text beyond the right margin, changed tables inspected visually; Sprint 1 estimate totals recomputed by script; cross-document grep for names, statuses and stale dates |
+| Commits / PR | https://github.com/Lior-Karayev/porta/pull/2 |
 
 ### 2026-11-25 · CP0 revision: scope reduction to six features, agent policy, sprint plan, PRD v2.0
 

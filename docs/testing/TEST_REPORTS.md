@@ -2,7 +2,7 @@
 
 Results of sprint-end and milestone test runs. Each report states what was run, on which build, and what failed. Failing results are recorded as they are. They are never removed or rewritten later.
 
-Test layers, owners and the central scenario are described in `docs/team/WORKFLOW.md`, Section 6. Acceptance criteria live in the Master PRD (Section 9) and in the Feature PRDs.
+Test layers, owners and the central scenario are described in `docs/team/WORKFLOW.md`, Section 6. **Platform:** Android and Chrome for Android only. There is no iOS test environment (D-36), so no iOS result is ever reported unless it was really run. The usability test follows `USABILITY_TEST_PLAN.md`. Acceptance criteria live in the Master PRD (Section 9) and in the Feature PRDs.
 
 ## Report template
 

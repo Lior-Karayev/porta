@@ -101,7 +101,9 @@ Test layers (introduced from Sprint 1):
 
 **Central scenario** (from Sprint 1, automated by Sprint 3): resident creates permission → database stores it → guest receives link → backend validates the opening → simulator responds → opening count and activity history update correctly. Negative variants: invalid link, expired, suspended, cancelled, exhausted, concurrent last opening.
 
-Results of milestone and sprint test runs are recorded in `docs/testing/TEST_REPORTS.md`.
+Results of milestone and sprint test runs are recorded in `docs/testing/TEST_REPORTS.md`. The usability test (Sprint 4) follows `docs/testing/USABILITY_TEST_PLAN.md`.
+
+**Platforms:** all tests run on **Android** (a physical device and the emulator) and on Chrome for Android for the guest page. There is currently no iOS test environment (D-36). A test report must never say a test passed on iOS unless it was actually run on iOS.
 
 The Definition of Done is in `AGENTS.md`, Section 10. Meeting it allows `READY_FOR_HUMAN_REVIEW`; it never authorises a merge.
 

@@ -3,8 +3,9 @@
 <div class="group-label">GROUP B · WHAT WE ARE BUILDING</div>
 <h2><span class="num">7</span>Product Scope and Prioritization</h2>
 <div class="note"><b>Scope change in v2.0 (decision D-22).</b> The project scope is being reduced to decrease workload, improve development feasibility, and allow the team to focus on a smaller number of meaningful, well-tested features during the academic semester. The instructor requires at least <b>five significant technical features</b>. The team will implement <b>six major feature groups</b>, P-F01–P-F06, and each gets its own Feature PRD before it is implemented. The 21 candidate capabilities of v1.0 are each mapped to a feature group or to Out of Scope in Section 7.6.</div>
-<p class="small"><b>Complexity</b> is a relative estimate (L = low, M = medium, H = high) of design, build and test effort for a student team new to Flutter. <b>Components</b> refers to the provisional roles in Section 1: A = Flutter and UX, B = backend and data, C = guest experience, integration and QA. A routine screen or CRUD operation is never counted as a major feature by itself.</p>
+<p class="small"><b>Complexity</b> is a relative estimate (L = low, M = medium, H = high) of design, build and test effort for a student team new to Flutter. <b>Components</b> refers to the confirmed roles in Section 1 (D-24): A = Flutter and UX, B = backend and data, C = guest experience, integration and QA. A routine screen or CRUD operation is never counted as a major feature by itself.</p>
 
+<div class="warn"><b>Status of the scope decisions.</b> The six feature groups are confirmed (D-22). Minimal administration (D-31) and the AI-assisted creation design (D-32) were approved by Lior on 26 Nov 2026. <b>The in-scope simplifications are still proposed (D-29) and await team approval:</b> one gate per permission, no editing, no link regeneration, no wizard or dashboard, no administrator community log, and no reminders. Until the team decides, this document describes the proposed scope. No excluded capability is restored, and no further reduction is made without a team decision.</div>
 <h3>7.1 The six major feature groups</h3>
 <table>
 <thead><tr><th style="width:7%">ID</th><th style="width:17%">Feature group</th><th>What it includes (priority of each part)</th><th style="width:16%">Significant technical capability</th><th style="width:6%">Cplx</th><th style="width:9%">Components</th><th style="width:10%">From v1.0</th></tr></thead>
@@ -57,7 +58,7 @@
 
 <h3>7.5 AI feature: feasibility and approval</h3>
 <div class="note">
-<p><b>Decision (D-32, proposed):</b> AI-assisted creation (P-F06) is part of Porta v1.0, but <b>no core function depends on it</b>. The regular form (S-03) always works.</p>
+<p><b>Decision (D-32, approved by Lior on 26 Nov 2026):</b> AI-assisted creation (P-F06) is part of Porta v1.0, with the design below, and <b>no core function depends on it</b>. <b>This approval does not authorise any paid AI service or spending</b>: the provider, data-use terms and budget remain open (Q-04). The regular form (S-03) always works.</p>
 <ol>
 <li><b>Safe by construction:</b> the AI only <i>drafts</i> fields. The resident reviews the draft in the regular form and confirms it, and the server validates it exactly like manual input (FR-41). If the AI is unavailable, slow, over its usage cap or not approved, the manual form opens with the text kept (FR-42).</li>
 <li><b>Privacy and keys:</b> the app never holds an AI key. Requests go through a backend proxy, which accepts approved residents only. It sends only the resident's text, today's date, the time zone and the names of the caller's own active gates, and it treats both the text and the model's answer as untrusted (Section 11.4, NFR-21).</li>

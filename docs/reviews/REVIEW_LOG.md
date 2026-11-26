@@ -22,6 +22,17 @@ Detailed findings of a round may live in their own file in `docs/reviews/` (for 
 
 ## Entries
 
+### R3 · 2026-11-26 · PR #2 completion (PRD v2.1)
+
+| Field | Value |
+|---|---|
+| Subject | Team decisions, research findings, sprint capacity, usability test plan |
+| Review level | light (documentation change, `AGENTS.md` §9) |
+| Implementing agent | Claude Code (Opus 5.5) via Omnigent |
+| Reviewing agent(s) | None delegated. Consistency checks were scripted by the implementing agent: names, decision statuses, dates, Sprint 1 estimate sums, PDF sections, Mermaid errors and right-margin overflow |
+| Findings | Fixed during the checks: a leftover "provisional roles" phrase, and a Safari claim on the guest page that could not be tested |
+| Open after review | Lior's human review is the next gate |
+
 ### R2 · 2026-11-25 · CP0 revision: PRD v2.0, agent policy, sprint plan
 
 | Field | Value |

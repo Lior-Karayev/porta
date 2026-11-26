@@ -6,10 +6,10 @@
     <h1>Product Requirements Document (PRD)</h1>
     <div class="sub">Scheduled, controlled guest access to (simulated) community gates</div>
     <table class="kv" style="width:72%">
-      <tr><td>Document version</td><td>2.0 (revised scope, submission-ready)</td></tr>
-      <tr><td>Last updated</td><td>25 November 2026</td></tr>
-      <tr><td>Team</td><td>Daniel · Lior · Avishag</td></tr>
-      <tr><td>Development platform</td><td>Flutter / Dart · Android and iOS · browser-based guest page</td></tr>
+      <tr><td>Document version</td><td>2.1 (revised scope, submission-ready)</td></tr>
+      <tr><td>Last updated</td><td>26 November 2026</td></tr>
+      <tr><td>Team</td><td>Daniel Benfusi · Avishag Yonatan · Lior Karayev</td></tr>
+      <tr><td>Development platform</td><td>Flutter / Dart · Android (tested) · iOS (target, no test environment) · browser-based guest page</td></tr>
       <tr><td>Development scope</td><td>Six major feature groups, P-F01–P-F06 (Section 7)</td></tr>
       <tr><td>First MVP (M1)</td><td>12 December 2026</td></tr>
       <tr><td>Porta v1.0 (M2)</td><td>30 January 2027 (proposed end-of-semester milestone)</td></tr>
@@ -29,6 +29,7 @@
 <tr><td>0.9</td><td>21 Nov 2026</td><td>Full draft: all 15 sections, diagrams and wireframes.</td></tr>
 <tr><td>1.0</td><td>21 Nov 2026</td><td>Fixes from the independent reviews: technical feasibility (Codex, 12 findings), UX (Antigravity, 9 findings) and security (Claude, 6 findings). Key changes: a single atomic transaction for gate opening, a receipt that makes retries replay the original result, time-zone and DST rules, a vertical slice in M1, the backend alternative, and complete UX states. Submission-ready.</td></tr>
 <tr><td>2.0</td><td>25 Nov 2026</td><td><b>Scope reduction.</b> Reason: <i>the project scope is being reduced to decrease workload, improve development feasibility, and allow the team to focus on a smaller number of meaningful, well-tested features during the academic semester.</i> The 21 candidate capabilities become six major feature groups, P-F01–P-F06, and every earlier capability is mapped (Section 7.6). AI-assisted creation moves into scope (P-F06). Out of scope: multiple gates per permission, editing, link regeneration, the wizard, the dashboard, templates, contacts, group invitations, reports, anomaly detection, approvals, smart suggestions, and administrator gate management. New milestones: M0 28 Nov 2026, first MVP 12 Dec 2026, Porta v1.0 30 Jan 2027. Also new: a 14-day sprint plan, provisional team roles, and updated requirements, stories, screens, wireframes, data model, risks and traceability.</td></tr>
+<tr><td>2.1</td><td>26 Nov 2026</td><td><b>Team decisions completed.</b> Team members and roles confirmed (D-24). Sprint plan (D-30), minimal administration (D-31) and the AI-assisted creation design (D-32, without any paid provider or spending) approved by Lior. The in-scope simplifications (D-29) remain proposed. No iOS test environment is available, so Android is the only verified platform. Platform minimums, competing products, backend options, guest-page hosting and deep-link token handling were checked against official documentation (Appendix B). Sprint 1 effort estimates, a usability test plan and the sources were corrected.</td></tr>
 </table>
 
 <h3>Conventions</h3>
@@ -82,7 +83,7 @@
 <tr><td>App name</td><td>Porta</td></tr>
 <tr><td>One-line description</td><td>Residents of gated communities grant guests and service providers gate access that is limited in time and in number of openings, using a link that opens in any web browser.</td></tr>
 <tr><td>Course</td><td>Developing Smart Mobile Apps with AI · Kinneret College · 2026–27, Semester A</td></tr>
-<tr><td>Version and date</td><td>2.0 · 25 November 2026</td></tr>
+<tr><td>Version and date</td><td>2.1 · 26 November 2026</td></tr>
 <tr><td>Repository</td><td>github.com/Lior-Karayev/porta</td></tr>
 </table>
 
@@ -90,11 +91,11 @@
 <p>Responsibility is split by <b>implementation component</b>, not by exclusive ownership of features: most features involve two or three members (Section 7.1). All three members develop code, and each must understand the code they write and the complete flow of every feature they work on.</p>
 <table>
 <thead><tr><th style="width:22%">Team member</th><th style="width:20%">Role</th><th>Initial area of responsibility</th><th style="width:16%">AI tools</th></tr></thead>
-<tr><td>Lior <span class="placeholder">[surname]</span></td><td>Contributor C</td><td><b>Guest experience, integration and QA:</b> browser guest page, sharing and QR integration, simulated gate, integration and end-to-end tests, CI, compatibility between components, scope monitoring. The only member who authorises merges into the main branch.</td><td>Omnigent (Claude Code, Codex, Antigravity)</td></tr>
-<tr><td>Daniel <span class="placeholder">[surname]</span></td><td rowspan="2"><span class="open">Contributor A or B: to be confirmed (Q-01)</span></td><td rowspan="2"><b>A · Flutter and UX:</b> resident-facing screens, forms, navigation, state management, input validation, connecting the UI to the backend, accessibility and right-to-left support.<br><b>B · Backend and data:</b> authentication, database and data models, backend APIs, permission validation, atomic counters, backend tests.</td><td rowspan="2">Claude Code</td></tr>
-<tr><td>Avishag <span class="placeholder">[surname]</span></td></tr>
+<tr><td>Daniel Benfusi</td><td>Contributor A</td><td><b>Flutter and UX:</b> the resident-facing Flutter interface, UX, navigation, state management, forms and validation, connecting the UI to the backend, accessibility and right-to-left support.</td><td>Claude Code</td></tr>
+<tr><td>Avishag Yonatan</td><td>Contributor B</td><td><b>Backend and data:</b> database, backend services, authentication, permission validation, data models and atomic counters, backend testing.</td><td>Claude Code</td></tr>
+<tr><td>Lior Karayev</td><td>Contributor C</td><td><b>Guest experience, integration and QA:</b> browser guest interface, simulated gate, QR and sharing integration, cross-component integration, end-to-end testing, CI and QA, project-wide coordination. The only member who merges into the main branch.</td><td>Omnigent (Claude Code, Codex and Antigravity, first-party accounts)</td></tr>
 </table>
-<div class="note"><b>Provisional allocation (decision D-24):</b> Lior's role is confirmed. Which of Daniel and Avishag takes role A and which takes role B is still to be confirmed by the team (Q-01). The registry of contributors, GitHub accounts and approved changes is kept in the repository (<code>docs/team/CONTRIBUTORS.md</code>).</div>
+<div class="note"><b>Confirmed allocation (decision D-24, 26 Nov 2026).</b> The registry of contributors, their GitHub accounts and any approved changes is kept in the repository (<code>docs/team/CONTRIBUTORS.md</code>). The repository owner account <code>Lior-Karayev</code> is Lior's. <span class="open">Which of the two other collaborator accounts belongs to Daniel and which to Avishag is still to be confirmed by each of them (Q-01).</span></div>
 
 <h3>AI agents in the workflow</h3>
 <p>The team works with several AI agents under team supervision:</p>

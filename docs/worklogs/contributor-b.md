@@ -1,6 +1,6 @@
 # Work Log — Contributor B (Backend and Data)
 
-Name: *unassigned — pending team confirmation* (see `docs/team/CONTRIBUTORS.md`).
+Name: **Avishag Yonatan** (confirmed, D-24). GitHub account: pending confirmation (see `docs/team/CONTRIBUTORS.md`).
 
 One entry per significant task, newest first. Keep entries short; link to PRs instead of copying content. Do not paste whole conversations.
 
@@ -12,7 +12,7 @@ One entry per significant task, newest first. Keep entries short; link to PRs in
 | Field | Value |
 |---|---|
 | Sprint | Sprint N |
-| Human contributor | Contributor B (<name>) |
+| Human contributor | Avishag Yonatan (B) |
 | AI agent used | Claude Code (model, if known) |
 | GitHub Issue | #… |
 | Work completed | … |

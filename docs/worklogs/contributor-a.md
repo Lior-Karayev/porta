@@ -1,6 +1,6 @@
 # Work Log — Contributor A (Flutter and UX)
 
-Name: *unassigned — pending team confirmation* (see `docs/team/CONTRIBUTORS.md`).
+Name: **Daniel Benfusi** (confirmed, D-24). GitHub account: pending confirmation (see `docs/team/CONTRIBUTORS.md`).
 
 One entry per significant task, newest first. Keep entries short; link to PRs instead of copying content. Do not paste whole conversations.
 
@@ -12,7 +12,7 @@ One entry per significant task, newest first. Keep entries short; link to PRs in
 | Field | Value |
 |---|---|
 | Sprint | Sprint N |
-| Human contributor | Contributor A (<name>) |
+| Human contributor | Daniel Benfusi (A) |
 | AI agent used | Claude Code (model, if known) |
 | GitHub Issue | #… |
 | Work completed | … |

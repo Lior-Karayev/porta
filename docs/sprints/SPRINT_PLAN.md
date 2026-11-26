@@ -1,8 +1,10 @@
 # Porta — Sprint Plan (14-day sprints)
 
-**Status:** Proposed by Omnigent on 25 Nov 2026, pending team approval (decision D-30). Owners refer to the **provisional** component roles in `docs/team/CONTRIBUTORS.md` (A = Flutter and UX, B = Backend and Data, C = Guest experience, integration and QA).
+**Status:** **Approved by Lior on 26 Nov 2026 as the current development baseline (decision D-30).** The team may adjust sprint content and future dates during development. Every change is documented, explained, reviewed for its effect on the milestones, and recorded in `docs/decisions/DECISION_LOG.md`. Sprints stay 14 days long unless the team explicitly approves a process change, and an unfinished sprint is never silently extended.
 
-Source of scope: Master PRD v2.0, Section 7 (six feature groups P-F01–P-F06). Rules for unfinished work: `SPRINT_CARRYOVER.md`.
+Owners (confirmed, D-24): **A = Daniel Benfusi** (Flutter and UX) · **B = Avishag Yonatan** (backend and data) · **C = Lior Karayev** (guest experience, integration and QA). Administration stays minimal (D-31): no administrator management screens are planned beyond approving residents (S-08) and the simulator (S-10).
+
+Source of scope: Master PRD v2.1, Section 7 (six feature groups P-F01–P-F06). Rules for unfinished work: `SPRINT_CARRYOVER.md`.
 
 ## 1. Calendar, milestones and deadlines
 
@@ -23,7 +25,9 @@ Source of scope: Master PRD v2.0, Section 7 (six feature groups P-F01–P-F06). 
 
 ## 2. Planning assumptions
 
-- Three contributors, each with an estimated **8–10 hours per week** of project time alongside other courses (to be confirmed by the team at Sprint 1 planning).
+- **Capacity (planning assumption, not a confirmed availability commitment):** about **8–10 hours per contributor per week**, so **16–20 hours per contributor per sprint**, alongside other courses. Each contributor states their real availability at sprint planning, and the plan is re-checked against it.
+- **Effort estimates** are Omnigent's first estimates in hours. They include working with AI agents, reviewing, testing and the required documentation. The owners re-estimate at each sprint planning.
+- **Every feature part needs an approved Feature PRD before coding starts.** A Feature PRD is approved when its coordinator has written it, at least one other contributor whose component it touches has reviewed it, and Lior has merged it. It may cover only the part needed for the current sprint (a "slice-scope" Feature PRD) and is extended in later sprints.
 - AI agents speed up implementation but not learning, integration or testing. The plan therefore reserves time for review, tests and walkthroughs in every sprint.
 - **End-to-end increments:** every sprint ends with something that runs from the resident app through the backend to the guest page or simulator. No component stays disconnected for a whole sprint.
 - **Critical logic first:** gate-open validation, the atomic counter and token handling are built in Sprints 1–2. That leaves two sprints to find concurrency and time-zone bugs.
@@ -46,40 +50,66 @@ Source of scope: Master PRD v2.0, Section 7 (six feature groups P-F01–P-F06). 
 
 **Sprint goal:** a deployed vertical slice. A demo resident creates a one-time permission, it is stored, a link is generated, a guest opens it in a browser, the backend validates it, and the simulated gate opens or rejects.
 
-| # | Task | Feature | Owner | AI support | Depends on |
-|---|---|---|---|---|---|
-| S1-01 | Team confirms roles (Q-01), weekly capacity, and this plan. Create GitHub Issues for Sprint 1. | — | All (C leads) | Omnigent drafts Issues | CP0 approved |
-| S1-02 | **Decide the backend (Q-09) by 1 Dec.** No billing account without approval. | — | B (proposal), team (decision) | Codex: cost and feasibility check | — |
-| S1-03 | Decide guest-page technology and link domain (Q-14, Q-15) by 1 Dec. | P-F04 | C | Codex | S1-02 |
-| S1-04 | Feature PRDs for the slice parts, **before** the implementation tasks that use them: P-F01 (seeded sign-in), P-F02 (one-time permission), P-F03 (link), P-F04 (guest page, gate-open endpoint), P-F05 (event recording) | P-F01–05 | C (lead), B, A | Claude Code | S1-01 |
-| S1-05 | Flutter project skeleton, folder structure, linting; CI running `dart format`, `flutter analyze`, tests on every PR | — | C (CI), A (app skeleton) | Claude Code, Codex | S1-01 |
-| S1-05b | Seed script (one community, one gate, demo users, one already-cancelled permission for the M1 test) and deployment of the backend and guest page | — | C | Claude Code | S1-02, S1-06 |
-| S1-06 | Data model and security rules for Community, User, Gate, Permission, Invitation, AccessEvent | P-F01, P-F02 | B | Claude Code | S1-02, S1-04 |
-| S1-07 | Sign-in for seeded demo users; session persists (part of FR-01). Uses the backend's built-in authentication, with no custom auth code | P-F01 | A (screen and wiring), B (rules) | Claude Code | S1-04, S1-06 |
-| S1-08 | Create one-time permission: form (S-03, one-time only) and backend create with validation and idempotency (FR-06, FR-16 idempotency) | P-F02 | A (form), B (backend) | Claude Code | S1-04, S1-06, S1-07 |
-| S1-09 | Invitation token (≥ 128-bit, stored as digest) and link; copy link from S-05 (FR-15) | P-F03 | B (token), A (copy UI) | Claude Code | S1-08 |
-| S1-10 | Gate-open endpoint as **one atomic transaction**: token check, cancelled, time window, limit, counter + 1, gate open-until, receipt event with same-request-ID replay, bounded conflict retry (Diagram 3 checks 1, 2, 5, 6, 8, 9) | P-F04, P-F02, P-F05 | B | Claude Code; **deep review by Codex** | S1-04, S1-06 |
-| S1-11 | Minimal guest page W-01 / W-02: details, "Open gate", granted / denied result | P-F04 | C | Omnigent → Codex or Claude Code | S1-03, S1-10 |
-| S1-12 | Minimal gate simulator S-10 (gate OPEN for 5 s, last event) | P-F04 | C | Omnigent → Claude Code | S1-10 |
-| S1-13 | Scripted E2E test of the slice, including invalid link, expired, exhausted, the seeded cancelled permission, same-ID retry, and two simultaneous last-opening requests. C also writes the endpoint's backend test cases with B, to take load off B | — | C | Codex | S1-08–S1-12 |
-| S1-14 | M1 submission package: demo script, short recording or live demo, README update; internal target **Thu 10 Dec** | — | C (with A, B) | Omnigent | S1-13 |
+| # | Task | Feature | Owner | AI support | Depends on | Est. hours (A / B / C) |
+|---|---|---|---|---|---|---|
+| S1-01 | Sprint planning: state real availability, re-estimate this table, create the GitHub Issues. Daniel and Avishag confirm their GitHub accounts (Q-01). | — | All (C leads) | Omnigent drafts Issues | CP0 merged | 1 / 1 / 2 |
+| S1-02 | **Decide the backend (Q-09) by Tue 1 Dec**, starting from the recommendation in PRD §11.3 (D-34). No billing account without approval. | — | B (proposal), team (decision) | Codex: check the recommendation | — | 0 / 1 / 1 |
+| S1-03 | Decide the guest-page technology and link domain (Q-14, Q-15) by Tue 1 Dec, starting from D-35. | P-F04 | C | — | S1-02 | 0 / 0 / 1 |
+| S1-04 | **Slice-scope Feature PRDs, approved by Wed 2 Dec, before the coding tasks that use them** (five, one per feature group touched by M1): P-F01 (demo sign-in) and P-F02 (one-time permission) by B; P-F03 (link) and P-F04 (guest page, gate-open function) by C; P-F05 (event recording) by A | P-F01–P-F05 | B, C, A | Claude Code | S1-01, S1-02 | 1 / 2 / 2 |
+| S1-05 | Flutter project skeleton, folder structure, linting (A). Minimal CI running `dart format`, `flutter analyze` and the tests on every PR (C). | — | A, C | Claude Code, Codex | S1-01 | 3 / 0 / 2 |
+| S1-05b | Seed script (one community, one gate, demo users, one already-cancelled permission for the M1 test) and deployment of the backend and guest page | — | C | Claude Code | S1-02, S1-06 | 0 / 0 / 3 |
+| S1-06 | Data model and security rules for Community, User, Gate, Permission, Invitation, AccessEvent (no recurrence yet) | P-F01, P-F02 | B | Claude Code | S1-04 | 0 / 5 / 0 |
+| S1-07 | Sign-in for seeded demo users; session persists (part of FR-01). Uses the backend's built-in authentication, with no custom auth code | P-F01 | A (screen and wiring), B (rules) | Claude Code | S1-04, S1-06 | 2 / 1 / 0 |
+| S1-08 | Create one-time permission: form (S-03, one-time only) and backend create with validation and idempotency (FR-06, FR-16) | P-F02 | A (form), B (backend) | Claude Code | S1-04, S1-06 | 4 / 3 / 0 |
+| S1-09 | Invitation token (≥ 128-bit, stored as digest) and link; copy link from S-05 (FR-15) | P-F03 | B (token), A (copy UI) | Claude Code | S1-08 | 1 / 2 / 0 |
+| S1-10 | Gate-open function as **one atomic transaction**: token check, cancelled, time window, limit, counter + 1, gate open-until, receipt event with same-request-ID replay, bounded conflict retry (Diagram 3 checks 1, 2, 5, 6, 8, 9) | P-F04, P-F02, P-F05 | B | Claude Code; **deep review by Codex** | S1-04, S1-06 | 0 / 6 / 0 |
+| S1-11 | Minimal guest page W-01 / W-02: details, "Open gate", granted / denied result | P-F04 | C | Omnigent → Codex or Claude Code | S1-03, S1-10 | 0 / 0 / 5 |
+| S1-12 | Minimal gate simulator S-10 (gate OPEN for 5 s, last event) | P-F04 | C (see rebalancing below) | Omnigent → Claude Code | S1-10 | 0 / 0 / 3 |
+| S1-13 | Scripted E2E test of the slice, including invalid link, expired, exhausted, the seeded cancelled permission, same-ID retry, and two simultaneous last-opening requests. C writes the gate-open function's test cases with B | — | C (B advises) | Codex | S1-08–S1-12 | 0 / 1 / 4 |
+| S1-14 | M1 submission package: demo script, short recording or live demo, README update; internal target **Thu 10 Dec** | — | C (with A, B) | Omnigent | S1-13 | 1 / 1 / 2 |
+| S1-15 | Sprint documentation: work logs, first Code Concepts entries, Sprint 1 report and walkthrough, test report T1 | — | All | Claude Code | — | 1 / 1 / 2 |
+| | **Total (first estimate)** | | | | | **14 / 24 / 27** |
 
-**Deliverables:** deployed slice, demo script, CI, seed script, three Feature PRDs (slice parts), first Code Concepts entries, Sprint 1 report.
+**Deliverables:** deployed slice, demo script, minimal CI, seed script, **five slice-scope Feature PRDs** (P-F01–P-F05, approved before coding; the full Feature PRDs follow in S2-01 and S3-01), first Code Concepts entries, Sprint 1 report.
 
 **Acceptance criteria (M1):**
 
-- A seeded resident signs in and creates a one-time permission. It appears in the database with `usedOpenings = 0`.
+- A seeded resident (or demo user) signs in and creates a one-time permission. It appears in the database with `usedOpenings = 0`.
 - The copied link opens W-01 in Chrome on Android, without registration.
 - "Open gate" inside the window with openings left → granted; S-10 shows OPEN within 2 s; `usedOpenings` + 1; a GRANTED event is stored.
 - The same link after the limit is used → `EXHAUSTED`; after the end time → `EXPIRED`; the seeded cancelled permission → `CANCELLED`; a made-up link → W-02 (`INVALID_LINK`).
 - Retrying a request with the same request ID returns the original result and counts nothing.
 - Two simultaneous requests on the last opening → exactly one grant (AC-08.4).
 
-**Integration tests:** app → backend create; guest page → gate-open endpoint; endpoint → simulator state; E2E slice script.
+**Integration tests:** app → backend create; guest page → gate-open function; function → simulator state; E2E slice script.
 
-**Documentation:** Feature PRDs (slice parts), decisions Q-09 / Q-14 / Q-15 recorded, work logs, Code Concepts entries, Sprint 1 report and walkthrough, test report T1.
+**Documentation:** five slice-scope Feature PRDs, decisions Q-09 / Q-14 / Q-15 recorded, work logs, Code Concepts entries, Sprint 1 report and walkthrough, test report T1.
 
-**Capacity check (critical path through B):** S1-06 → S1-08 (backend) → S1-10 is about 14–18 hours of B's estimated 16–20 hours in the sprint. To protect it, seeding and deployment (S1-05b), sign-in wiring (S1-07) and the test cases (S1-13) sit with A and C. At Sprint 1 planning the team re-estimates every task. **Fallback if S1-10 is not running by Sun 6 Dec:** the M1 slice uses a seeded permission instead of the create form (S1-08 moves to Sprint 2). This is recorded as a carryover with a team decision.
+### Sprint 1 capacity and critical path
+
+**Critical path (calendar):** S1-02 backend decision (Tue 1 Dec) → S1-04 Feature PRDs approved (Wed 2 Dec) → S1-06 data model (Fri 4 Dec) → S1-10 gate-open function (Sun 6 Dec) → S1-11 guest page connected (Tue 8 Dec) → S1-13 E2E test green (Wed 9 Dec) → S1-14 M1 package (Thu 10 Dec). That leaves two days of buffer before Sat 12 Dec. S1-08 (create form) runs in parallel with S1-10 once S1-06 is done.
+
+**Overload assessment:** the first estimates are **A 14 h, B 24 h, C 27 h, total 65 h**, against an assumed **16–20 h per person (48–60 h total)**. As first planned, **Sprint 1 is overloaded**: B by about 4–8 h, C by about 7–11 h, and the team by about 5–17 h. A has some spare capacity.
+
+**Proposed rebalancing** (each cross-component item needs the owner's agreement, recorded in `CONTRIBUTORS.md` as an approved collaboration):
+
+| Change | Effect |
+|---|---|
+| Daniel (A) builds the Flutter simulator screen S-10 to Lior's (C) specification. C keeps ownership of the simulated gate state. | A +3 h · C −3 h |
+| Daniel (A) prepares the demo recording and README part of S1-14 | A +1 h · C −1 h |
+| The Sprint 1 CI runs only format, analysis and tests. No deployment pipeline yet. | already in the estimate |
+| **After rebalancing** | **A 18 h · B 24 h · C 23 h (total unchanged, 65 h)** |
+
+**Even after rebalancing, B and C remain about 3–8 h over the assumed capacity.** The team must confirm real availability at Sprint 1 planning (S1-01). If it is not enough, the fallback below applies, in order, and every step is recorded as a carryover with a team decision:
+
+1. **Demo sign-in only:** M1 allows "a resident or demo user", so a single seeded demo account is signed in with the backend's standard sign-in, and S1-07's screen work moves to Sprint 2 (saves A 2 h, B 1 h).
+2. **Simulator reduced** to one gate tile with OPEN/CLOSED and the last event (saves about 1–2 h).
+3. **Concurrency test in Sprint 2:** the two-simultaneous-requests E2E case moves to S2-09. The transaction design itself is not changed (saves C about 1 h).
+4. If the gate-open function (S1-10) is still not running on **Sun 6 Dec**, the team decides whether M1 is shown with fewer checks (token, cancelled, time window and limit are the minimum). The create form (S1-08) stays, because creating a permission is step 1 of the M1 scenario.
+
+Validation, security and the M1 scenario's six steps are never cut.
+
+**Later sprints (rough load, re-estimated at each sprint planning):** Sprint 2 is B-heavy (P-F01 and P-F02 rules, recurrence, lifecycle) and is planned at about A 16 h / B 20 h / C 18 h, with C writing the Diagram 3 test suite to relieve B. Sprints 3 and 4 are balanced, at about 15–20 h each. Sprint 5 is light before 30 Jan (regression and release-blocking fixes only).
 
 **Risks:** the backend decision is late (blocks everything; mitigation: decide by 1 Dec, prototype against the local emulator meanwhile). Setup problems with Flutter, emulators or deployment (mitigation: C sets up CI and deployment early). The M1 date is on a Saturday (internal target Thursday 10 Dec).
 
