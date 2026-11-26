@@ -2,77 +2,108 @@
 <section class="sec">
 <div class="group-label">GROUP B · WHAT WE ARE BUILDING</div>
 <h2><span class="num">7</span>Product Scope and Prioritization</h2>
-<p>The full product consists of the <b>21 candidate capabilities</b> below, proposed by the team. Every one of them is part of the product vision and none has been dropped. They are <b>candidate requirements</b>, not 21 implementation commitments: the MoSCoW priority and target release say what will be built for the MVP (31 Jan 2027) and what is scheduled later.</p>
-<p class="small"><b>Complexity</b> is a relative estimate (L = low, M = medium, H = high) of design, build and test effort for a student team new to Flutter. <b>Release</b>: MVP = by 31 Jan 2027. M5–M7 are post-MVP milestones (Section 15), not yet scheduled.</p>
+<div class="note"><b>Scope change in v2.0 (decision D-22).</b> The project scope is being reduced to decrease workload, improve development feasibility, and allow the team to focus on a smaller number of meaningful, well-tested features during the academic semester. The instructor requires at least <b>five significant technical features</b>. The team will implement <b>six major feature groups</b>, P-F01–P-F06, and each gets its own Feature PRD before it is implemented. The 21 candidate capabilities of v1.0 are each mapped to a feature group or to Out of Scope in Section 7.6.</div>
+<p class="small"><b>Complexity</b> is a relative estimate (L = low, M = medium, H = high) of design, build and test effort for a student team new to Flutter. <b>Components</b> refers to the confirmed roles in Section 1 (D-24): A = Flutter and UX, B = backend and data, C = guest experience, integration and QA. A routine screen or CRUD operation is never counted as a major feature by itself.</p>
 
-<h3>7.1 All capabilities of the full product, prioritized</h3>
+<div class="warn"><b>Status of the scope decisions.</b> The six feature groups are confirmed (D-22). Minimal administration (D-31) and the AI-assisted creation design (D-32) were approved by Lior on 26 Nov 2026. <b>The in-scope simplifications are still proposed (D-29) and await team approval:</b> one gate per permission, no editing, no link regeneration, no wizard or dashboard, no administrator community log, and no reminders. Until the team decides, this document describes the proposed scope. No excluded capability is restored, and no further reduction is made without a team decision.</div>
+<h3>7.1 The six major feature groups</h3>
 <table>
-<thead><tr><th style="width:6%">ID</th><th style="width:22%">Capability</th><th style="width:7%">Cplx</th><th style="width:22%">Depends on</th><th style="width:10%">MoSCoW</th><th style="width:10%">Release</th><th>Rationale</th></tr></thead>
-<tr><td colspan="7"><b>Access permissions</b></td></tr>
-<tr><td>F-01</td><td>One-time access permissions</td><td>M</td><td>F-07, F-08</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Core value; simplest permission type.</td></tr>
-<tr><td>F-02</td><td>Recurring permissions by days and hours</td><td>M–H</td><td>F-01 (shared model), time-zone handling</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Core differentiator (service providers). Schedule evaluation must be server-side and time-zone correct.</td></tr>
-<tr><td>F-03</td><td>Total opening limit per permission (counter never resets)</td><td>M</td><td>F-01/F-02, atomic server update</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Confirmed product decision. Needs a race-safe counter.</td></tr>
-<tr><td>F-04</td><td>Cancellation and temporary suspension</td><td>L</td><td>F-01/F-02</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Instant revocation is a core security promise.</td></tr>
-<tr><td>F-05</td><td>Reusable permission templates</td><td>L–M</td><td>F-01, F-02</td><td><span class="tag could">Could</span></td><td>MVP stretch → M5</td><td>Convenience; the core works without it.</td></tr>
-<tr><td>F-06</td><td>Permissions for multiple gates</td><td>M</td><td>Gate model (FR-04)</td><td><span class="tag should">Should</span></td><td>MVP</td><td>The data model supports many gates from day one. Multi-select UI is low marginal cost.</td></tr>
-<tr><td>F-07</td><td>Role-based access control (Resident, Guest, Administrator)</td><td>M</td><td>Authentication</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Foundation for every other capability and for security.</td></tr>
-<tr><td colspan="7"><b>Guest management</b></td></tr>
-<tr><td>F-08</td><td>Unique invitation links</td><td>M</td><td>F-01/F-02, secure token generation</td><td><span class="tag must">Must</span></td><td>MVP</td><td>The delivery mechanism of every permission.</td></tr>
-<tr><td>F-09</td><td>Guest access via web browser, no install</td><td>M–H</td><td>F-08, web hosting</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Confirmed product decision. This is the guest's whole experience.</td></tr>
-<tr><td>F-10</td><td>QR codes for guests</td><td>L</td><td>F-08</td><td><span class="tag should">Should</span></td><td>MVP</td><td>The QR encodes the same link. Cheap, and helps in-person handover.</td></tr>
-<tr><td>F-11</td><td>Guest and service-provider contact directory</td><td>L–M</td><td>F-01</td><td><span class="tag could">Could</span></td><td>MVP stretch → M5</td><td>Speeds up repeat creation, but not essential.</td></tr>
-<tr><td>F-12</td><td>Group invitations for multiple guests</td><td>M–H</td><td>F-08, F-03 (counter semantics per group)</td><td><span class="tag wont">Won't</span></td><td>M5</td><td>Needs a decision on per-guest vs shared counters (Q-05).</td></tr>
-<tr><td colspan="7"><b>Monitoring and management</b></td></tr>
-<tr><td>F-13</td><td>Access activity logs</td><td>M</td><td>Gate-open flow</td><td><span class="tag must">Must</span></td><td>MVP</td><td>Resident view is Must. The administrator community view is Should (FR-28).</td></tr>
-<tr><td>F-14</td><td>Resident notifications</td><td>M</td><td>F-13, push service (iOS needs an Apple developer account, see R-04)</td><td><span class="tag should">Should</span></td><td>MVP</td><td>High value. Falls back to the in-app log if push is unavailable.</td></tr>
-<tr><td>F-15</td><td>Personal dashboard for residents</td><td>L–M</td><td>F-13</td><td><span class="tag should">Should</span></td><td>MVP</td><td>Basic summary on the home screen. Richer insights later.</td></tr>
-<tr><td>F-16</td><td>Reports and analytics for administrators</td><td>M</td><td>F-13 (sufficient history)</td><td><span class="tag wont">Won't</span></td><td>M6</td><td>Needs real usage data to be meaningful.</td></tr>
-<tr><td>F-17</td><td>Detection and monitoring of unusual permission activity</td><td>H</td><td>F-13, F-16, rule definitions</td><td><span class="tag wont">Won't</span></td><td>M6</td><td>Needs a definition of "unusual" (Q-06) and baseline data.</td></tr>
-<tr><td>F-18</td><td>Administrator approval for sensitive permissions</td><td>M</td><td>F-07, definition of "sensitive" (Q-06)</td><td><span class="tag wont">Won't</span></td><td>M6</td><td>Policy is undefined. Adds a workflow state to the lifecycle.</td></tr>
-<tr><td colspan="7"><b>AI features</b></td></tr>
-<tr><td>F-19</td><td>Natural-language permission creation</td><td>H</td><td>F-01, F-02, external LLM API (cost, R-06)</td><td><span class="tag could">Could</span></td><td>MVP stretch → M7</td><td>See 7.5: only after all Must and Should items pass, and only if the team approves the API cost.</td></tr>
-<tr><td>F-20</td><td>Smart reminders and suggestions</td><td>M–H</td><td>F-13, F-14, usage history</td><td><span class="tag wont">Won't</span></td><td>M7</td><td>Needs history to suggest anything useful.</td></tr>
-<tr><td>F-21</td><td>Guided permission-creation assistant</td><td>M</td><td>F-01, F-02</td><td><span class="tag should">Should</span></td><td>MVP (rule-based) · M7 (AI)</td><td>The MVP builds a deterministic step-by-step wizard. AI enhancement comes later.</td></tr>
+<thead><tr><th style="width:7%">ID</th><th style="width:17%">Feature group</th><th>What it includes (priority of each part)</th><th style="width:16%">Significant technical capability</th><th style="width:6%">Cplx</th><th style="width:9%">Components</th><th style="width:10%">From v1.0</th></tr></thead>
+<tr><td><b>P-F01</b></td><td><b>Authentication and user management</b></td><td>Sign-up, sign-in, sign-out and persistent sessions <span class="tag must">Must</span>. Database-backed accounts and community membership <span class="tag must">Must</span>. Roles (Resident, Administrator) enforced on the server <span class="tag must">Must</span>. Minimal onboarding: join with a community code, then the administrator approves or rejects <span class="tag must">Must</span>. Password reset by email <span class="tag could">Could</span>.</td><td>Authentication, database, server-side access control</td><td>M</td><td>B · A</td><td>F-07</td></tr>
+<tr><td><b>P-F02</b></td><td><b>Permission management</b></td><td>One-time and recurring permissions with date and time restrictions <span class="tag must">Must</span>. Cumulative opening limit that never resets <span class="tag must">Must</span>. Suspend, resume and cancel <span class="tag must">Must</span>. Derived status, list and details <span class="tag must">Must</span>. Stored in the database and validated by trusted backend logic <span class="tag must">Must</span>.</td><td>Database, transactional backend logic, time-zone rules</td><td>H</td><td>B · A</td><td>F-01–F-04</td></tr>
+<tr><td><b>P-F03</b></td><td><b>Guest invitations and sharing</b></td><td>A unique, unguessable invitation link per permission <span class="tag must">Must</span>. Sharing through the phone's native share sheet, with the invitation details <span class="tag must">Must</span>. QR code of the link <span class="tag must">Must</span>. App Links / Universal Links <span class="tag could">Could</span> (may be deferred, D-27).</td><td>Mobile device capabilities (share sheet, clipboard), secure token generation, QR generation</td><td>L–M</td><td>B · A · C</td><td>F-08, F-10, part of F-09</td></tr>
+<tr><td><b>P-F04</b></td><td><b>Guest access and simulated gate</b></td><td>A browser guest page with no registration <span class="tag must">Must</span>. Server-side permission validation <span class="tag must">Must</span>. Requesting an opening <span class="tag must">Must</span>. A simulated gate response and a live simulator screen <span class="tag must">Must</span>. Clear success and rejection states <span class="tag must">Must</span>. No real gate hardware.</td><td>Web client, backend API, atomic transaction, concurrency</td><td>M–H</td><td>C · B</td><td>F-09, simulation</td></tr>
+<tr><td><b>P-F05</b></td><td><b>Activity history and notifications</b></td><td>Every opening attempt and its result is recorded <span class="tag must">Must</span>. The resident's activity history <span class="tag must">Must</span>. A push notification when a guest enters, where technically feasible <span class="tag should">Should</span>. The history works fully without push.</td><td>Database, push notifications (device capability)</td><td>M</td><td>B · A</td><td>F-13, F-14</td></tr>
+<tr><td><b>P-F06</b></td><td><b>AI-assisted permission creation</b></td><td>Natural-language input (Hebrew or English) <span class="tag must">Must</span>. An AI-generated, structured permission draft <span class="tag must">Must</span>. Review and confirmation by the resident <span class="tag must">Must</span>. Validation before saving <span class="tag must">Must</span>. Manual fallback to the form <span class="tag must">Must</span>. Only a genuinely free AI API is permitted (Section 7.5, D-38).</td><td>External AI API through a backend proxy, schema validation</td><td>H</td><td>A · B</td><td>F-19 (and the goal of F-21)</td></tr>
 </table>
-<p class="small">Totals: Must 8 (F-01–F-04, F-07–F-09, F-13) · Should 5 (F-06, F-10, F-14, F-15, F-21) · Could 3 (F-05, F-11, F-19) · Won't in this release 5 (F-12, F-16, F-17, F-18, F-20). All 21 are kept in the product vision.</p>
+<p class="small">The Must parts of all six groups make up Porta v1.0. Should and Could parts are cut first if time runs out, in the order of Section 7.2.</p>
 
-<h3>7.2 MVP: the first release we will implement in the course (by 31 Jan 2027)</h3>
-<p><b>The MVP is complete when every Must capability passes its acceptance criteria.</b> Should capabilities are planned inside the MVP schedule and are the first to be cut if the schedule slips. Could capabilities are attempted only after all Must and Should items pass.</p>
-<ul>
-<li><b>Must:</b> sign-up and sign-in. Community membership approved by an administrator. Roles (F-07). Administrator gate management (simulated gates). One-time and recurring permissions (F-01, F-02) with a cumulative opening limit (F-03). Suspend, resume and cancel (F-04). A unique invitation link (F-08). A browser guest page with gate opening (F-09). The simulated gate and gate simulator. Resident activity log (F-13).</li>
-<li><b>Should:</b> multiple gates per permission (F-06). QR code (F-10). Push notifications (F-14). Home-screen dashboard (F-15). Rule-based guided creation wizard (F-21). Administrator community log. Link regeneration. Permission editing. Deep links to the app.</li>
-<li><b>Order in which Should items are added</b> (cheapest and most valuable first; the tail is cut if time runs out): QR code (F-10) → multiple gates (F-06) → administrator community log → dashboard (F-15) → guided wizard (F-21) → link regeneration → permission editing → push notifications (F-14) → deep links.</li>
-<li><b>Could (stretch):</b> templates (F-05). Contact directory (F-11). Natural-language creation (F-19). "My invitations" for registered guests. Expiry and last-opening reminders.</li>
-</ul>
+<h3>7.2 Releases: the first MVP and Porta v1.0</h3>
+<h4>First MVP: milestone M1, 12 December 2026</h4>
+<p>The first MVP is an <b>initial working vertical slice</b>, not the completion of the six features. It proves that the parts work together, end to end, on the deployed system:</p>
+<ol>
+<li>A resident or demo user creates a basic one-time permission (P-F02).</li>
+<li>The permission is stored in the database (P-F02).</li>
+<li>An invitation link is generated (P-F03).</li>
+<li>A guest opens the link in a mobile browser (P-F04).</li>
+<li>The backend checks the permission (P-F04, P-F02).</li>
+<li>The simulated gate opens, or the request is rejected with a reason (P-F04).</li>
+</ol>
+<p><b>Included:</b> sign-in for seeded demo users (part of P-F01), one seeded community and gate, the one-time permission form, link copy, a minimal guest page and simulator, the gate-open transaction with the token, cancellation, time-window and limit checks, and recorded events. <b>Not yet included:</b> sign-up and approval, recurring permissions, suspend and resume, native sharing and QR, the activity screen, notifications, and AI. Measured by goal G9.</p>
 
-<h3>7.3 Developed later, after the MVP</h3>
+<h4>Porta v1.0: milestone M2, 30 January 2027 (proposed)</h4>
+<p><b>Porta v1.0 is complete when every Must part of P-F01–P-F06 passes its acceptance criteria</b> (goal G1), subject to documented feasibility decisions and approved changes. The date is a proposed end-of-semester milestone, not an instructor-confirmed deadline (Q-16). The feature freeze is on 23 January 2027 (Section 15).</p>
+<p><b>Cut order if time runs out</b> (first item cut first; validation, security and tests are never cut). Cutting any item is a team decision recorded in the decision log. Cutting a <span class="tag must">Must</span> item (QR) is an approved scope change that also updates FR-18, US-05 and the G1 baseline: deep links (FR-22, Could) → push notifications (FR-29, Should; the activity history stays) → password reset (Could) → English UI (Could, NFR-17) → QR code (FR-18; native sharing stays). If no suitable <b>free</b> AI API can be found (Section 7.5), Q-04 stays open and the feasibility blocker goes to the team for review. P-F06 is never silently removed, and no paid service is used instead.</p>
+
+<h3>7.3 Future enhancements (not in this project)</h3>
+<p>These are possible directions after the course. They are recorded so that the vision stays visible. They carry no implementation commitment.</p>
 <ul>
-<li><b>M5 · Guest management:</b> group invitations (F-12). Templates (F-05) and contact directory (F-11), if they were not delivered as stretch goals.</li>
-<li><b>M6 · Community governance:</b> administrator reports and analytics (F-16). Unusual-activity detection (F-17). Administrator approval for sensitive permissions (F-18).</li>
-<li><b>M7 · AI:</b> natural-language creation (F-19), if it was not delivered as a stretch goal. Smart reminders and suggestions (F-20). An AI-enhanced guided assistant (F-21).</li>
+<li><b>Resident convenience:</b> editing permissions, link regeneration, multiple gates per permission, templates, a contact directory, group invitations, a home dashboard, a step-by-step creation wizard, reminders, and saved invitations for registered guests.</li>
+<li><b>Community governance:</b> gate management in the app, removing residents, a community-wide log, reports, unusual-activity detection, and approval of sensitive permissions.</li>
+<li><b>Smarter AI:</b> suggestions based on history, such as renewing an expiring permission.</li>
 </ul>
 
 <h3>7.4 Explicitly out of scope for this project</h3>
 <ul>
-<li>Integration with real gate hardware or controllers. All gates are simulated.</li>
-<li>Residents' own entry and exit through Porta, and vehicle or license-plate recognition.</li>
+<li>Integration with real gate hardware or controllers. <b>All gates are simulated.</b></li>
+<li>Every v1.0 capability mapped to "Out of Scope" in Section 7.6, unless it later becomes a minimal technical dependency of P-F01–P-F06 and the team approves it as a decision.</li>
+<li>Administration beyond approving residents: gate management screens, removing residents in the app, community-wide logs, and an administrator audit trail. Communities, gates and the first administrator are provisioned by the team with a setup script, which is also used to remove a resident who has left (A-11, D-31, FR-05).</li>
+<li>Residents' own entry and exit through Porta, and vehicle or licence-plate recognition.</li>
 <li>Video intercom, voice calls, and guard-station applications.</li>
-<li>Payments, billing, and multi-community SaaS administration. One user belongs to one community in the MVP.</li>
-<li>Self-service community creation and transferring the administrator role. Communities and their first administrator are provisioned by the team (A-11).</li>
-<li>A separate desktop web admin portal. Administrator functions are in the mobile app in the MVP.</li>
-<li>Opening a gate offline (deliberately prohibited, see NFR-14). Proximity or geofence verification (possible future work).</li>
+<li>Payments, billing, and multi-community SaaS administration. A user belongs to one community.</li>
+<li>A separate desktop web admin portal.</li>
+<li>Opening a gate offline (deliberately prohibited, see NFR-14). Proximity or geofence verification.</li>
 <li>Legal compliance certification. Privacy principles are applied (Section 13), but no formal compliance audit is planned.</li>
 </ul>
 
-<h3>7.5 AI feasibility decision for the MVP</h3>
+<h3>7.5 AI feature: feasibility and approval</h3>
 <div class="note">
-<p><b>Proposed decision, pending team approval (Q-04):</b> the MVP does <b>not depend</b> on any AI capability.</p>
+<p><b>Decision (D-32, approved by Lior on 26 Nov 2026):</b> AI-assisted creation (P-F06) is part of Porta v1.0, with the design below, and <b>no core function depends on it</b>. <b>This approval does not authorise any paid AI service or spending</b>: the provider, data-use terms and budget remain open (Q-04). The regular form (S-03) always works.</p>
 <ol>
-<li><b>F-21 Guided assistant</b> enters the MVP as a <b>deterministic, rule-based</b> step-by-step wizard (<span class="tag should">Should</span>). It delivers the guided experience with no external dependency, cost or unpredictability.</li>
-<li><b>F-19 Natural-language creation</b> is a <span class="tag could">Could</span> stretch goal. It is started only after every Must and Should item passes, and only if the team approves the LLM API cost (Budget Policy). Its design is safe by construction: the AI only <i>drafts</i> fields, the resident must confirm, and the system falls back to the manual form (FR-35, US-13).</li>
-<li><b>F-20 Smart reminders and suggestions</b> is scheduled for M7. It needs usage history that the MVP will not have.</li>
+<li><b>Safe by construction:</b> the AI only <i>drafts</i> fields. The resident reviews the draft in the regular form and confirms it, and the server validates it exactly like manual input (FR-41). If the AI is unavailable, slow, over its usage cap or not approved, the manual form opens with the text kept (FR-42).</li>
+<li><b>Privacy and keys:</b> the app never holds an AI key. Requests go through a backend proxy, which accepts approved residents only. It sends only the resident's text, today's date, the time zone and the names of the caller's own active gates, and it treats both the text and the model's answer as untrusted (Section 11.4, NFR-21).</li>
+<li><b>Cost: $0 (D-38).</b> <b>Only a genuinely free AI API is permitted. Paid AI services are Out of Scope.</b> The provider must meet the eight eligibility criteria in Section 11.4, and the team approves one eligible free provider by 26 Dec 2026 (Q-04). Per-user and global daily caps and input and output limits keep usage well inside the free allowance.</li>
+<li><b>If the free quota runs out, the provider is unavailable, or its free offer changes:</b> AI requests are switched off, or answered with a controlled "unavailable" response. The manual form keeps working, and the resident sees a short message. Porta never switches to a paid model, never turns on billing and never uses OpenRouter as a fallback. If no suitable free API exists at all, Q-04 stays open and the blocker is reported to the team. P-F06 is never silently removed from scope.</li>
 </ol>
-<p><b>Why:</b> about 10 weeks remain until 31 Jan 2027 and the team is new to Flutter. An external LLM adds paid usage, latency, non-deterministic output and a new failure mode (R-06). Putting the core access logic at risk for an optional feature would go against the project's first priority.</p>
-<p><b>Course alignment:</b> <span class="open">the team should confirm whether the course requires an AI feature inside the MVP (Q-04)</span>. If it does, F-19 moves from Could to Should, and F-15 and F-10 move down to Could to free up capacity.</p>
+<p><b>Why it is scheduled late (Sprints 3–4):</b> it depends on a working permission model (P-F02), and its provider decision needs time. The core access logic is built and tested first.</p>
 </div>
+</section>
+
+<section class="sec">
+<h3 style="margin-top:0">7.6 Traceability of the scope change (v1.0 → v2.0)</h3>
+<p>Every v1.0 capability, with its new feature group or Out of Scope, and the reason.</p>
+<table>
+<thead><tr><th style="width:7%">Old</th><th style="width:27%">v1.0 capability</th><th style="width:16%">v2.0</th><th>Explanation</th></tr></thead>
+<tr><td>F-01</td><td>One-time access permissions</td><td>P-F02</td><td>Core permission type.</td></tr>
+<tr><td>F-02</td><td>Recurring permissions by days and hours</td><td>P-F02</td><td>Core differentiator for service providers.</td></tr>
+<tr><td>F-03</td><td>Total opening limit (never resets)</td><td>P-F02</td><td>Confirmed product rule (D-03).</td></tr>
+<tr><td>F-04</td><td>Cancellation and temporary suspension</td><td>P-F02</td><td>Instant revocation is a core security promise.</td></tr>
+<tr><td>F-05</td><td>Reusable permission templates</td><td>Out of Scope</td><td>Convenience only. Future enhancement.</td></tr>
+<tr><td>F-06</td><td>Permissions for multiple gates</td><td>Out of Scope</td><td>One gate per permission simplifies the form, the guest page and validation (D-29). The resident creates a second permission for a second gate.</td></tr>
+<tr><td>F-07</td><td>Role-based access control</td><td>P-F01</td><td>Foundation of security. Administration reduced to approving residents (D-31).</td></tr>
+<tr><td>F-08</td><td>Unique invitation links</td><td>P-F03</td><td>The delivery mechanism of every permission.</td></tr>
+<tr><td>F-09</td><td>Guest access via web browser, no install</td><td>P-F04 (browser) · P-F03 (deep links, Could)</td><td>The guest's whole experience. In-app opening may be deferred (D-27).</td></tr>
+<tr><td>F-10</td><td>QR codes for guests</td><td>P-F03</td><td>Named in the approved scope. Cheap, and the same link.</td></tr>
+<tr><td>F-11</td><td>Contact directory</td><td>Out of Scope</td><td>Convenience only. Future enhancement.</td></tr>
+<tr><td>F-12</td><td>Group invitations</td><td>Out of Scope</td><td>Needed undecided counter semantics (former Q-05).</td></tr>
+<tr><td>F-13</td><td>Access activity logs</td><td>P-F05</td><td>Resident history. The administrator community log is out of scope.</td></tr>
+<tr><td>F-14</td><td>Resident notifications</td><td>P-F05</td><td>Entry push where feasible (Should). Reminders are out of scope.</td></tr>
+<tr><td>F-15</td><td>Personal dashboard</td><td>Out of Scope</td><td>Not a major feature. The list's status filters cover the need.</td></tr>
+<tr><td>F-16</td><td>Reports and analytics</td><td>Out of Scope</td><td>Needs real usage data.</td></tr>
+<tr><td>F-17</td><td>Unusual-activity detection</td><td>Out of Scope</td><td>"Unusual" was undefined (former Q-06).</td></tr>
+<tr><td>F-18</td><td>Approval of sensitive permissions</td><td>Out of Scope</td><td>Policy undefined (former Q-06). Adds a lifecycle state.</td></tr>
+<tr><td>F-19</td><td>Natural-language permission creation</td><td>P-F06</td><td>Now a major feature, with confirmation, validation and fallback.</td></tr>
+<tr><td>F-20</td><td>Smart reminders and suggestions</td><td>Out of Scope</td><td>Needs usage history. Future enhancement.</td></tr>
+<tr><td>F-21</td><td>Guided creation assistant</td><td>Out of Scope (goal covered by P-F06)</td><td>The goal (easy creation) is served by P-F06 plus the form. A separate wizard would duplicate the form.</td></tr>
+<tr><td>—</td><td>Gate simulation</td><td>P-F04</td><td>Replaces real hardware.</td></tr>
+</table>
+<h4>Retired and changed identifiers</h4>
+<table>
+<thead><tr><th style="width:18%">Kind</th><th style="width:40%">Retired in v2.0 (numbers not reused)</th><th>Changed or added</th></tr></thead>
+<tr><td>Functional requirements</td><td>FR-09 multiple gates · FR-12 edit · FR-17 regenerate link · FR-23 "My invitations" · FR-28 community log · FR-30 reminders · FR-31 dashboard · FR-32 wizard · FR-33 templates · FR-34 contacts · FR-36–FR-40 (post-MVP items)</td><td>FR-04 gates provisioned, not managed · FR-05 approve / reject in the app, removal only by setup script · FR-06/FR-07 one gate · FR-18 now Must · FR-22 now Could · FR-35 now Must · <b>new</b> FR-41, FR-42</td></tr>
+<tr><td>Stories and criteria</td><td>US-12 · AC-05.3 · AC-10.4 · AC-11.1 · AC-11.2</td><td>AC-07.4 one gate · US-09 now Could · US-13 now Must · <b>new</b> US-14, AC-05.4, AC-10.5, AC-10.6, AC-13.4, AC-13.5</td></tr>
+<tr><td>Screens</td><td>S-07 wizard · S-09 community log</td><td>S-02 no dashboard · S-08 approvals only · S-11 Could · S-13 now Must</td></tr>
+<tr><td>Entities</td><td>E-05 PermissionGate · E-10 Contact · E-11 Template · E-12 AdminAction</td><td>E-04 gains <code>gateId</code> and <code>createdVia</code> · E-02 gains decision fields · E-07 loses <code>revokedAt</code> · E-08 separates receipts from rate-limit summaries · <b>new</b> E-13 AiUsage</td></tr>
+<tr><td>NFRs, goals, risks, questions</td><td>Q-05, Q-06, Q-07 (their topics are out of scope)</td><td>NFR-20 changed · <b>new</b> NFR-21, NFR-22, G8, G9, A-12, R-14–R-17, Q-16, Q-17</td></tr>
+</table>
 </section>

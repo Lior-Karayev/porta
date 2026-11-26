@@ -6,15 +6,18 @@
     <h1>Product Requirements Document (PRD)</h1>
     <div class="sub">Scheduled, controlled guest access to (simulated) community gates</div>
     <table class="kv" style="width:72%">
-      <tr><td>Document version</td><td>1.0 (submission-ready)</td></tr>
-      <tr><td>Last updated</td><td>21 November 2026</td></tr>
-      <tr><td>Team</td><td>Daniel · Lior · Avishag</td></tr>
-      <tr><td>Development platform</td><td>Flutter / Dart · Android and iOS · browser-based guest page</td></tr>
-      <tr><td>MVP target</td><td>31 January 2027</td></tr>
-      <tr><td>Project stage</td><td>CP0: requirements documentation only. Development has not started.</td></tr>
+      <tr><td>Document version</td><td>2.2 (revised scope, submission-ready)</td></tr>
+      <tr><td>Last updated</td><td>26 November 2026</td></tr>
+      <tr><td>Team</td><td>Daniel Benfusi · Avishag Yonatan · Lior Karayev</td></tr>
+      <tr><td>Development platform</td><td>Flutter / Dart · Android (tested) · iOS (target, no test environment) · browser-based guest page</td></tr>
+      <tr><td>Development scope</td><td>Six major feature groups, P-F01–P-F06 (Section 7)</td></tr>
+      <tr><td>First MVP (M1)</td><td>12 December 2026</td></tr>
+      <tr><td>Porta v1.0 (M2)</td><td>30 January 2027 (proposed end-of-semester milestone)</td></tr>
+      <tr><td>Development process</td><td>Agile, 14-day sprints (Section 15)</td></tr>
+      <tr><td>Project stage</td><td>CP0 revision: requirements and planning documentation only. Development has not started.</td></tr>
     </table>
   </div>
-  <div class="small">This document defines the complete product and its first release (MVP). Every technology named here is a <b>working assumption</b> (Section 14), not a final decision. Unresolved items are <span class="open">highlighted</span> and collected in Section 15.</div>
+  <div class="small">This document defines the product, its first MVP and the Porta v1.0 release. Version 2.0 reduces the development scope to six major feature groups. Every technology named here is a <b>working assumption</b> (Section 14), not a final decision. Unresolved items are <span class="open">highlighted</span> and collected in Section 15.</div>
 </div>
 
 <!-- ===== Document control + TOC ===== -->
@@ -25,18 +28,23 @@
 <tr><td>0.1</td><td>21 Nov 2026</td><td>Document skeleton and assignment-requirements checklist.</td></tr>
 <tr><td>0.9</td><td>21 Nov 2026</td><td>Full draft: all 15 sections, diagrams and wireframes.</td></tr>
 <tr><td>1.0</td><td>21 Nov 2026</td><td>Fixes from the independent reviews: technical feasibility (Codex, 12 findings), UX (Antigravity, 9 findings) and security (Claude, 6 findings). Key changes: a single atomic transaction for gate opening, a receipt that makes retries replay the original result, time-zone and DST rules, a vertical slice in M1, the backend alternative, and complete UX states. Submission-ready.</td></tr>
+<tr><td>2.0</td><td>25 Nov 2026</td><td><b>Scope reduction.</b> Reason: <i>the project scope is being reduced to decrease workload, improve development feasibility, and allow the team to focus on a smaller number of meaningful, well-tested features during the academic semester.</i> The 21 candidate capabilities become six major feature groups, P-F01–P-F06, and every earlier capability is mapped (Section 7.6). AI-assisted creation moves into scope (P-F06). Out of scope: multiple gates per permission, editing, link regeneration, the wizard, the dashboard, templates, contacts, group invitations, reports, anomaly detection, approvals, smart suggestions, and administrator gate management. New milestones: M0 28 Nov 2026, first MVP 12 Dec 2026, Porta v1.0 30 Jan 2027. Also new: a 14-day sprint plan, provisional team roles, and updated requirements, stories, screens, wireframes, data model, risks and traceability.</td></tr>
+<tr><td>2.1</td><td>26 Nov 2026</td><td><b>Team decisions completed.</b> Team members and roles confirmed (D-24). Sprint plan (D-30), minimal administration (D-31) and the AI-assisted creation design (D-32, without any paid provider or spending) approved by Lior. The in-scope simplifications (D-29) remain proposed. No iOS test environment is available, so Android is the only verified platform. Platform minimums, competing products, backend options, guest-page hosting and deep-link token handling were checked against official documentation (Appendix B). Sprint 1 effort estimates, a usability test plan and the sources were corrected.</td></tr>
+<tr><td>2.2</td><td>26 Nov 2026</td><td><b>GitHub identities and zero cost.</b> GitHub accounts of all three members confirmed (Q-01 resolved). The total approved expenditure is $0 (D-38): no paid fallback for the backend, hosting, Apple account or domain. P-F06 uses only a genuinely free AI API, with eight eligibility criteria, a shortlist of free candidates (Section 11.5) and defined behaviour when the free quota runs out (FR-42).</td></tr>
 </table>
 
 <h3>Conventions</h3>
 <table>
 <thead><tr><th style="width:24%">Identifier</th><th>Meaning</th></tr></thead>
-<tr><td><span class="id">F-01…F-21</span></td><td>The 21 capabilities of the full product (Section 7)</td></tr>
+<tr><td><span class="id">P-F01…P-F06</span></td><td>The six major feature groups in the development scope (Section 7)</td></tr>
+<tr><td><span class="id">F-01…F-21</span></td><td>The 21 capabilities of PRD v1.0, each mapped to a feature group or to Out of Scope (Section 7.6)</td></tr>
 <tr><td><span class="id">FR-xx</span></td><td>Functional requirement (Section 8)</td></tr>
 <tr><td><span class="id">US-xx</span> · <span class="id">AC-xx.y</span></td><td>User story and one of its acceptance criteria (Section 9)</td></tr>
 <tr><td><span class="id">S-xx</span> · <span class="id">W-xx</span></td><td>Mobile-app screen · browser guest-page screen (Section 10)</td></tr>
 <tr><td><span class="id">E-xx</span></td><td>Data entity (Section 11)</td></tr>
 <tr><td><span class="id">NFR-xx</span></td><td>Non-functional requirement (Section 13)</td></tr>
 <tr><td><span class="id">A-xx</span> · <span class="id">R-xx</span> · <span class="id">Q-xx</span></td><td>Assumption · risk (Section 14) · open question (Section 15)</td></tr>
+<tr><td>Retired IDs</td><td>Requirements, stories, screens and entities removed in v2.0 keep their numbers, which are not reused. They are listed in Section 7.6, so references from v1.0 stay traceable.</td></tr>
 <tr><td>Priority (MoSCoW)</td><td><span class="tag must">Must</span> required · <span class="tag should">Should</span> desirable · <span class="tag could">Could</span> if time allows · <span class="tag wont">Won't</span> not in this release</td></tr>
 </table>
 
@@ -61,10 +69,10 @@
 <tr><td>2</td><td>Permission lifecycle (states and transitions)</td><td>8</td></tr>
 <tr><td>3</td><td>Process diagram: validating a gate-open request</td><td>9</td></tr>
 <tr><td>4</td><td>User flow: resident and guest</td><td>10</td></tr>
-<tr><td>5a, 5b</td><td>Wireframes: resident app screens</td><td>10</td></tr>
+<tr><td>5a, 5b</td><td>Wireframes: resident app screens (S-01–S-05, S-13)</td><td>10</td></tr>
 <tr><td>6a, 6b</td><td>Wireframes: guest browser page and administrator screens</td><td>10</td></tr>
 <tr><td>7</td><td>ERD: entities and relationships</td><td>11</td></tr>
-<tr><td>8</td><td>Milestone timeline</td><td>15</td></tr>
+<tr><td>8</td><td>Sprint and milestone timeline</td><td>15</td></tr>
 </table>
 </section>
 
@@ -76,51 +84,69 @@
 <tr><td>App name</td><td>Porta</td></tr>
 <tr><td>One-line description</td><td>Residents of gated communities grant guests and service providers gate access that is limited in time and in number of openings, using a link that opens in any web browser.</td></tr>
 <tr><td>Course</td><td>Developing Smart Mobile Apps with AI · Kinneret College · 2026–27, Semester A</td></tr>
-<tr><td>Version and date</td><td>1.0 · 21 November 2026</td></tr>
-<tr><td>Repository</td><td>github.com/Lior-Karayev/porta (private)</td></tr>
+<tr><td>Version and date</td><td>2.2 · 26 November 2026</td></tr>
+<tr><td>Repository</td><td>github.com/Lior-Karayev/porta</td></tr>
 </table>
 
 <h3>Team members and initial responsibilities</h3>
+<p>Responsibility is split by <b>implementation component</b>, not by exclusive ownership of features: most features involve two or three members (Section 7.1). All three members develop code, and each must understand the code they write and the complete flow of every feature they work on.</p>
 <table>
-<thead><tr><th style="width:32%">Team member</th><th>Initial area of responsibility</th></tr></thead>
-<tr><td>Daniel <span class="placeholder">[surname]</span></td><td><span class="open">TBD</span></td></tr>
-<tr><td>Lior <span class="placeholder">[surname]</span></td><td><span class="open">TBD</span></td></tr>
-<tr><td>Avishag <span class="placeholder">[surname]</span></td><td><span class="open">TBD</span></td></tr>
+<thead><tr><th style="width:22%">Team member</th><th style="width:20%">Role</th><th>Initial area of responsibility</th><th style="width:16%">AI tools</th></tr></thead>
+<tr><td>Daniel Benfusi</td><td>Contributor A</td><td><b>Flutter and UX:</b> the resident-facing Flutter interface, UX, navigation, state management, forms and validation, connecting the UI to the backend, accessibility and right-to-left support.</td><td>Claude Code</td></tr>
+<tr><td>Avishag Yonatan</td><td>Contributor B</td><td><b>Backend and data:</b> database, backend services, authentication, permission validation, data models and atomic counters, backend testing.</td><td>Claude Code</td></tr>
+<tr><td>Lior Karayev</td><td>Contributor C</td><td><b>Guest experience, integration and QA:</b> browser guest interface, simulated gate, QR and sharing integration, cross-component integration, end-to-end testing, CI and QA, project-wide coordination. The only member who merges into the main branch.</td><td>Omnigent (Claude Code, Codex and Antigravity, first-party accounts)</td></tr>
 </table>
-<div class="note"><b>Suggested areas of responsibility, pending team decision (Q-01):</b> (a) product, requirements, QA and acceptance testing; (b) Flutter app: resident and administrator screens; (c) backend, security and the browser guest page. The final assignment of names to areas is still open.</div>
+<div class="note"><b>Confirmed allocation (decision D-24, 26 Nov 2026).</b> The registry of contributors, their GitHub accounts and any approved changes is kept in the repository (<code>docs/team/CONTRIBUTORS.md</code>).  GitHub accounts (confirmed by Lior Karayev as project coordinator): Daniel Benfusi <code>XVortXx</code>, Avishag Yonatan <code>avishagyonatan-design</code>, Lior Karayev <code>Lior-Karayev</code>.</div>
 
 <h3>AI agents in the workflow</h3>
 <p>The team works with several AI agents under team supervision:</p>
 <ul>
-<li><b>Omnigent</b> orchestrates the work and manages Git.</li>
-<li><b>Claude</b> leads requirements writing and the security review.</li>
-<li><b>Codex</b> reviews technical feasibility and the data model.</li>
+<li><b>Omnigent</b> orchestrates Lior's work, delegates tasks to the agents below, and manages branches and Pull Requests.</li>
+<li><b>Claude Code</b> is the development agent of all three members. It also wrote the requirements and did the security review.</li>
+<li><b>Codex</b> reviews technical feasibility, the data model and critical logic.</li>
 <li><b>Antigravity</b> reviews the user experience.</li>
 </ul>
-<p>Every substantial agent output is reviewed by a different agent. The team makes all final decisions.</p>
+<p>All agents follow one shared rule file in the repository (<code>AGENTS.md</code>). It covers:</p>
+<ul>
+<li>who is directing each session, and staying within that member's component</li>
+<li>staying within the approved scope</li>
+<li>a $0 budget: no paid service of any kind (D-38)</li>
+<li>mandatory documentation</li>
+<li><b>no agent ever merges into the main branch.</b> Only Lior authorises a merge, one Pull Request at a time.</li>
+</ul>
+<p>Review effort is proportional: critical logic (authentication, authorisation, tokens, counters, concurrency) gets a review by a second agent. The team makes all final decisions.</p>
 </section>
 
 <!-- ===== Section 2 ===== -->
 <section class="sec">
 <h2><span class="num">2</span>Product Summary and Vision</h2>
 <h3>What the app does</h3>
-<p>Porta lets residents of a gated community (a neighbourhood, moshav, kibbutz or gated residential complex) give a guest a defined access permission. The permission says which gates, which dates and hours, and how many gate openings in total.</p>
+<p>Porta lets residents of a gated community (a neighbourhood, moshav, kibbutz or gated residential complex) give a guest a defined access permission. The permission says which gate, which dates and hours, and how many gate openings in total.</p>
 <p>A permission is either <b>one-time</b> (e.g. dinner guests on Friday evening) or <b>recurring</b> (e.g. a cleaner every Tuesday 08:00–12:00). The resident sends the guest a unique link. The guest opens it in a web browser, with no app install and no registration, and taps "Open gate". The system checks that the permission is valid and then opens the gate.</p>
 <p>For the course, all gates are <b>simulated</b>: an opening is shown on a gate-simulator screen. There is no connection to real gate hardware.</p>
 <h3>Purpose and value to users</h3>
 <ul>
 <li><b>Residents</b> get control and peace of mind. They grant access without handing out a permanent code or remote, suspend or cancel it with one tap, and see who entered and when.</li>
 <li><b>Guests and service providers</b> get in without phoning the resident or waiting at the gate, and without installing an app.</li>
-<li><b>Community administrators</b> get an audit trail of every gate access and no forgotten "permanent" permissions.</li>
+<li><b>Community administrators</b> decide who may join as a resident and can watch gate activity on the simulator. Every opening attempt is recorded, and there are no forgotten "permanent" permissions.</li>
 </ul>
 <h3>Vision: the full product</h3>
-<p>Porta aims to become the community's access-management layer:</p>
+<p>Porta aims to become the community's access-management layer. Creating a permission should be as easy as writing a sentence ("let the gardener in every Sunday morning until the end of the year").</p>
+<p><b>What this course builds (Porta v1.0):</b> six major feature groups (Section 7):</p>
 <ul>
-<li>Residents manage contacts, templates and group invitations.</li>
-<li>Administrators get reports, alerts on unusual activity, and an approval workflow for sensitive permissions.</li>
-<li>Creating a permission becomes as easy as writing a sentence ("let the gardener in every Sunday morning until the end of the year"), through AI-assisted natural-language creation and a guided assistant.</li>
+<li>accounts with roles</li>
+<li>time- and count-limited permissions</li>
+<li>invitation links with sharing and QR</li>
+<li>a browser guest page that opens a simulated gate</li>
+<li>activity history with notifications</li>
+<li><b>AI-assisted permission creation</b> from a sentence, which the resident always reviews and confirms</li>
 </ul>
-<p>Real gate controllers may be connected in the future. That integration is explicitly out of scope for this course (Section 7.4).</p>
+<p><b>Possible later directions</b> (not part of this project, Section 7.3):</p>
+<ul>
+<li>contacts, templates and group invitations for residents</li>
+<li>reports, unusual-activity alerts and approval workflows for administrators</li>
+<li>real gate controllers. Integration with real gates is explicitly out of scope for this course (Section 7.4).</li>
+</ul>
 </section>
 
 <!-- ===== Section 3 ===== -->
@@ -143,5 +169,5 @@
 </ul>
 <h3>Why the proposed solution is needed, and evidence the problem is real</h3>
 <p>The need is for access that is <b>limited by time window, by days and hours, and by number of uses together; revocable instantly; and logged</b>, without the host being present for every entry. Each current method covers only part of this.</p>
-<div class="warn"><b>Transparency about evidence:</b> <b>no user research has been carried out yet.</b> The problem statement comes from the team members' own experience and general familiarity with the access methods above, not from collected data. A short validation (Q-02) is planned before the MVP is complete: interviews or a questionnaire with at least 5 residents of gated communities. Its findings will be added to this document.</div>
+<div class="warn"><b>Transparency about evidence:</b> <b>no user research has been carried out yet.</b> The problem statement comes from the team members' own experience and general familiarity with the access methods above, not from collected data. A short validation (Q-02) is planned during the Sprint 4 usability test, before Porta v1.0: interviews or a questionnaire with at least 5 residents of gated communities. Its findings will be added to this document.</div>
 </section>

@@ -2,24 +2,22 @@
 <section class="sec">
 <div class="group-label">GROUP C · HOW IT LOOKS AND WORKS</div>
 <h2><span class="num">10</span>Screens and User Experience</h2>
-<p>The resident and administrator use the mobile app (screens <span class="id">S-xx</span>). Guests use a browser page (<span class="id">W-xx</span>) that needs no install. A registered guest can see the same invitation inside the app (S-11). The administrator uses the same app as residents, with an extra "Community" area. Language: Hebrew UI with right-to-left layout as the primary language, and English as a Could (NFR-17).</p>
+<p>The resident and administrator use the mobile app (screens <span class="id">S-xx</span>). Guests use a browser page (<span class="id">W-xx</span>) that needs no install. Where deep links are delivered (Could), a registered guest sees the same invitation inside the app (S-11). The administrator uses the same app as residents, with an extra "Community" area for approvals and the simulator. Screens retired in v2.0 (S-07 wizard, S-09 community log) are listed in Section 7.6. Language: Hebrew UI with right-to-left layout as the primary language, and English as a Could (NFR-17).</p>
 <table>
-<thead><tr><th style="width:15%">Screen</th><th style="width:22%">Purpose</th><th>Available actions</th><th style="width:16%">Navigates to</th><th style="width:7%">Req.</th></tr></thead>
-<tr><td><b>S-01</b> Sign in · Sign up · Join community</td><td>Authenticate and join a community. Also shows the state screens "Waiting for approval" (pending) and "Membership rejected / removed".</td><td>Sign in, create account, reset password (Should), enter community code. Pending: sign out. Rejected or removed: read the explanation, enter a different code, or sign out.</td><td>S-02 (approved) · state screens</td><td>FR-01, FR-02</td></tr>
-<tr><td><b>S-02</b> Resident home</td><td>Dashboard summary and list of own permissions.</td><td>View summary tiles, filter by status (Active, Suspended, Ended), open a permission. "+ New permission" opens a chooser: form, guided, or describe in words (Could). An empty state explains how to start.</td><td>S-03, S-07, S-13, S-04, S-06, S-12, S-08 (admin only)</td><td>FR-14, FR-31</td></tr>
-<tr><td><b>S-03</b> Create / edit permission</td><td>Form for one-time or recurring permissions.</td><td>Enter guest name, choose type, dates, days and hours, gates (pre-selected if only one), limit (default 2 / 20), notifications toggle, Save. Link to switch to the guided mode.</td><td>S-05 (after create) · S-04 (after edit) · S-07</td><td>FR-06, FR-07, FR-09, FR-12</td></tr>
-<tr><td><b>S-04</b> Permission details</td><td>Status, remaining openings and recent activity of one permission.</td><td>Share, Show QR, Edit, Suspend / Resume, view all activity. Cancel is a separated destructive action with a confirmation dialog. Regenerate link (⋮ menu, with confirmation) opens S-05 with the new link.</td><td>S-05, S-03, S-06</td><td>FR-10–FR-13, FR-16–FR-18</td></tr>
-<tr><td><b>S-05</b> Share invitation (sheet)</td><td>Deliver the link to the guest.</td><td>Share via apps, Copy link, Show QR full-screen, Done</td><td>Device share sheet · S-04</td><td>FR-16, FR-18</td></tr>
-<tr><td><b>S-06</b> Activity</td><td>The resident's log of granted and denied requests.</td><td>Filter by permission and result, open an event's permission</td><td>S-04</td><td>FR-27</td></tr>
-<tr><td><b>S-07</b> Guided creation wizard</td><td>Step-by-step creation (rule-based in the MVP).</td><td>Answer step, Back, Next, review, Confirm</td><td>S-05 · S-02 (exit)</td><td>FR-32</td></tr>
-<tr><td><b>S-08</b> Community admin</td><td>Manage residents and gates.</td><td>Approve, reject or remove residents · add, rename, (de)activate gates</td><td>S-09, S-10</td><td>FR-04, FR-05</td></tr>
-<tr><td><b>S-09</b> Community log</td><td>Activity across the community (admin).</td><td>Filter by gate, date and result</td><td>S-08</td><td>FR-28</td></tr>
-<tr><td><b>S-10</b> Gate simulator</td><td>Live view of simulated gate states for demos.</td><td>Watch gate tiles change OPEN / CLOSED, see last event</td><td>S-08</td><td>FR-24, FR-25</td></tr>
-<tr><td><b>S-11</b> In-app invitation</td><td>Registered guest views an invitation in the app (deep link).</td><td>Same as W-01. Save to "My invitations" (Could).</td><td>S-02 (Back / Home, signed-in users)</td><td>FR-22, FR-23</td></tr>
-<tr><td><b>S-12</b> Settings</td><td>Profile, notification preferences, sign out.</td><td>Edit name, toggle notifications, sign out</td><td>S-01</td><td>FR-01, FR-29</td></tr>
-<tr><td><b>S-13</b> Describe in words (Could)</td><td>Natural-language draft of a permission.</td><td>Type text, Submit, review draft in S-03</td><td>S-03</td><td>FR-35</td></tr>
-<tr><td><b>W-01</b> Guest invitation page</td><td>Show validity and open the gate.</td><td>One "Open gate" button per included gate (inactive ones disabled). States: ready, opening… (disabled), success with a 5-second countdown, reason with guidance, and "Check again" for time-based denials.</td><td>— (single page)</td><td>FR-19–FR-21</td></tr>
-<tr><td><b>W-02</b> Invalid link page</td><td>Generic page for unknown, regenerated or malformed links.</td><td>None, apart from a short explanation</td><td>—</td><td>FR-21</td></tr>
+<thead><tr><th style="width:15%">Screen</th><th style="width:22%">Purpose</th><th>Available actions</th><th style="width:16%">Navigates to</th><th style="width:9%">Req. · group</th></tr></thead>
+<tr><td><b>S-01</b> Sign in · Sign up · Join community</td><td>Authenticate and join a community. Also shows the state screens "Waiting for approval" (pending), "Membership rejected" and "Membership removed" (FR-05).</td><td>Sign in, create account, reset password (Could), enter community code. Email and code fields are left-to-right. Pending: "Check status" (also refreshed when the app returns to the foreground), "Cancel request" (back to entering a code), sign out. Rejected or removed: read the explanation, enter a different code, or sign out.</td><td>S-02 (approved) · state screens</td><td>FR-01, FR-02, FR-05 · P-F01</td></tr>
+<tr><td><b>S-02</b> Resident home</td><td>List of the resident's own permissions.</td><td>Filter by status (Active, Suspended, Ended), open a permission. "+ New permission" opens a chooser: fill in the form, or describe in words (AI). An empty state explains how to start.</td><td>S-03, S-13, S-04, S-06, S-12, S-08 (admin only)</td><td>FR-14 · P-F02</td></tr>
+<tr><td><b>S-03</b> Create permission</td><td>Form for one-time or recurring permissions. Also used to review an AI draft.</td><td>Enter guest name, choose type, dates, days and hours (shown in the community time zone, labelled), one gate, the opening limit (a number field with − / + buttons), notifications toggle, Save. <b>Manual form:</b> the only active gate is pre-selected and the limit defaults to 2 / 20. <b>AI draft:</b> a banner shows the resident's original text. AI-filled fields are marked ✦. Fields marked "please choose" start <i>empty</i>, with no pre-selection or default, and must be filled before Save. A cleared out-of-range value shows why ("At most 500 openings"). Back returns to S-13 with the text kept.</td><td>S-05 (after create) · S-13 or S-02 (back)</td><td>FR-06, FR-07, FR-41 · P-F02, P-F06</td></tr>
+<tr><td><b>S-04</b> Permission details</td><td>Status, remaining openings and recent activity of one permission.</td><td>Actions depend on the status. <b>Active or scheduled:</b> Share, Show QR, Suspend, Cancel. <b>Suspended:</b> Resume, Cancel (no Share or QR). <b>Expired or exhausted:</b> Cancel only. <b>Cancelled:</b> no actions. Every status: view all activity, and the "Notify me on entry" toggle (a preference, not an access rule), except when cancelled. Cancel is a separated destructive action with a confirmation dialog, which explains "To change details or replace a shared link, cancel and create a new permission". Ended permissions offer "Create new permission".</td><td>S-05, S-06, S-03 (new)</td><td>FR-10, FR-11, FR-13, FR-16, FR-18, FR-29 · P-F02, P-F03</td></tr>
+<tr><td><b>S-05</b> Share invitation (sheet)</td><td>Deliver the link to the guest.</td><td>Share via apps, Copy link, Show QR full-screen, Done</td><td>Device share sheet · S-04</td><td>FR-15, FR-16, FR-18 · P-F03</td></tr>
+<tr><td><b>S-06</b> Activity</td><td>The resident's history of granted and denied requests.</td><td>Filter by permission and result, open an event's permission</td><td>S-04</td><td>FR-27 · P-F05</td></tr>
+<tr><td><b>S-08</b> Community admin</td><td>Approve the people who asked to join.</td><td>Each pending request shows name, email and "requested [date]". Approve asks for confirmation; Reject is a separate action. Empty state: "No pending requests". Open the gate simulator.</td><td>S-10 · S-02 (Home tab)</td><td>FR-05 · P-F01</td></tr>
+<tr><td><b>S-10</b> Gate simulator</td><td>Live view of simulated gate states for demos.</td><td>Watch gate tiles change OPEN / CLOSED, see last events</td><td>S-08</td><td>FR-24, FR-25 · P-F04</td></tr>
+<tr><td><b>S-11</b> In-app invitation (Could)</td><td>Registered guest views an invitation in the app (deep link).</td><td>Same as W-01</td><td>S-02 (Back / Home, signed-in users)</td><td>FR-22 · P-F03</td></tr>
+<tr><td><b>S-12</b> Settings</td><td>Notification preference and sign out.</td><td>Turn all entry notifications on or off (overrides the per-permission toggles while off), link to the OS notification settings, sign out</td><td>S-01 · S-02</td><td>FR-01, FR-29 · P-F01, P-F05</td></tr>
+<tr><td><b>S-13</b> Describe in words</td><td>Natural-language draft of a permission (AI).</td><td>Type text (≤ 300 characters, direction auto-detected for Hebrew or English). "Create draft" is disabled while the text is empty and while a request is in flight. "Fill in the form instead" stays available at all times and carries the typed text to S-03. States: preparing (up to 8 s, announced to screen readers), draft ready → S-03, unavailable → S-03 with text kept. If AI is not configured or today's limit is used up, the S-02 chooser shows the option as unavailable, with the reason.</td><td>S-03 · S-02 (back)</td><td>FR-35, FR-41, FR-42 · P-F06</td></tr>
+<tr><td><b>W-01</b> Guest invitation page</td><td>Show validity and open the gate.</td><td>One "Open gate" button for the permission's gate (disabled if inactive). Times are shown with the community time zone. States: ready, opening… (disabled), success with a 5-second "Gate open" countdown, and reason with guidance. After the last opening, or if the window ends during the countdown, the page then shows the exhausted or expired state instead of re-enabling the button. "Check again" is shown for recoverable denials (<code>NOT_STARTED</code>, <code>OUTSIDE_HOURS</code>, <code>SUSPENDED</code>, <code>GATE_INACTIVE</code>, <code>RATE_LIMITED</code>). Final denials (<code>CANCELLED</code>, <code>EXPIRED</code>, <code>EXHAUSTED</code>) show neither "Open gate" nor "Check again".</td><td>— (single page)</td><td>FR-19–FR-21 · P-F04</td></tr>
+<tr><td><b>W-02</b> Invalid link page</td><td>Generic page for unknown or malformed links.</td><td>None, apart from a short explanation</td><td>—</td><td>FR-21 · P-F04</td></tr>
 </table>
 
 <div class="fig">
@@ -29,18 +27,15 @@ flowchart TB
   subgraph Resident app
     S01[S-01 Sign in / join] -->|approved| S02[S-02 Home]
     S01 -.->|pending / rejected| P[State screen:<br/>waiting / rejected]
-    S02 -->|+ New: form| S03[S-03 Create permission]
-    S02 -->|+ New: guided| S07[S-07 Wizard]
+    S02 -->|New: form| S03[S-03 Create permission]
+    S02 -->|New: describe in words| S13[S-13 Describe · AI]
+    S13 -->|draft, or fallback with text kept| S03
     S03 -->|Save| S05[S-05 Share sheet]
-    S07 -->|Confirm| S05
     S05 -->|Done| S04[S-04 Permission details]
     S02 --> S04
-    S04 -->|Suspend / Cancel| S04
-    S04 -->|Edit| S03
-    S04 -->|Share / QR / new link| S05
+    S04 -->|Suspend / Resume / Cancel| S04
+    S04 -->|Share / QR| S05
     S04 -->|View all activity| S06
-    S02 -.->|+ New: describe in words, Could| S13[S-13 Describe]
-    S13 -.->|draft| S03
     S02 --> S06[S-06 Activity]
   end
   S05 ==>|link / QR via messaging| L((Invitation link))
@@ -53,11 +48,11 @@ flowchart TB
     R -- granted --> OK[W-01 success state]
     R -- denied --> NO[W-01 reason state]
   end
-  L -.->|app installed + deep link| S11[S-11 In-app invitation]
+  L -.->|app installed + deep link, Could| S11[S-11 In-app invitation]
   S11 -.->|Back / Home| S02
   OK -.->|push FR-29| S06
 </pre>
-<div class="exp"><b>What it shows:</b> the main path through the screens in the table above. A resident signs in, creates a permission with the form or the wizard, and shares the link. The guest opens it in a browser (or in the app through a deep link) and requests an opening. A grant shows up in the resident's Activity screen. <b>Why it matters:</b> it confirms that the guest's path from link to opening is a single page with one tap (G4), and that the screen IDs match the table and the wireframes.</div>
+<div class="exp"><b>What it shows:</b> the main path through the screens in the table above. A resident signs in and creates a permission, either with the form or by describing it in words and reviewing the AI draft in the same form. They then share the link. The guest opens it in a browser and requests an opening. Opening it in the app through a deep link is a Could, shown dotted. A grant shows up in the resident's Activity screen. <b>Why it matters:</b> it confirms that the guest's path from link to opening is a single page with one tap (G4), and that the screen IDs match the table and the wireframes.</div>
 </div>
 </section>
 
@@ -65,11 +60,12 @@ flowchart TB
 <div class="note"><b>RTL and accessibility rules for all screens</b> (NFR-15, NFR-17):
 <ul>
 <li>Layout mirrors for Hebrew. URLs, phone-style numbers, times and counters stay left-to-right isolated inside RTL text.</li>
-<li>Weekday chips run Sunday→Saturday (א׳–ש׳), right to left, each with a full spoken label ("Tuesday").</li>
+<li>Weekday chips run Sunday→Saturday (א׳–ש׳), right to left, each with a full spoken label ("Tuesday"). They wrap onto two rows (4 + 3) when seven 48 dp chips do not fit the width.</li>
+<li>Whole ranges and fractions (<span class="ltr">08:00–12:00</span>, <span class="ltr">9 / 40</span>) are isolated as one left-to-right unit. Free-text fields (guest name, S-13) detect their direction automatically. Email and code fields are left-to-right.</li>
 <li>Every touch target, including Approve and Reject, is at least 48×48 dp.</li>
 <li>Text contrast is ≥ 4.5:1, including disabled-state labels, and is checked for outdoor readability.</li>
 <li>Status always pairs an icon or colour with a text label.</li>
-<li>W-01 announces state changes ("Opening…", "Gate opening", the reason) through a live region for screen readers.</li>
+<li>W-01 announces state changes ("Opening…", "Gate opening", the reason) through a live region for screen readers, once per change: the per-second countdown is not announced. S-13 announces "Preparing a draft", and S-03 labels AI-filled and "please choose" fields for screen readers.</li>
 </ul></div>
 <p><b>About the wireframes:</b> they are low-fidelity sketches in grayscale with no visual design. They show only what sits where on each screen. The final UI will be Hebrew, right-to-left. These sketches are drawn left-to-right in English so the PRD reads consistently.</p>
 
@@ -90,54 +86,52 @@ flowchart TB
 
   <div class="wf"><div class="phone">
     <div class="bar"><span>My permissions</span><span>⚙</span></div>
-    <div class="row"><div class="box">Active<br><b>4</b></div><div class="box">Today<br><b>2</b></div><div class="box">Ending<br><b>1</b></div></div>
     <div class="row"><div class="box" style="text-align:center"><b>Active</b></div><div class="box" style="text-align:center">Suspended</div><div class="box" style="text-align:center">Ended</div></div>
     <div class="box"><b>Noa</b> · One-time<br>Fri 19:00–23:59 · Main<br>2 of 2 left · <i>Scheduled</i></div>
-    <div class="box"><b>Cleaner (Rina)</b> · Recurring<br>Tue 08–12 · Main, North<br>31 of 40 left · <i>Active</i></div>
+    <div class="box"><b>Cleaner (Rina)</b> · Recurring<br>Tue 08–12 · North<br>31 of 40 left · <i>Active</i></div>
     <div class="box"><b>Electrician</b> · One-time<br>Today 10:00–14:00 · Main<br>1 of 1 left · <i>Active</i></div>
     <div class="grow"></div>
     <div class="btn">+ New permission</div>
-    <div class="dash" style="font-size:6.2pt">Chooser: Form · Guided · Describe in words (Could)</div>
+    <div class="dash" style="font-size:6.2pt">Chooser: Fill in the form · Describe in words (AI)</div>
     <div class="tabs"><span>Home</span><span>Activity</span><span>Community*</span></div>
   </div><div class="cap">S-02</div><div class="capsub">Resident home (*admin only)</div></div>
 
   <div class="wf"><div class="phone">
-    <div class="bar"><span>← New permission</span><span>Guided</span></div>
+    <div class="bar"><span>← New permission</span><span></span></div>
     <div class="lbl">Guest name *</div><div class="field">Noa</div>
     <div class="row"><div class="btn">One-time</div><div class="btn ghost">Recurring</div></div>
     <div class="lbl">From / To *</div><div class="row"><div class="field">Fri 19:00</div><div class="field">Fri 23:59</div></div>
     <div class="dash">Recurring: [S][M][T][W][T][F][S]<br>08:00 – 12:00 · date range</div>
-    <div class="lbl">Gates *</div><div class="field">☑ Main ☐ North</div>
+    <div class="lbl">Gate *</div><div class="field">◉ Main ○ North</div>
     <div class="lbl">Total openings *</div><div class="field">[ − ] 2 [ + ]</div>
     <div class="field">Notify me on entry ☑</div>
     <div class="grow"></div>
     <div class="btn">Save &amp; share</div>
-  </div><div class="cap">S-03</div><div class="capsub">Create / edit permission</div></div>
+  </div><div class="cap">S-03</div><div class="capsub">Create permission (also reviews AI drafts)</div></div>
 </div>
-<div class="exp"><b>What it shows:</b> S-01 is entry and community joining (FR-01, FR-02). S-02 is the dashboard tiles (FR-31) above the filterable permission list with remaining openings (FR-14). S-03 is a single form for both permission types (FR-06, FR-07), with multi-gate selection (FR-09) and a link to the guided wizard (S-07). Required fields are marked *.</div>
+<div class="exp"><b>What it shows:</b> S-01 is entry and community joining (FR-01, FR-02, P-F01). S-02 is the filterable permission list with remaining openings (FR-14), and the "+ New permission" chooser between the form and the AI description (S-13). S-03 is a single form for both permission types (FR-06, FR-07), with exactly one gate per permission. It is also where an AI draft is reviewed (FR-41). Required fields are marked *.</div>
 </div>
 
 <div class="fig">
-<div class="cap">Diagram 5b · Wireframes: resident app (S-04, S-05, S-07)</div>
+<div class="cap">Diagram 5b · Wireframes: resident app (S-04, S-05, S-13)</div>
 <div class="wf-row">
   <div class="wf"><div class="phone">
-    <div class="bar"><span>← Cleaner (Rina)</span><span>⋮</span></div>
-    <div class="box"><b>Status: Active</b> · Recurring<br>Tue 08:00–12:00<br>1 Dec 2026 – 31 Mar 2027<br>Gates: Main, North</div>
+    <div class="bar"><span>← Cleaner (Rina)</span><span></span></div>
+    <div class="box"><b>Status: Active</b> · Recurring<br>Tue 08:00–12:00<br>1 Dec 2026 – 31 Mar 2027<br>Gate: North</div>
     <div class="box" style="text-align:center">Openings used<br><b>9 / 40</b> · 31 left</div>
     <div class="row"><div class="btn">Share</div><div class="btn ghost">QR</div></div>
-    <div class="row"><div class="btn ghost">Edit</div><div class="btn ghost">Suspend</div></div>
+    <div class="btn ghost">Suspend</div>
     <div class="lbl">Recent activity</div>
-    <div class="box">Tue 08:42 · Main · Granted</div>
+    <div class="box">Tue 08:42 · North · Granted</div>
     <div style="text-decoration:underline">View all activity →</div>
     <div class="grow"></div>
     <div style="border-top:1px dashed #777; padding-top:1mm"></div>
     <div class="btn ghost" style="border-style:dashed">⚠ Cancel permission…</div>
-    <div class="small" style="font-size:6.3pt">⋮ menu: Regenerate link → S-05</div>
   </div><div class="cap">S-04</div><div class="capsub">Permission details</div></div>
 
   <div class="wf"><div class="phone">
-    <div class="bar"><span>Permission created</span><span>✕</span></div>
-    <div class="box">Hi Noa, here is your gate access for Fri 19:00–23:59 (2 openings):</div>
+    <div class="bar"><span>Share invitation</span><span>✕</span></div>
+    <div class="box">Hi Noa, here is your gate access at Main for Fri 19:00–23:59 (2 openings):</div>
     <div class="field" style="direction:ltr">porta.example/i/•••••••</div>
     <div class="qr"></div>
     <div class="capsub">Scan to open the invitation</div>
@@ -149,19 +143,19 @@ flowchart TB
   </div><div class="cap">S-05</div><div class="capsub">Share invitation (sheet)</div></div>
 
   <div class="wf"><div class="phone">
-    <div class="bar"><span>← Guided · step 3 of 6</span><span></span></div>
-    <div class="box" style="background:#eee">▮▮▮▯▯▯</div>
-    <div class="small" style="font-size:6.3pt">Step 2 answer: on a regular schedule</div>
-    <div style="font-weight:700; font-size:8pt; margin-top:1mm">When should Rina be able to come in?</div>
-    <div class="lbl">Which days?</div><div class="field">[S][M][<b>T</b>][W][T][F][S]</div>
-    <div class="lbl">Between</div><div class="row"><div class="field">08:00</div><div class="field">12:00</div></div>
-    <div class="lbl">From date – until date (inclusive)</div><div class="row"><div class="field">1 Dec 2026</div><div class="field">31 Mar 2027</div></div>
+    <div class="bar"><span>← Describe in words</span><span></span></div>
+    <div style="font-weight:700; font-size:8pt; margin-top:1mm">Who should come in, and when?</div>
+    <div class="field" style="height:18mm">Gardener every Sunday 7–10 until end of March</div>
+    <div class="small" style="font-size:6.3pt">47 / 300 characters · Hebrew or English · no phone numbers or addresses</div>
+    <div class="btn">Create draft</div>
+    <div class="btn ghost">Fill in the form instead</div>
+    <div class="dash">While waiting (up to 8 s): "Preparing a draft…"<br>Unavailable or daily limit reached: the form opens with your text kept.</div>
     <div class="grow"></div>
-    <div class="row"><div class="btn ghost">Back</div><div class="btn">Next</div></div>
-    <div class="small" style="font-size:6.3pt">Steps: who → type → when → gates → openings → review</div>
-  </div><div class="cap">S-07</div><div class="capsub">Guided creation wizard</div></div>
+    <div class="box" style="font-size:6.3pt">Draft → opens in S-03: Recurring · Sun · 07:00–10:00 · until 31 Mar ✦ AI-filled<br>Gate: <b>please choose</b> · Openings: <b>please choose</b></div>
+    <div class="small" style="font-size:6.3pt">Nothing is saved until you review and tap Save.</div>
+  </div><div class="cap">S-13</div><div class="capsub">Describe in words (AI draft)</div></div>
 </div>
-<div class="exp"><b>What it shows:</b> S-04 shows the derived status (FR-13), the cumulative counter and every lifecycle action (FR-10–FR-12, FR-17). Cancel is separated at the bottom as a destructive action and always asks for confirmation. Regenerating the link leads straight to S-05. S-05 is shown right after creation, with share, copy and QR (FR-16, FR-18). S-07 is the rule-based guided assistant (F-21, FR-32), one question per step.</div>
+<div class="exp"><b>What it shows:</b> S-04 shows the derived status (FR-13), the cumulative counter and the lifecycle actions (FR-10, FR-11). Cancel is separated at the bottom as a destructive action and always asks for confirmation. S-05 is shown right after creation, with native share, copy and QR (FR-16, FR-18, P-F03). S-13 is AI-assisted creation (P-F06): free text becomes a draft that opens in the regular form with AI-filled fields marked and missing fields flagged (FR-35, FR-41), with a manual fallback (FR-42).</div>
 </div>
 </section>
 
@@ -185,7 +179,7 @@ flowchart TB
     <div class="box" style="text-align:center; padding:5mm 1mm"><b style="font-size:10pt">✓ Gate opening</b><br>Main · 19:42</div>
     <div class="box" style="text-align:center">1 opening left</div>
     <div class="grow"></div>
-    <div class="btn ghost" style="color:#555">Open gate · Main (available again in 4 s)</div>
+    <div class="btn ghost" style="color:#555">Gate open · 4 s</div>
     <div class="dash">While sending: button shows "Opening…" and is disabled.<br>Failure variant: "We couldn't confirm the gate opened. Check the gate and tap to try again."</div>
   </div><div class="cap">W-01 · result</div><div class="capsub">Granted (and network failure)</div></div>
 
@@ -199,7 +193,7 @@ flowchart TB
     <div class="dash"><b>W-02</b> (separate page, no community name): "This invitation link isn't valid. Ask your host for a new one."</div>
   </div><div class="cap">W-01 · denied / W-02</div><div class="capsub">Reason state · invalid link</div></div>
 </div>
-<div class="exp"><b>What it shows:</b> the guest's entire experience is one page. Its states are ready, result and reason (FR-19–FR-21). The primary action is large and is the only one, so opening takes ≤ 2 taps (G4). With several gates, one button per gate is stacked above the fold. W-02 is deliberately generic and reveals nothing about any community or person (NFR-05, NFR-06). No resident phone or address appears on any guest page (NFR-09).</div>
+<div class="exp"><b>What it shows:</b> the guest's entire experience is one page. Its states are ready, result and reason (FR-19–FR-21). The primary action is large and is the only one, so opening takes ≤ 2 taps (G4). Each permission covers exactly one gate, so there is one button. W-02 is deliberately generic and reveals nothing about any community or person (NFR-05, NFR-06). No resident phone or address appears on any guest page (NFR-09).</div>
 </div>
 
 <div class="fig">
@@ -207,16 +201,14 @@ flowchart TB
 <div class="wf-row">
   <div class="wf"><div class="phone">
     <div class="bar"><span>Community</span><span></span></div>
-    <div class="row"><div class="box" style="text-align:center"><b>Residents</b></div><div class="box" style="text-align:center">Gates</div><div class="box" style="text-align:center">Log</div></div>
-    <div class="lbl">Pending (2)</div>
-    <div class="box">Dana Levi · joined 20 Nov<br><span class="row"><span class="btn" style="padding:.5mm">Approve</span><span class="btn ghost" style="padding:.5mm">Reject</span></span></div>
-    <div class="box">Omer K. · joined 21 Nov<br><span class="row"><span class="btn" style="padding:.5mm">Approve</span><span class="btn ghost" style="padding:.5mm">Reject</span></span></div>
-    <div class="lbl">Approved (37)</div>
-    <div class="box">Avi Cohen · ⋮ Remove</div>
+    <div class="lbl">Waiting for approval (2)</div>
+    <div class="box">Dana Levi · dana@example.com · requested 20 Nov<br><span class="row"><span class="btn" style="padding:.5mm">Approve</span><span class="btn ghost" style="padding:.5mm">Reject</span></span></div>
+    <div class="box">Omer K. · omer@example.com · requested 21 Nov<br><span class="row"><span class="btn" style="padding:.5mm">Approve</span><span class="btn ghost" style="padding:.5mm">Reject</span></span></div>
+    <div class="lbl">Approved residents: 37</div>
     <div class="grow"></div>
-    <div class="dash">Gates tab: Main ● active · North ● active · Service ○ inactive · [+ Add gate]</div>
+    <div class="dash">Gates are set up by the project team (Main, North, Service). No gate management in the app.</div>
     <div class="btn ghost">Open gate simulator</div>
-  </div><div class="cap">S-08</div><div class="capsub">Community admin (S-09 = Log tab)</div></div>
+  </div><div class="cap">S-08</div><div class="capsub">Community admin (approvals)</div></div>
 
   <div class="wf"><div class="phone">
     <div class="bar"><span>← Gate simulator</span><span>● live</span></div>
@@ -226,9 +218,9 @@ flowchart TB
     <div class="gate" style="background:#eee; color:#888">SERVICE · INACTIVE</div>
     <div class="lbl">Last events</div>
     <div class="box">19:42:10 · Main · Noa · Granted</div>
-    <div class="box">19:40:02 · North · (invalid link) · Denied</div>
+    <div class="box">19:40:02 · North · Cleaner (Rina) · Denied (outside hours)</div>
   </div><div class="cap">S-10</div><div class="capsub">Gate simulator</div></div>
 </div>
-<div class="exp"><b>What it shows:</b> S-08 is where the administrator approves residents (FR-02, FR-05) and manages gates (FR-04). Its Log tab is S-09 (FR-28). S-10 is the demo-facing simulator, with live OPEN, CLOSED and INACTIVE tiles and the latest events (FR-24, FR-25). It replaces real gate hardware for the whole course.</div>
+<div class="exp"><b>What it shows:</b> S-08 is where the administrator approves or rejects people who asked to join (FR-02, FR-05, P-F01). Administration is deliberately minimal (D-31). S-10 is the demo-facing simulator, with live OPEN, CLOSED and INACTIVE tiles and the latest events (FR-24, FR-25). It replaces real gate hardware for the whole course.</div>
 </div>
 </section>
