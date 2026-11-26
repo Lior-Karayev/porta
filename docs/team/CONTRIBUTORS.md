@@ -2,25 +2,25 @@
 
 Every AI agent reads this file at session start (`AGENTS.md`, Section 2). Update it whenever responsibilities change, and record the decision in `docs/decisions/DECISION_LOG.md`.
 
-**Status of this registry:** the component allocation below is **confirmed** (decision D-24, confirmed by Lior on 26 Nov 2026). Only the mapping of two GitHub accounts to people is still open (Q-01).
+**Status of this registry:** names, roles and GitHub accounts are **confirmed** (decision D-24; the accounts were confirmed by Lior Karayev as project coordinator on 26 Nov 2026, so Q-01 is resolved). Do not ask the contributors to confirm them again.
 
 ## Contributors
 
 | | Contributor A | Contributor B | Contributor C |
 |---|---|---|---|
 | **Name** | **Daniel Benfusi** | **Avishag Yonatan** | **Lior Karayev** |
-| **GitHub username** | *Pending: Daniel to confirm*¹ | *Pending: Avishag to confirm*¹ | `Lior-Karayev` (confirmed; repository owner) |
+| **GitHub username** | `XVortXx` | `avishagyonatan-design` | `Lior-Karayev` (repository owner) |
 | **Primary area** | Flutter and UX | Backend and Data | Guest experience, integration and QA |
 | **AI development tools** | Claude Code | Claude Code | Omnigent, using Claude Code, Codex and Antigravity through approved first-party accounts |
 | **Repository role** | Merge authority: none | Merge authority: none | **Sole merge authority for `main`** (`AGENTS.md`, Section 4) |
 
-¹ The repository has two collaborator accounts with write access besides the owner: `XVortXx` and `avishagyonatan-design`. Which account belongs to whom is **not verified**. Following `AGENTS.md`, nobody's account is inferred from its name, even when the name looks obvious. Each of Daniel and Avishag confirms their own account by adding it to this table in a PR (or by telling Lior, who records it). Until then, agents must not treat either account as belonging to a particular person.
+A GitHub account is a coordination fact recorded by the project coordinator. It is still not proof of who is directing an AI session: agents follow the session-start procedure in `AGENTS.md`, Section 2, and never infer the human from the account alone.
 
-| Known GitHub account | Repository permission | Human owner |
+| GitHub account | Repository permission | Human owner |
 |---|---|---|
-| `Lior-Karayev` | admin (owner) | Lior Karayev (confirmed) |
-| `XVortXx` | write | *Pending verification* |
-| `avishagyonatan-design` | write | *Pending verification* |
+| `Lior-Karayev` | admin (owner) | Lior Karayev |
+| `XVortXx` | write | Daniel Benfusi |
+| `avishagyonatan-design` | write | Avishag Yonatan |
 
 ## Responsibilities by component
 
@@ -76,3 +76,4 @@ None have been created yet. Issues are created at the start of Sprint 1 (`docs/s
 | Date | Change | Reason | Approved by | Decision ID |
 |---|---|---|---|---|
 | 2026-11-26 | Roles A, B and C assigned to Daniel Benfusi, Avishag Yonatan and Lior Karayev | Team confirmation of the provisional allocation | Lior (for the team) | D-24 |
+| 2026-11-26 | GitHub accounts recorded: `XVortXx` (Daniel), `avishagyonatan-design` (Avishag), `Lior-Karayev` (Lior) | Confirmed by the project coordinator | Lior Karayev | D-24 (Q-01 resolved) |

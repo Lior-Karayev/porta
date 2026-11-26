@@ -4,7 +4,7 @@
 
 Owners (confirmed, D-24): **A = Daniel Benfusi** (Flutter and UX) · **B = Avishag Yonatan** (backend and data) · **C = Lior Karayev** (guest experience, integration and QA). Administration stays minimal (D-31): no administrator management screens are planned beyond approving residents (S-08) and the simulator (S-10).
 
-Source of scope: Master PRD v2.1, Section 7 (six feature groups P-F01–P-F06). Rules for unfinished work: `SPRINT_CARRYOVER.md`.
+Source of scope: Master PRD v2.2, Section 7 (six feature groups P-F01–P-F06). Rules for unfinished work: `SPRINT_CARRYOVER.md`.
 
 ## 1. Calendar, milestones and deadlines
 
@@ -31,7 +31,8 @@ Source of scope: Master PRD v2.1, Section 7 (six feature groups P-F01–P-F06). 
 - AI agents speed up implementation but not learning, integration or testing. The plan therefore reserves time for review, tests and walkthroughs in every sprint.
 - **End-to-end increments:** every sprint ends with something that runs from the resident app through the backend to the guest page or simulator. No component stays disconnected for a whole sprint.
 - **Critical logic first:** gate-open validation, the atomic counter and token handling are built in Sprints 1–2. That leaves two sprints to find concurrency and time-zone bugs.
-- **Two blocking decisions** must be made early: the backend (Q-09) by **Tue 1 Dec 2026**, and the AI provider and cost (Q-04) by **Sat 26 Dec 2026**.
+- **Two blocking decisions** must be made early: the backend (Q-09) by **Tue 1 Dec 2026**, and which **free** AI API provider to approve (Q-04) by **Sat 26 Dec 2026**.
+- **Zero cost (D-38):** the approved budget is $0. No task may enable billing, attach a payment method, or use a paid service, plan or domain. A capability that cannot be built for free is raised as a `zero-cost-blocker` Issue for a team scope decision.
 
 ## 3. Feature delivery overview
 
@@ -52,8 +53,8 @@ Source of scope: Master PRD v2.1, Section 7 (six feature groups P-F01–P-F06). 
 
 | # | Task | Feature | Owner | AI support | Depends on | Est. hours (A / B / C) |
 |---|---|---|---|---|---|---|
-| S1-01 | Sprint planning: state real availability, re-estimate this table, create the GitHub Issues. Daniel and Avishag confirm their GitHub accounts (Q-01). | — | All (C leads) | Omnigent drafts Issues | CP0 merged | 1 / 1 / 2 |
-| S1-02 | **Decide the backend (Q-09) by Tue 1 Dec**, starting from the recommendation in PRD §11.3 (D-34). No billing account without approval. | — | B (proposal), team (decision) | Codex: check the recommendation | — | 0 / 1 / 1 |
+| S1-01 | Sprint planning: state real availability, re-estimate this table, create the GitHub Issues. | — | All (C leads) | Omnigent drafts Issues | CP0 merged | 1 / 1 / 2 |
+| S1-02 | **Decide the backend (Q-09) by Tue 1 Dec**, starting from the recommendation in PRD §11.3 (D-34). No billing account: the budget is $0 (D-38). | — | B (proposal), team (decision) | Codex: check the recommendation | — | 0 / 1 / 1 |
 | S1-03 | Decide the guest-page technology and link domain (Q-14, Q-15) by Tue 1 Dec, starting from D-35. | P-F04 | C | — | S1-02 | 0 / 0 / 1 |
 | S1-04 | **Slice-scope Feature PRDs, approved by Wed 2 Dec, before the coding tasks that use them** (five, one per feature group touched by M1): P-F01 (demo sign-in) and P-F02 (one-time permission) by B; P-F03 (link) and P-F04 (guest page, gate-open function) by C; P-F05 (event recording) by A | P-F01–P-F05 | B, C, A | Claude Code | S1-01, S1-02 | 1 / 2 / 2 |
 | S1-05 | Flutter project skeleton, folder structure, linting (A). Minimal CI running `dart format`, `flutter analyze` and the tests on every PR (C). | — | A, C | Claude Code, Codex | S1-01 | 3 / 0 / 2 |
@@ -140,7 +141,7 @@ Validation, security and the M1 scenario's six steps are never cut.
 
 **Documentation:** three Feature PRDs, decision log, Code Concepts (state management, async, transactions, error handling), Sprint 2 report and walkthrough, test report T2.
 
-**Risks:** time-zone and DST bugs (R-07; mitigation: server-side only, boundary tests). Role rules are wrong (mitigation: deep review). End-of-year holidays reduce capacity (mitigation: the Sprint 1 capacity check). **Decision Q-04 (AI provider and cost) due Sat 26 Dec.**
+**Risks:** time-zone and DST bugs (R-07; mitigation: server-side only, boundary tests). Role rules are wrong (mitigation: deep review). End-of-year holidays reduce capacity (mitigation: the Sprint 1 capacity check). **Decision Q-04 (which eligible free AI provider) due Sat 26 Dec.**
 
 ---
 
@@ -155,7 +156,7 @@ Validation, security and the M1 scenario's six steps are never cut.
 | S3-03 | **Spike (Could):** App Links / Universal Links feasibility (FR-22). Stop at the time box (2 days); defer if risky (D-27). | P-F03 | C | Codex | S1-03 |
 | S3-04 | Activity history: event recording incl. rate-limit summaries (FR-26); resident activity screen S-06 with filters (FR-27) | P-F05 | B (events), A (S-06) | Claude Code | S2-05 |
 | S3-05 | Push notification on a granted opening, after commit (FR-29), with per-permission toggle; app works fully without push (AC-06.2) | P-F05 | B (sending), A (handling, S-12 toggle) | Claude Code | S3-04 |
-| S3-06 | AI draft endpoint (server-side proxy, no key in the app): input limits, strict output schema, timeout 8 s, per-user daily cap (FR-35, NFR-21) | P-F06 | B | Claude Code; **deep review by Codex** (data sent out, keys, cost cap) | Q-04 approved |
+| S3-06 | AI draft endpoint (server-side proxy, no key in the app): input limits, strict output schema, timeout 8 s, per-user and global daily caps, controlled "unavailable" response and a kill switch for when the free quota is exhausted (FR-35, FR-42, NFR-21) | P-F06 | B | Claude Code; **deep review by Codex** (data sent out, keys, caps, no paid fallback) | Q-04: free provider approved |
 | S3-07 | Describe-in-words screen S-13 → draft opens in the regular form S-03 with flagged fields (FR-35, FR-41) | P-F06 | A | Claude Code | S3-06 |
 | S3-08 | Automated E2E central scenario (WORKFLOW §6) including history and counter checks | — | C | Codex | S3-04 |
 
@@ -167,7 +168,7 @@ Validation, security and the M1 scenario's six steps are never cut.
 
 **Documentation:** three Feature PRDs, decision log (Q-04 outcome, deep-link outcome), Code Concepts (HTTP requests, JSON parsing, mocking), Sprint 3 report and walkthrough, test report T3.
 
-**Risks:** no approved AI provider by 26 Dec (R-14; mitigation: see Section 9). Push setup on iOS needs a paid account (R-04; Android only). Deep links take longer than the time box (defer; the web fallback works for everyone).
+**Risks:** no approved free AI provider by 26 Dec, or its free offer changes (R-14; mitigation: see Section 9). iOS push is not possible without a paid Apple account, which is not authorised (R-04; Android only). Deep links take longer than the time box (defer; the web fallback works for everyone).
 
 ---
 
@@ -228,5 +229,6 @@ Validation, security and the M1 scenario's six steps are never cut.
   3. Password reset by email (Could)
   4. English UI (Could)
   5. QR code (FR-18). P-F03 still has native sharing.
-- **If no AI provider is approved by 26 Dec (Q-04):** the team chooses between (a) a provider's free tier that meets the privacy limits in PRD §11.4, (b) an approved paid plan within a stated budget, or (c) descoping P-F06 by team decision. Porta then demonstrates five significant features (P-F01–P-F05), which still meets the instructor's minimum of five. This choice is recorded as a decision. It is never made silently.
+- **If no free AI provider is approved by 26 Dec (Q-04):** only free providers that meet all eight criteria in PRD §11.4 can be chosen (shortlist in PRD §11.5); **a paid plan is not an option** (D-38). S3-06 and S3-07 can still be built and tested against the controlled "unavailable" response and a local stub, so the code and the manual fallback are ready. If no suitable free API can be found at all, Q-04 stays open and the feasibility blocker goes to the team for review. P-F06 is never silently removed, and any scope decision is recorded.
+- **If the free quota runs out or the provider's free offer changes** (including during a demo): AI is switched off with a controlled response, and the manual form keeps working (FR-42). Never a paid model, never billing, never OpenRouter.
 - Every cut or carryover is recorded in `SPRINT_CARRYOVER.md` and the decision log.

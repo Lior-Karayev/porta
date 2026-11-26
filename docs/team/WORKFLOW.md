@@ -126,6 +126,10 @@ The Definition of Done is in `AGENTS.md`, Section 10. Meeting it allows `READY_F
 | Contributor C (Omnigent) | End of sprint | Sprint report, walkthrough, carryover, test report |
 | Whoever records a decision | When it is made | `docs/decisions/DECISION_LOG.md`, with a human decision maker |
 
-## 9. Budget requests
+## 9. Zero-cost policy
 
-Any expense (cloud billing plan, Apple developer account, paid AI API, domain, model credits) is raised as a GitHub Issue labelled `budget` with: purpose, estimated cost, benefits, free alternatives, consequences of not purchasing. Nothing is bought, enabled or linked to a billing account until the team approves it and the decision is logged.
+The approved project budget is **$0** (D-38, `AGENTS.md` §6). Nothing is bought, enabled or linked to a billing account.
+
+- **Before adopting any external service,** record in the Feature PRD (section 8) that it is free and how the free-only limit is enforced: no payment method attached, and going over the quota fails with an error.
+- **If a capability cannot be delivered for free,** open a GitHub Issue labelled `zero-cost-blocker` describing the capability, why no free option works, the free alternatives considered, and a proposed scope decision. The team decides. An agent never enables a paid option in the meantime.
+- **Changing the $0 rule itself** needs a team decision through a policy-change PR (`AGENTS.md` §1). Only then could a `budget` Issue with the purpose, cost, benefits, free alternatives and the consequences of not buying be considered.

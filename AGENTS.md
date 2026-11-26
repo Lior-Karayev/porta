@@ -115,7 +115,10 @@ Repository protection settings and their verified status are in [`docs/team/GITH
 
 ## 6. Budget and safety
 
-- No paid service, subscription, cloud billing change or model-credit purchase without **explicit human approval by the team**: raise a GitHub Issue labelled `budget` with the purpose, estimated cost, benefits, free alternatives, and consequences of not buying; nothing is bought, enabled or linked to a billing account until the team approves it and the decision is recorded in `docs/decisions/DECISION_LOG.md` (procedure: `docs/team/WORKFLOW.md`, Section 9).
+- **The total approved expenditure for Porta is $0** (decision D-38). No paid APIs, subscriptions, usage-based billing, billing accounts, paid credits, paid hosting, paid AI models, Apple Developer accounts or custom domains. Existing personal subscriptions used for development do not authorise any new project expense.
+- Never enable billing, attach a payment method, upgrade a plan (for example Firebase Blaze) or present a paid service as a fallback. A free service is allowed only when going over its free quota fails with an error and can never create a charge.
+- If a capability cannot be delivered for free, stop and report it. Propose a free technical alternative or a scope decision. Never silently switch to a paid option.
+- Changing the $0 rule needs a new team decision first, made through the policy-change procedure in Section 1 (procedure: `docs/team/WORKFLOW.md`, Section 9).
 - Never modify provider credentials.
 - Never commit secrets (`.env`, keys, tokens, service-account files). No API secrets in the mobile app.
 - Security work stays defensive and serves Porta's own development. Do not bypass agent safety restrictions.

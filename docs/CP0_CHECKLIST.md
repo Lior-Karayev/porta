@@ -4,15 +4,15 @@ Sources:
 
 - The instructor assignment "מטלה: מסמך דרישות מוצר (PRD)" (K. Zoabi, Kinneret College, 2026–27), 6 pages.
 - The instructor's clarification of the course requirements, relayed by Lior Karayev in Nov 2026 (no written source available to the authors).
-- Lior Karayev's decisions of 26 Nov 2026 (D-24, D-30, D-31, D-32, D-36).
+- Lior Karayev's decisions of 26 Nov 2026 (D-24 incl. GitHub accounts, D-30, D-31, D-32, D-36) and the team's zero-cost decision (D-38).
 - The team's CP0 restructuring assignment (25 Nov 2026).
 
-The table below shows every mandatory item and where **PRD v2.1** (`docs/prd/Porta-PRD.pdf`) covers it.
+The table below shows every mandatory item and where **PRD v2.2** (`docs/prd/Porta-PRD.pdf`) covers it.
 
 ## Deliverable
 | # | Requirement | Where | Status |
 |---|---|---|---|
-| D1 | One complete PRD per team, single PDF, submitted in Moodle | `docs/prd/Porta-PRD.pdf` (v2.1) | ✅ PDF ready. The team uploads it to Moodle (M0, 28 Nov 2026) |
+| D1 | One complete PRD per team, single PDF, submitted in Moodle | `docs/prd/Porta-PRD.pdf` (v2.2) | ✅ PDF ready. The team uploads it to Moodle (M0, 28 Nov 2026) |
 | D2 | Team member details, app characterisation, relevant diagrams and sketches | §1, §2–13, Diagrams 1–8 | ✅ |
 | D3 | Full product characterisation **and** a clear first version (MVP) | §7.1 (six groups), §7.2 (first MVP = M1 slice; Porta v1.0 = M2), §7.3–7.4 | ✅ |
 
@@ -27,7 +27,7 @@ The table below shows every mandatory item and where **PRD v2.1** (`docs/prd/Por
 ## The 15 sections, in order
 | # | Section | Required contents | Where | Status |
 |---|---|---|---|---|
-| 1 | Project details & team | App name, members, initial responsibility; tip: version + date | §1, cover, revision history | ✅ Full names and confirmed roles (D-24): Daniel Benfusi (A), Avishag Yonatan (B), Lior Karayev (C). Only the GitHub account mapping for A and B is open (Q-01) |
+| 1 | Project details & team | App name, members, initial responsibility; tip: version + date | §1, cover, revision history | ✅ Full names and confirmed roles (D-24): Daniel Benfusi (A), Avishag Yonatan (B), Lior Karayev (C). GitHub accounts confirmed (Q-01 resolved) |
 | 2 | Summary & vision | What it does (short), goal & value, full-product vision | §2 | ✅ |
 | 3 | Problem & need | Who suffers & from what; current coping & what fails; why needed & evidence; problem described without the app | §3 | ✅ (no research yet — stated explicitly, Q-02) |
 | 4 | Audience & user types | Characteristics, needs, roles, allowed / not allowed per type | §4 table + Diagram 1 | ✅ |

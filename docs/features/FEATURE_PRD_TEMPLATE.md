@@ -48,6 +48,8 @@ Screens (S-xx, W-xx), states (loading, empty, error, success), navigation, RTL a
 ## 8. Data and API dependencies
 Entities read and written (E-xx). API endpoints or functions: name, input, output, errors, who calls them. Dependencies on other features (P-F0x) and external services.
 
+**Zero cost (mandatory, D-38):** for every external service, give its name, the free plan used, its free quota versus the expected usage, how charges are made impossible (no payment method, a hard quota error), and the behaviour when the quota runs out or the free offer changes. If no free option exists, write "zero-cost blocker" and link the GitHub Issue.
+
 ## 9. Errors and edge cases
 Offline, slow network, double submission, concurrency, invalid input, permission denied, time zone/DST, service unavailable.
 

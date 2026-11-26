@@ -14,7 +14,7 @@ These values were read with the agent's GitHub credentials (read-only calls). No
 | Rules applying to `main` (`GET /repos/…/rules/branches/main`) | **None** | Nothing currently blocks direct pushes or force pushes by rulesets. |
 | Classic branch protection on `main` | **Unknown** | The agent token is not allowed to read it (HTTP 403, "Resource not accessible by personal access token"). The owner must check it in the web UI. |
 | Allow auto-merge | **Off** | Good. Keep it off. |
-| Collaborators | `Lior-Karayev` (admin), `XVortXx` (write), `avishagyonatan-design` (write) | `Lior-Karayev` is Lior Karayev's account (confirmed). The other two accounts are not yet mapped to Daniel Benfusi or Avishag Yonatan; each confirms their own (`CONTRIBUTORS.md`, Q-01). |
+| Collaborators | `Lior-Karayev` (admin), `XVortXx` (write), `avishagyonatan-design` (write) | `Lior-Karayev` = Lior Karayev, `XVortXx` = Daniel Benfusi, `avishagyonatan-design` = Avishag Yonatan (confirmed by the project coordinator, D-24). |
 | Agent credentials | Omnigent's agents on Lior's machine use a fine-grained token of the **`Lior-Karayev`** account | GitHub cannot tell these agents apart from Lior (see Section 3). |
 
 **Conclusion:** `main` is **not verifiably protected** today. The no-merge rule is currently enforced by policy (`AGENTS.md`) only.

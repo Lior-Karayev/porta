@@ -24,6 +24,19 @@ One entry per significant task, newest first. Keep entries short; link to PRs in
 
 ## Entries
 
+### 2026-11-26 · PR #2: GitHub identities and the zero-cost policy (PRD v2.2)
+
+| Field | Value |
+|---|---|
+| Sprint | CP0 |
+| Human contributor | Lior Karayev (C) |
+| AI agent used | Omnigent (Claude Code, Opus 5.5), implementing. No delegated review (documentation change; scripted consistency checks) |
+| Work completed | GitHub accounts recorded (Q-01 resolved, D-24). $0 budget recorded (D-38) in `AGENTS.md`, WORKFLOW §9, the Feature PRD template, the PRD (§7.5, §11.3–11.5, §14, §15, NFR-21, FR-42) and the sprint plan. Paid fallbacks removed (Firebase Blaze, a paid AI plan, Apple account, domain). Free AI API shortlist researched (Mistral, Groq, Gemini, Cloudflare) |
+| Decisions | D-38 Confirmed; D-24 and D-32 updated; D-12 and D-18 superseded |
+| Problems encountered | Some free-tier facts (Groq retention, card requirement, Mistral structured output) could not be confirmed from official pages and are marked "to check" |
+| Tests performed | PDF rebuilt (59 pages), no Mermaid errors, no overflow; repository-wide search for paid-allowing wording; Q-01, D-32 and Q-04 checked across documents |
+| Commits / PR | https://github.com/Lior-Karayev/porta/pull/2 |
+
 ### 2026-11-26 · PR #2 completion: team decisions, research, PRD v2.1
 
 | Field | Value |
